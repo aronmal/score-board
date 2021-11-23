@@ -1,0 +1,6 @@
+#nodejs-backend node_modules
+/nodejs-backend/node_modules
+#nodejs-frontend node_modules
+/nodejs-frontend/node_modules
+#nodejs-frontend build
+/nodejs-frontend/build
