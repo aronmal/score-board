@@ -5,8 +5,8 @@ function Nav() {
       <nav>
         <ul>
           <li><Link to='/'>Home</Link></li>
-          <li><Link to='/test'>Test</Link></li>
-          <li><Link to='/second'>Second</Link></li>
+          <li><Link to='/test' className='active'>Test</Link></li>
+          <li><Link to='/login'>Login</Link></li>
         </ul>
       </nav>
     );
