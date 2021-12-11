@@ -5,7 +5,9 @@ function Home() {
       <>
         <div className='content'>
           <Header />
-          <p>This is Home</p>
+          <div className='content-div'>
+            <p>This is Home</p>
+          </div>
         </div> 
       </>
     );

@@ -27,12 +27,19 @@ body {
   font-family: 'Roboto';
 }
 
+.link{
+  color: inherit;
+  text-decoration: none;
+}
+
 #top-banner, footer {
   width: 100%;
   padding: .5em;
   text-align: center;
   color: white;
   background: var(--gbs-color);
+  font-size: 1.25em;
+  padding: .5em 0;
 }
 
 #top-header {
@@ -41,7 +48,7 @@ body {
   justify-content: space-evenly;
   align-items: center;
   background: white;
-  padding: .5em 0;
+  padding: 1em 0;
 }
 
 #fonts {
@@ -92,4 +99,20 @@ li > a {
 
 .content {
   min-height: 100vh;
+}
+.content-div {
+  background: dodgerblue;
+  padding: 1em;
+  box-shadow: inset 0 1em 1em -1em grey;
+}
+
+footer {
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 1.25em;
+  padding: 1em 0;
+}
+
+#secret {
+  cursor: wait;
 }
