@@ -27,7 +27,7 @@ body {
   font-family: 'Roboto';
 }
 
-#top-banner {
+#top-banner, footer {
   width: 100%;
   padding: .5em;
   text-align: center;
@@ -88,4 +88,8 @@ li > a {
   font-family: time;
   font-size: 5em;
   padding: .25em .25em 0;
+}
+
+.content {
+  min-height: 100vh;
 }
