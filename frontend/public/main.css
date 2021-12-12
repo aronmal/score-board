@@ -15,7 +15,6 @@
 
 :root {
   --gbs-color: #009dcc;
-  --svg-symbol-color: black;
 }
 
 *, *::before, *::after {
@@ -60,7 +59,7 @@ a{
   align-items: center;
   background: white;
   /* padding: 1em 0; */
-  box-shadow: 0 0 1em grey;
+  box-shadow: 0 0 1em gray;
 }
 #top-header > div {
   align-items: center;
@@ -78,6 +77,11 @@ a{
 }
 
 .navlink {
+  --svg-navlink-color: black;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: space-evenly; */
+  align-items: center;
   color: black;
   text-decoration: none;
   font-size: 2em;
@@ -86,12 +90,19 @@ a{
   padding: .5em 1em;
   margin: auto 0;
 }
-.navlink:not(.active):hover p{
+.navlink > svg {
+  margin-right: .5em;
+}
+.svg-navlink {
+  fill: var(--svg-navlink-color);
+}
+.navlink:not(.active):hover > p{
   border-top: .25rem solid white;
   border-bottom: .25rem solid var(--gbs-color);
 }
 .active {
   color: white;
+  --svg-navlink-color: white ;
   background: var(--gbs-color);
 }
 
@@ -128,6 +139,8 @@ a{
   margin: auto 0;
 }
 .card {
+  color: var(--svg-symbol-color);
+  --svg-symbol-color: grey;
   height: 6em;
   width: 10em;
   font-size: 3em;
@@ -139,8 +152,8 @@ a{
 }
 .card:hover {
   color: var(--svg-symbol-color);
-  --svg-symbol-color: midnightblue;
-  box-shadow: 0 0 .5em var(--gbs-color);
+  --svg-symbol-color: black;
+  box-shadow: 0 0 .75em var(--gbs-color);
   transform: scale(1.05);
   transition: .2s;
   -webkit-transition: .2s;
