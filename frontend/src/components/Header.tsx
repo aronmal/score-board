@@ -15,7 +15,10 @@ function Header() {
     <header className="Nav-header">
       <p id='top-banner'>This webpage is under construction and is not finished yet!</p>
       <div id='top-header'>
-        <p id='logo'>Score:Board</p>
+        <div className="flex-row">
+          <img id='logo-icon' src="/logo-icon-small.png" alt="logo" />
+          <p id='logo'>Score:Board</p>
+        </div>
         <Nav />
         <p id='time'> {time} </p>
       </div>

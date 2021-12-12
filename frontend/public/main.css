@@ -15,6 +15,7 @@
 
 :root {
   --gbs-color: #009dcc;
+  --svg-symbol-color: black;
 }
 
 *, *::before, *::after {
@@ -22,12 +23,21 @@
   margin: 0;
   padding: 0;
 }
+.flex-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.flex-col{
+  display: flex;
+  flex-direction: column;
+}
 
 body {
   font-family: 'Roboto';
 }
 
-.link{
+a{
   color: inherit;
   text-decoration: none;
 }
@@ -43,12 +53,22 @@ body {
 }
 
 #top-header {
+  height: 9rem;
   width: 100%;
   display: flex;
   justify-content: space-evenly;
   align-items: center;
   background: white;
-  padding: 1em 0;
+  /* padding: 1em 0; */
+  box-shadow: 0 0 1em grey;
+}
+#top-header > div {
+  align-items: center;
+}
+#logo-icon {
+  height: 64px;
+  width: 64px;
+  margin: 0 1em;
 }
 
 #fonts {
@@ -57,18 +77,18 @@ body {
   align-items: flex-start;
 }
 
-li {
-  padding: 0 1em;
-  list-style: none;
-  display: inline-block;
-}
-
-li > a {
+.navlink {
   color: black;
   text-decoration: none;
   font-size: 2em;
   padding: .5em 1em;
   border-radius: 8px;
+  padding: .5em 1em;
+  margin: auto 0;
+}
+.navlink:not(.active):hover p{
+  border-top: .25rem solid white;
+  border-bottom: .25rem solid var(--gbs-color);
 }
 .active {
   color: white;
@@ -93,17 +113,50 @@ li > a {
 }
 #time {
   font-family: time;
-  font-size: 5em;
-  padding: .25em .25em 0;
+  font-size: 4em;
+  padding: .25em .25em .125em;
+  border-radius: .25em;
+  border: 2px solid black;
 }
 
 .content {
   min-height: 100vh;
 }
 .content-div {
-  background: dodgerblue;
+  /* background: dodgerblue; */
   padding: 1em;
-  box-shadow: inset 0 1em 1em -1em grey;
+  margin: auto 0;
+}
+.card {
+  height: 6em;
+  width: 10em;
+  font-size: 3em;
+  align-items: center;
+  border-radius: .5em;
+  box-shadow: 0 0 .5em gray;
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+.card:hover {
+  color: var(--svg-symbol-color);
+  --svg-symbol-color: midnightblue;
+  box-shadow: 0 0 .5em var(--gbs-color);
+  transform: scale(1.05);
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+.card > * {
+  box-sizing: content-box;
+  padding: .5em;
+}
+.card svg {
+  height: 1em;
+  width: 1em;
+}
+.svg-symbol {
+  fill: var(--svg-symbol-color);
+  transition: .2s;
+  -webkit-transition: .2s;
 }
 
 footer {

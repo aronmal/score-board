@@ -1,14 +1,12 @@
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 function Nav() {
   return (
-    <nav>
-      <ul>
-        <li><Link to='/'>Home</Link></li>
-        <li><Link to='/test' className='active'>Test</Link></li>
-        <li><Link to='/login'>Login</Link></li>
-      </ul>
-    </nav>
+    <div id="nav" className='flex-row'>
+      <Link className='navlink active' to='/'><p>Home</p></Link>
+      <Link className='navlink' to='/test'><p>Test</p></Link>
+      <Link className='navlink' to='/login'><p>Login</p></Link>
+    </div>
   );
 }
 
