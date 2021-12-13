@@ -6,7 +6,7 @@ function Test() {
 
   useEffect(() => {
 
-    var fetchPassed:Boolean = false;
+    var fetchPassed: boolean = false;
 
     const getOptions = {
       method: 'GET',
@@ -44,7 +44,7 @@ function Test() {
               var rtnFn = function() {
                       return '<div style="text-indent: ' + (f['brace'] * 20) + 'px;">' + p1 + '</div>';
                   },
-                  rtnStr:any = 0;
+                  rtnStr: string = '';
               if (p1.lastIndexOf('{') === (p1.length - 1)) {
                   rtnStr = rtnFn();
                   f['brace'] += 1;

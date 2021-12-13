@@ -182,3 +182,60 @@ footer {
 #secret {
   cursor: wait;
 }
+
+/* Blog Test */
+.new {
+  font-size: 1.5em;
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+.new form {
+  width: 100%;
+}
+.new fieldset {
+  padding: .5em 1em;
+}
+.new textarea {
+  resize: none;
+}
+.grid-1-4{
+  display: grid;
+  grid-gap: 1em;
+  grid-template-columns: 1fr 2fr;
+  justify-items: center;
+  align-items: center;
+}
+.grid-1-4 > div {
+  width: 100%;
+}
+#typ {
+  align-self: start;
+}
+.left label {
+  width: 100%;
+}
+.new label {
+  text-align: left;
+  display: block;
+}
+.new h2 {
+  color: var(--gbs-color);
+  margin: 1em;
+}
+.new input, .new textarea, .new select {
+  width: 100%;
+  padding: 6px 10px;
+  margin: 10px 0;
+  border: 1px solif #ddd;
+  box-sizing: border-box;
+  display: block;
+}
+.new button {
+  background: var(--gbs-color);
+  color: #fff;
+  border: 0;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
