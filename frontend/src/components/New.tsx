@@ -10,7 +10,7 @@ function New() {
   const [ispublic, setIspublic] = useState(false);
   const [player, setPlayer] = useState('');
   const [playerPlaceholder, setPlayerPlaceholder] = useState('Geben Sie einen Spielernamen ein');
-  const [players, setPlayers] = useState([{id: 0}]);
+  const [players, setPlayers] = useState<{ id?:number, name?:string }[]>([]);
   const [playerlist, setPlayerlist] = useState(<></>)
   
   // interface players {
@@ -52,16 +52,12 @@ function New() {
     e.preventDefault();
   };
   useEffect(() => {
-    if (players[0].id !== 0) {
-      setPlayerlist(<> {players.map(({ id, name }: { id?:number, name?:string }) => (
-        <div key={id} className='flex-row'>
-          <p> {`${name}`} </p>
-          <button>{'X'}</button>
-        </div>
-      )) }</>)
-    } else {
-      setPlayerlist(<></>)
-    }
+    setPlayerlist(<> {players.map(({ id, name }) => (
+      <div key={id} className='flex-row'>
+        <p> {`${name}`} </p>
+        <button>{'X'}</button>
+      </div>
+    )) }</>)
   }, [players])
 
   useEffect(() => {
