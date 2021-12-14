@@ -12,13 +12,6 @@ function New() {
   const [playerPlaceholder, setPlayerPlaceholder] = useState('Geben Sie einen Spielernamen ein');
   const [players, setPlayers] = useState<{ id?:number, name?:string }[]>([]);
   const [playerlist, setPlayerlist] = useState(<></>)
-  
-  // interface players {
-  //   array: {
-  //     id : number,
-  //     name : string
-  //   }
-  // }
 
   const addPlayer = () => {
     if (player==='')  {
@@ -28,15 +21,17 @@ function New() {
         setPlayerPlaceholder('Geben Sie einen Spielernamen ein')
       }, 2000)
     } else {
-      if (players[0].id !== 0) {
-        setPlayers((prev) => {return [...prev,{id: players.length + 1, name: player}]})
-      } else {
-        setPlayers(() => {return [{id: 1, name: player}]})
-      }
+      setPlayers((prev) => {return [...prev,{id: players.length + 1, name: player}]})
       console.log(`added ${player}`)
       setPlayer('')
     }
   }
+
+  const removePlayer = (theButton: any) => {
+    let match = players.findIndex((e) => e.name === theButton.target.parentElement.children[0].innerText)
+    setPlayers((prev) => {let old = [...prev]; old.splice(match, 1); return old})
+  }
+
   const handleSubmit = () => {
 
     if (teamname==='')  {
@@ -48,6 +43,7 @@ function New() {
     } else {
     setForm({ teamname, description, ispublic , players});
   }};
+
   const preventReload = (e: any) => {
     e.preventDefault();
   };
@@ -55,7 +51,7 @@ function New() {
     setPlayerlist(<> {players.map(({ id, name }) => (
       <div key={id} className='flex-row'>
         <p> {`${name}`} </p>
-        <button>{'X'}</button>
+        <button onClick={e => removePlayer(e)}>{'X'}</button>
       </div>
     )) }</>)
   }, [players])
