@@ -27,13 +27,7 @@ function New() {
     }
   }
 
-  const removePlayer = (theButton: any) => {
-    let match = players.findIndex((e) => e.name === theButton.target.parentElement.children[0].innerText)
-    setPlayers((prev) => {let old = [...prev]; old.splice(match, 1); return old})
-  }
-
   const handleSubmit = () => {
-
     if (teamname==='')  {
       console.log('[WARN] teamname empty!')
       setTeamnamePlaceholder('Bitte Teamnamen eingeben!!!')
@@ -43,11 +37,12 @@ function New() {
     } else {
     setForm({ teamname, description, ispublic , players});
   }};
-
-  const preventReload = (e: any) => {
-    e.preventDefault();
-  };
+  
   useEffect(() => {
+    const removePlayer = (theButton: any) => {
+      let match = players.findIndex((e) => e.name === theButton.target.parentElement.children[0].innerText)
+      setPlayers((prev) => {let old = [...prev]; old.splice(match, 1); return old})
+    }
     setPlayerlist(<> {players.map(({ id, name }) => (
       <div key={id} className='flex-row'>
         <p> {`${name}`} </p>
@@ -56,9 +51,9 @@ function New() {
     )) }</>)
   }, [players])
 
-  useEffect(() => {
-    console.log(form);
-  }, [form])
+  const preventReload = (e: any) => {
+    e.preventDefault();
+  };
 
   return (
     <div className='flex-col new'>
