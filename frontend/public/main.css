@@ -97,7 +97,7 @@ a{
   fill: var(--svg-navlink-color);
 }
 .navlink:not(.active):hover > p{
-  border-top: .25rem solid white;
+  border-top: .25rem solid transparent;
   border-bottom: .25rem solid var(--gbs-color);
 }
 .active {
