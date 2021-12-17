@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom'
+import { Navigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
 
 function New() {
 
@@ -7,95 +9,88 @@ function New() {
   const [redirectElem, setRedirectElem] = useState(<></>)
   const [form, setForm] = useState({});
   const [teamname, setTeamname] = useState('');
-  const [teamnamePlaceholder, setTeamnamePlaceholder] = useState('Geben Sie einen Teamnamen ein');
   const [description, setDescription] = useState('');
   const [ispublic, setIspublic] = useState(false);
-  const [player, setPlayer] = useState('');
-  const [playerPlaceholder, setPlayerPlaceholder] = useState('Geben Sie einen Spielernamen ein');
-  const [players, setPlayers] = useState<{ id?:number, name?:string }[]>([]);
+  const [playername, setPlayername] = useState('');
+  const [players, setPlayers] = useState<{ uuid:string, name:string }[]>([]);
   const [playerlist, setPlayerlist] = useState(<></>)
   const elemsCount = 2
+  const teamnameError = 'Bitte Teamnamen eingeben!'
+  const playernameError = 'Name bereits vergeben!'
 
   // (?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?])
-
-  const addPlayer = () => {
-    if (true) {
-      if (!players.find((e) => e.name === player)) {
-        setPlayers((prev) => {return [...prev,{id: players.length + 1, name: player}]})
-        console.log(`added ${player}`)
-        setPlayer('')
-      } else if (players.find((e) => e.name === player)) {
-        console.log('[WARN] player already exists!')
-        setPlayerPlaceholder('Spielername bereits vergeben!!!')
-        setTimeout(() => {
-          setPlayerPlaceholder('Geben Sie einen Spielernamen ein')
-        }, 2000)
-        setPlayer('')
-      } else {
-        console.log('[WARN] unknown player name error!')
-        setPlayerPlaceholder('Unbekannter Fehler bei Eingabe!!!')
-        setTimeout(() => {
-          setPlayerPlaceholder('Geben Sie einen Spielernamen ein')
-        }, 2000)
-        setPlayer('')
-      }
-    } else if (false)  {
-      console.log('[WARN] player not valid!')
-      setPlayerPlaceholder('Bitte gültigen Spielernamen eingeben!!!')
-      setTimeout(() => {
-        setPlayerPlaceholder('Geben Sie einen Spielernamen ein')
-      }, 2000)
-      setPlayer('')
-    } else {
-      console.log('[WARN] unknown player name error!')
-      setPlayerPlaceholder('Unbekannter Fehler bei Eingabe!!!')
-      setTimeout(() => {
-        setPlayerPlaceholder('Geben Sie einen Spielernamen ein')
-      }, 2000)
-      setPlayer('')
-    } 
+  function validate(e:string) {
+    return e.trim().replace(/[^a-zA-Z\d-_.,\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, '').replace(/\s+/g, ' ').replace(/[-]+/g, '-').replace(/[_]+/g, '_')
   }
+  const addPlayer = () => {
 
-  const handleSubmit = () => {
-    if (teamname==='')  {
-      console.log('[WARN] teamname empty!')
-      setTeamnamePlaceholder('Bitte Teamnamen eingeben!!!')
-      setTimeout(() => {
-        setTeamnamePlaceholder('Geben Sie einen Teamnamen ein')
-      }, 2000)
+    let playerChecked = validate(playername)
+
+    if (!players.find((e) => e.name === playerChecked)) {
+      setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playerChecked}]})
+      console.log(`added ${playerChecked}`)
+      setPlayername('')
     } else {
-    setForm({ teamname, description, ispublic , players});
-    setTimeout(() => {
-      setRedirectElem(<Navigate to='/' />)
-    }, 3000)
-    console.log('[WARN] Alarm!!!')
-  }};
+      console.log('[WARN] player already exists!')
+      setPlayername(playernameError)
+      setTimeout(() => {
+        setPlayername('')
+      }, 2000)
+    }
+  };
+
+  useEffect(() => {
+  console.table(form)
+  }, [form])
+
+  const nextStep = () => {
+    if (currentStep === (elemsCount - 1)){
+      setForm({ teamname, description, ispublic , players});
+      setTimeout(() => {
+        setRedirectElem(<Navigate to='/' />)
+      }, 3000)
+    } else {
+      if (currentStep === 0) {
+        if (teamname === '')  {
+          console.log('[WARN] teamname empty!')
+          setTeamname(teamnameError)
+          setTimeout(() => {
+            setTeamname('')
+          }, 2000)
+        } else if (teamname !== teamnameError) {
+          setCurrentStep(e => (e + 1))
+        }
+      } else {
+        setCurrentStep(e => (e + 1))
+      }
+    }
+  };
 
   useEffect(() => {
     const removePlayer = (theButton: any) => {
       let match = players.findIndex((e) => e.name === theButton.target.parentElement.children[0].innerText)
       setPlayers((prev) => {let old = [...prev]; old.splice(match, 1); return old})
     }
-    setPlayerlist(<> {players.map(({ id, name }) => (
-      <div key={id} className='flex-row'>
-        <p> {`${name}`} </p>
+    setPlayerlist(<> {players.map(({ uuid, name }) => (
+      <div key={uuid} className='flex-row'>
+        <p> { name } </p>
         <button onClick={e => removePlayer(e)}>{'X'}</button>
       </div>
     )) }</>)
   }, [players])
 
   return (
-    <div className='flex-col new'>
-      <h1>Schritt {currentStep + 1} von {elemsCount}</h1>
+    <div className='flex-col step-form'>
+      <h2>Schritt {currentStep + 1} von {elemsCount}</h2>
       {(currentStep === 0) ?
       <>
-        <h2>{(teamname==='') ? 'Neues Team erstellen' : teamname}</h2>
+        <h1>{(teamname === '' || teamname === teamnameError) ? 'Neues Team erstellen' : validate(teamname)}</h1>
         <div className='grid-1-4'>
           <label>Name des Teams:</label>
           <input
-            style={(teamnamePlaceholder==='Geben Sie einen Teamnamen ein') ? {} : {color: 'red'}}
-            type="text"
-            placeholder={teamnamePlaceholder}
+            style={(teamname === teamnameError) ? {color: 'red'} : {}}
+            type='text'
+            placeholder='Geben Sie einen Teamnamen ein'
             value={teamname}
             onChange={e => setTeamname(e.target.value)}
             />
@@ -109,11 +104,11 @@ function New() {
             ></textarea>
         </div>
         <div className='grid-1-4'>
-          <label id='typ'>Typ:</label>
+          <label style={{alignSelf: 'start'}}>Typ:</label>
           <div>
             <div className='flex-row left'>
               <input
-              type="checkbox"
+              type='checkbox'
               checked={!ispublic}
               onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
@@ -126,7 +121,7 @@ function New() {
             </div>
             <div className='flex-row left'>
               <input
-              type="checkbox"
+              type='checkbox'
               checked={ispublic}
               onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
@@ -142,34 +137,39 @@ function New() {
       </> : <></>}
       {(currentStep === 1) ?
       <>
-        <h2>Spieler hinzufügen</h2>
+        <h1>Spieler hinzufügen</h1>
         <div className='grid-1-4'>
           <label>Neuer Spieler:</label>
           <div className='flex-row'>
             <input
-              style={(playerPlaceholder==='Geben Sie einen Spielernamen ein') ? {} : {color: 'red'}}
-              type="text"
-              placeholder={playerPlaceholder}
-              value={player}
+              style={(playername === playernameError) ? {color: 'red'} : {}}
+              type='text'
+              placeholder='Geben Sie einen Spielernamen ein'
+              value={playername}
               onChange={e => {
-                setPlayer(e.target.value)}
+                setPlayername(e.target.value)}
               }
               onKeyDown={e => {
                 if(e.code === 'Enter' || e.code === 'NumpadEnter')
                   addPlayer()
               }}
               />
-              <button style={{margin: '1em'}} onClick={() => addPlayer()}>Hinzufügen</button>
+              <button className='add-player-button' style={{margin: '1em'}} onClick={() => addPlayer()}>Hinzufügen</button>
           </div>
         </div>
-        <div>
+        <div className='flex-row player-list'>
           {playerlist}
+          {(playername === '' || playername === playernameError) ? <></> :
+          <div key='00000000-0000-0000-0000-000000000000' className='flex-row'>
+            <p> { validate(playername)} </p>
+          </div> }
         </div>
       </> : <></>}
-      <div className='flex-row' style={{justifyContent: 'space-between'}}>
-        {(currentStep === 0) ? <></> : <button onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
-        <p>{ JSON.stringify(form) }</p>
-        <button onClick={() => (currentStep === (elemsCount - 1)) ? handleSubmit() : setCurrentStep(e => (e + 1))}>{(currentStep === (elemsCount - 1)) ? 'Team erstellen' : 'Weiter'}</button>
+      <div className='steps'>
+        {(currentStep === 0) ? <></> :
+        <button className='step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
+        {/* <p style={{opacity: '0%'}}>{ JSON.stringify(form) }</p> */}
+        <button className='step-button' style={{float: 'right'}} onClick={() => nextStep()}>{(currentStep === (elemsCount - 1)) ? 'Team erstellen' : 'Weiter'}</button>
       </div>
       { redirectElem }
     </div> 

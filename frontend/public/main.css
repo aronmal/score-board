@@ -132,11 +132,12 @@ a{
 
 .content {
   min-height: 100vh;
+  justify-content: space-between;
 }
 .content-div {
   /* background: dodgerblue; */
   padding: 1em;
-  margin: auto 0;
+  margin: 0;
 }
 .card {
   color: var(--svg-symbol-color);
@@ -184,19 +185,17 @@ footer {
 }
 
 /* Blog Test */
-.new {
+.step-form {
+  min-width: 36rem;
   font-size: 1.5em;
-  max-width: 800px;
+  max-width: 50%;
   margin: 0 auto;
   text-align: center;
 }
-.new form {
-  width: 100%;
-}
-.new fieldset {
+.step-form fieldset {
   padding: .5em 1em;
 }
-.new textarea {
+.step-form textarea {
   resize: none;
 }
 .grid-1-4{
@@ -209,21 +208,18 @@ footer {
 .grid-1-4 > div {
   width: 100%;
 }
-#typ {
-  align-self: start;
-}
 .left label {
   width: 100%;
 }
-.new label {
+.step-form label {
   text-align: left;
   display: block;
 }
-.new h2 {
+.step-form h1 {
   color: var(--gbs-color);
-  margin: 1em;
+  margin: .5em;
 }
-.new input, .new textarea, .new select {
+.step-form input, .step-form textarea, .step-form select {
   width: 100%;
   padding: 6px 10px;
   margin: 10px 0;
@@ -231,11 +227,45 @@ footer {
   box-sizing: border-box;
   display: block;
 }
-.new button {
-  background: var(--gbs-color);
+.add-player-button {
+  background: green;
   color: #fff;
   border: 0;
   padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.player-list {
+  min-height: 8rem;
+  align-items: flex-start;
+  padding: .25em;
+  flex-wrap: wrap;
+  justify-content: inherit;
+}
+.player-list > div {
+  margin: .25em;
+  overflow: hidden;
+  border: 1px solid gray;
+  border-radius: 8px;
+}
+.player-list p {
+  padding: 0.125em .5em;
+  margin-bottom: auto;
+}
+.player-list button {
+  background: red;
+  color: #fff;
+  border: 0;
+  padding: 8px;
+}
+.steps {
+  margin: .5em 0;
+}
+.step-button {
+  background: var(--gbs-color);
+  color: #fff;
+  border: 0;
+  padding: 8px 12px;
   border-radius: 8px;
   cursor: pointer;
 }
