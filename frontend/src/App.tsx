@@ -7,6 +7,7 @@ import Test from './components/Test';
 import New from './components/New';
 import loginContext, { ContextType } from './components/Context';
 import { useState, useMemo } from 'react';
+import './App.css';
 
 function App() {
 

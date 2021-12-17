@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
+import './New.css';
 
 
 function New() {
@@ -74,40 +75,40 @@ function New() {
     setPlayerlist(<> {players.map(({ uuid, name }) => (
       <div key={uuid} className='flex-row'>
         <p> { name } </p>
-        <button onClick={e => removePlayer(e)}>{'X'}</button>
+        <button onClick={e => removePlayer(e)}>{'\u2A2F'}</button>
       </div>
     )) }</>)
   }, [players])
 
   return (
     <div className='flex-col step-form'>
-      <h2>Schritt {currentStep + 1} von {elemsCount}</h2>
       {(currentStep === 0) ?
       <>
-        <h1>{(teamname === '' || teamname === teamnameError) ? 'Neues Team erstellen' : validate(teamname)}</h1>
-        <div className='grid-1-4'>
-          <label>Name des Teams:</label>
+        <h2 style={(teamname === '' || teamname === teamnameError) ? {borderBottom: '.25rem solid var(--gbs-color)'} : {}}>{(teamname === '' || teamname === teamnameError) ? 'Neues Team' : validate(teamname)}</h2>
+        <div className='flex-row'>
+          <label style={{alignSelf: 'center', marginRight: '1em'}}>Name des Teams:</label>
           <input
             style={(teamname === teamnameError) ? {color: 'red'} : {}}
             type='text'
-            placeholder='Geben Sie einen Teamnamen ein'
+            placeholder='Neues Team'
             value={teamname}
             onChange={e => setTeamname(e.target.value)}
             />
         </div>
         <div className='flex-col'>
-          <label>Beschreibung:</label>
+          <label style={{marginBottom: '.5em'}}>Beschreibung:</label>
           <textarea
-            placeholder='Geben Sie einen Beschreibung ein (optional)'
+            placeholder='(optional)'
             value={description}
             onChange={e => setDescription(e.target.value)}
             ></textarea>
         </div>
-        <div className='grid-1-4'>
-          <label style={{alignSelf: 'start'}}>Typ:</label>
-          <div>
+        <div className='flex-row'>
+          <label style={{alignSelf: 'start', marginRight: '5em'}}>Typ:</label>
+          <div className='flex-row'>
             <div className='flex-row left'>
               <input
+              className='checkbox'
               type='checkbox'
               checked={!ispublic}
               onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
@@ -121,6 +122,7 @@ function New() {
             </div>
             <div className='flex-row left'>
               <input
+              className='checkbox'
               type='checkbox'
               checked={ispublic}
               onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
@@ -137,25 +139,23 @@ function New() {
       </> : <></>}
       {(currentStep === 1) ?
       <>
-        <h1>Spieler hinzufügen</h1>
-        <div className='grid-1-4'>
-          <label>Neuer Spieler:</label>
-          <div className='flex-row'>
-            <input
-              style={(playername === playernameError) ? {color: 'red'} : {}}
-              type='text'
-              placeholder='Geben Sie einen Spielernamen ein'
-              value={playername}
-              onChange={e => {
-                setPlayername(e.target.value)}
-              }
-              onKeyDown={e => {
-                if(e.code === 'Enter' || e.code === 'NumpadEnter')
-                  addPlayer()
-              }}
-              />
-              <button className='add-player-button' style={{margin: '1em'}} onClick={() => addPlayer()}>Hinzufügen</button>
-          </div>
+        <h2>Spieler hinzufügen :</h2>
+        <div className="flex-row" style={{justifyContent: 'flex-start'}}>
+          <input
+            className='add-player-input'
+            style={(playername === playernameError) ? {color: 'red', width: '50%'} : {width: '50%'}}
+            type='text'
+            placeholder='Spielername'
+            value={playername}
+            onChange={e => {
+              setPlayername(e.target.value)}
+            }
+            onKeyDown={e => {
+              if(e.code === 'Enter' || e.code === 'NumpadEnter')
+                addPlayer()
+            }}
+            />
+            <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
         </div>
         <div className='flex-row player-list'>
           {playerlist}
@@ -168,8 +168,10 @@ function New() {
       <div className='steps'>
         {(currentStep === 0) ? <></> :
         <button className='step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
-        {/* <p style={{opacity: '0%'}}>{ JSON.stringify(form) }</p> */}
-        <button className='step-button' style={{float: 'right'}} onClick={() => nextStep()}>{(currentStep === (elemsCount - 1)) ? 'Team erstellen' : 'Weiter'}</button>
+        <div className='flex-row' style={{float: 'right'}}>
+          <p className='step-info'>Schritt {currentStep + 1} von {elemsCount}</p>
+          <button className='step-button' onClick={() => nextStep()}>{(currentStep === (elemsCount - 1)) ? 'Team erstellen' : 'Weiter \u279C'}</button>
+        </div>
       </div>
       { redirectElem }
     </div> 

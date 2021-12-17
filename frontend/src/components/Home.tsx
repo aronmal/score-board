@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom'
 import loginContext, { ContextType } from './Context';
+import './Home.css';
 
 function Home() {
 
