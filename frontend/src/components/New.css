@@ -13,6 +13,7 @@ h2 {
     font-size: 2em;
     color: var(--gbs-color);
     align-self: flex-start;
+    line-break: anywhere;
 }
 input, textarea, button {
     font-size: 1em;
