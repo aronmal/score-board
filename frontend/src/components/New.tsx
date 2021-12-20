@@ -140,8 +140,8 @@ function New() {
           <div className='flex-row'>
             <div className='flex-row left'>
               <input
-              className='checkbox'
-              type='checkbox'
+              className='radio'
+              type='radio'
               checked={!ispublic}
               onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
@@ -154,8 +154,8 @@ function New() {
             </div>
             <div className='flex-row left'>
               <input
-              className='checkbox'
-              type='checkbox'
+              className='radio'
+              type='radio'
               checked={ispublic}
               onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {

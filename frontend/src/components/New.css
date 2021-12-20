@@ -23,7 +23,7 @@ textarea {
     min-height: 4em;
     resize: none;
 }
-.checkbox {
+.radio {
     height: .75em;
     width: .75em;
     align-self: center;
