@@ -53,7 +53,7 @@ function Test() {
               return p1
           });
           console.log(`[INFO] Config pasted!`);
-          return <>{objs.map( ({p1, f}) => <div style={{textIndent: `${f * 20}px`}}> {p1} </div>)}</>
+          return <>{objs.map( ({p1, f}) => <div style={{textIndent: `${f * 20}px`}}>{ p1 }</div>)}</>
         }
         return <p>An error occurred while fetching the config data!</p>
       });

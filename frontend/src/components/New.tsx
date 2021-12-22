@@ -7,16 +7,17 @@ import './New.css';
 
 function New() {
 
-
   const { data } = useContext(loginContext);
   const [elem, setElem] = useState(<p>You are not logged in!</p>)
 
   const [currentStep, setCurrentStep] = useState(0)
   const [redirectElem, setRedirectElem] = useState(<></>)
   const [form, setForm] = useState({});
+  const [groupnameInput, setGroupnameInput] = useState('');
   const [groupname, setGroupname] = useState('');
   const [description, setDescription] = useState('');
   const [ispublic, setIspublic] = useState(false);
+  const [playernameInput, setPlayernameInput] = useState('');
   const [playername, setPlayername] = useState('');
   const [players, setPlayers] = useState<{ uuid:string, name:string }[]>([]);
   const [playerlist, setPlayerlist] = useState(<></>)
@@ -24,53 +25,45 @@ function New() {
   const groupnameError = 'Bitte Gruppennamen eingeben!'
   const playernameError = 'Name bereits vergeben!'
 
-  // (?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[-+_!@#$%^&*.,?])
   function validate(e:string) {
     return e.trim().replace(/[^a-zA-Z\d-_.,\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, '').replace(/\s+/g, ' ').replace(/[-]+/g, '-').replace(/[_]+/g, '_')
   }
-  const addPlayer = () => {
 
-    let playerChecked = validate(playername)
-
-    if (playerChecked !== '' && playerChecked !== playernameError) {
-      if (!players.find((e) => e.name === playerChecked)) {
-        setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playerChecked}]})
-        console.log(`added ${playerChecked}`)
-        setPlayername('')
-      } else {
-        console.log('[WARN] player already exists!')
-        setPlayername(playernameError)
-        setTimeout(() => {
-          setPlayername('')
-        }, 2000)
-      }
+  useEffect(() => {
+    if (groupnameInput !== groupnameError ) {
+      setGroupname(validate(groupnameInput))
     } else {
-      console.log('[WARN] player is not valid!')
+      setGroupname('')
     }
-  };
+  }, [groupnameInput])
+
+  useEffect(() => {
+    if (playernameInput !== playernameError ) {
+      setPlayername(validate(playernameInput))
+    } else {
+      setPlayername('')
+    }
+  }, [playernameInput])
 
   useEffect(() => {
   console.table(form)
   }, [form])
 
   const nextStep = () => {
-
-    let groupnameChecked = validate(groupname)
-
     if (currentStep === (elemsCount - 1)){
-      setForm({ groupnameChecked, description, ispublic , players});
+      setForm({ groupname, description, ispublic , players});
       setTimeout(() => {
         setRedirectElem(<Navigate to='/' />)
       }, 3000)
     } else {
       if (currentStep === 0) {
-        if (groupnameChecked === '')  {
-          console.log('[WARN] groupname empty!')
-          setGroupname(groupnameError)
+        if (groupname === '')  {
+          console.log('[WARN] groupname is empty!')
+          setGroupnameInput(groupnameError)
           setTimeout(() => {
-            setGroupname('')
+            setGroupnameInput('')
           }, 2000)
-        } else if (groupnameChecked !== groupnameError) {
+        } else {
           setCurrentStep(e => (e + 1))
         }
       } else {
@@ -79,13 +72,31 @@ function New() {
     }
   };
 
+  const addPlayer = () => {
+    if (playername !== '') {
+      if (!players.find((e) => e.name === playername)) {
+        setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playername}]})
+        console.log(`added ${playername}`)
+        setPlayernameInput('')
+      } else {
+        console.log('[WARN] player already exists!')
+        setPlayernameInput(playernameError)
+        setTimeout(() => {
+          setPlayernameInput('')
+        }, 2000)
+      }
+    } else {
+      console.log('[WARN] playername is empty!')
+    }
+  };
+
   useEffect(() => {
     const removePlayer = (theButton: any) => {
-      let match = players.findIndex((e) => e.name === theButton.target.parentElement.children[0].innerText)
+      let match = players.findIndex((e) => e.uuid === theButton.target.parentElement.id)
       setPlayers((prev) => {let old = [...prev]; old.splice(match, 1); return old})
     }
     setPlayerlist(<> {players.map(({ uuid, name }) => (
-      <div key={uuid} className='flex-row'>
+      <div  id={uuid} key={uuid} className='flex-row'>
         <p> { name } </p>
         <button onClick={e => removePlayer(e)}>{'\u2A2F'}</button>
       </div>
@@ -94,35 +105,29 @@ function New() {
 
 
   if (data.login === false) {
-
     setTimeout(() => {
       setElem(<Navigate to='/' />)
     }, 2000);
-
-    return (
-      <div>
-          {elem}
-      </div>
-    )
+    return <div>{elem}</div>
   }
 
   return (
     <div className='flex-col step-form'>
       {(currentStep === 0) ?
       <>
-        <h2 style={(groupname === '' || groupname === groupnameError) ? {borderBottom: '.25rem solid var(--gbs-color)'} : {}}>{(groupname === '' || groupname === groupnameError) ? 'Neue Gruppe' : validate(groupname)}</h2>
+        <h2 style={(groupname === '' || groupname === groupnameError) ? {borderBottom: '.25rem solid transparent'} : {borderBottom: '.25rem solid var(--gbs-color)'}}>{(groupname === '' || groupname === groupnameError) ? 'Neue Gruppe' : groupname}</h2>
         <div className='flex-row'>
           <label style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</label>
           <input
-            style={(groupname === groupnameError) ? {color: 'red'} : {}}
+            style={(groupnameInput === groupnameError) ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
-            value={groupname}
+            value={groupnameInput}
             onChange={e => {
               if (e.target.value.length <= 30) {
-                setGroupname(e.target.value)
+                setGroupnameInput(e.target.value)
               } else {
-                setGroupname(e => e)
+                setGroupnameInput(e => e)
               }
             }}
             />
@@ -171,19 +176,19 @@ function New() {
       </> : <></>}
       {(currentStep === 1) ?
       <>
-        <h2>Spieler hinzufügen :</h2>
-        <div className="flex-row" style={{justifyContent: 'flex-start'}}>
+        <h2>Spieler hinzufügen zu <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
+        <div className="flex-row player-input" style={{justifyContent: 'flex-start'}}>
           <input
             className='add-player-input'
-            style={(playername === playernameError) ? {color: 'red', width: '50%'} : {width: '50%'}}
+            style={(playernameInput === playernameError) ? {color: 'red', width: '50%'} : {width: '50%'}}
             type='text'
             placeholder='Spielername'
-            value={playername}
+            value={playernameInput}
             onChange={e => {
               if (e.target.value.length <= 30) {
-                setPlayername(e.target.value)
+                setPlayernameInput(e.target.value)
               } else {
-                setPlayername(e => e)
+                setPlayernameInput(e => e)
               }
             }}
             onKeyDown={e => {
@@ -195,9 +200,9 @@ function New() {
         </div>
         <div className='flex-row player-list'>
           {playerlist}
-          {(validate(playername) === '' || validate(playername) === playernameError) ? <></> :
+          {(playername === '') ? <></> :
           <div key='00000000-0000-0000-0000-000000000000' className='flex-row'>
-            <p> { validate(playername)} </p>
+            <p>{ playername }</p>
           </div> }
         </div>
       </> : <></>}

@@ -10,7 +10,7 @@
     margin: .125em 0;
 }
 h2 {
-    font-size: 2em;
+    font-size: 1.5em;
     color: var(--gbs-color);
     align-self: flex-start;
     line-break: anywhere;
@@ -36,10 +36,12 @@ textarea {
     padding: 8px;
     cursor: pointer;
 }
+.player-input {
+    margin: .5em 0 2em 0;
+}
 .player-list {
     min-height: 8rem;
     align-items: flex-start;
-    margin-top: 2em;
     flex-wrap: wrap;
     justify-content: inherit;
 }

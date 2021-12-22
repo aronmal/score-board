@@ -1,7 +1,7 @@
+import fs from 'fs';
 import cors from 'cors';
 import express from 'express';
 const app = express()
-import fs from 'fs';
 
 console.log('Hello World!')
 
