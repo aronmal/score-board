@@ -1,15 +1,37 @@
 import fs from 'fs';
 import cors from 'cors';
 import express from 'express';
-const app = express()
+const app = express();
+require('dotenv').config();
 
-console.log('Hello World!')
+try {
+    fs.readFileSync('.env', 'utf8')
+} catch (err:any) {
+    if (err.code === 'ENOENT') {
+        console.log(`[ERROR] ${err.code}: no such file or directory, open '.env'`)
+        let newEnv = ('ACCESS_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex') + '\n' + 'REFRESH_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex'))
+        console.log('[WARN] No .env file was found. A new one was generated.')
+        fs.writeFileSync('.env', newEnv)
+        require('dotenv').config();
+    } else {
+        console.log(err)
+    }
+}
+
+if (process.env.ACCESS_TOKEN_SECRET === undefined) {
+    console.log('[ERROR] ACCESS_TOKEN_SECRET is undefinded! Delete the .env file and a new one will be generated on startup.');
+    process.exit(1);
+} else if (process.env.REFRESH_TOKEN_SECRET === undefined) {
+    console.log('[ERROR] REFRESH_TOKEN_SECRET is undefinded! Delete the .env file and a new one will be generated on startup.');
+    process.exit(1);
+};
+
 
 let configFileData:any
 let newConfigFileData:any
 
 // Start listening on port 5000
-app.listen(5000, () => console.log('Server running on: http://localhost:5000'))
+app.listen(5000, () => console.log('[INFO] Server running on: http://localhost:5000'))
 app.use(express.static('../frontend/build'))
 app.use(express.json())
 app.use(cors());
@@ -48,14 +70,14 @@ function saveConfig() {
     if ((configFileData !== newConfigFileData) && (newConfigFileData !== undefined))  {
         try {
             console.log('[Info] Saving new config ...')
-            fs.writeFileSync('config.json', JSON.stringify(newConfigFileData))
+            fs.writeFileSync('./src/config.json', JSON.stringify(newConfigFileData))
             //file written successfully
             console.log('[Info] Data written, config saved!')
         } catch (err) {
             //error message
             console.error(err)
         }
-    } else if (configFileData !== newConfigFileData) {
+    } else if (configFileData === newConfigFileData) {
         console.log('No writing action, new config and config file are the same.')
     } else if (newConfigFileData == undefined) {
         console.log('No writing action, new config is undefined')
