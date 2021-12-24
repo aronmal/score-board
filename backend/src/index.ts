@@ -1,8 +1,10 @@
 import fs from 'fs';
 import cors from 'cors';
 import express from 'express';
-import dotenv from 'dotenv';
 const app = express();
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import { User } from './Schemas';
 
 try {
     fs.readFileSync('.env', 'utf8')
@@ -26,62 +28,30 @@ if (process.env.ACCESS_TOKEN_SECRET === undefined) {
 } else if (process.env.REFRESH_TOKEN_SECRET === undefined) {
     console.log(`[ERROR] REFRESH_TOKEN_SECRET is undefinded! Delete the '.env' file and a new one will be generated on startup.`);
     process.exit(1);
+} else if (process.env.MONGO_DB === undefined) {
+    console.log(`[ERROR] MONGO_DB is undefinded! Edit MONGO_DB parameter in the '.env' file make shure to uncomment it.`);
+    process.exit(1);
 };
 
-let configFileData:any
-let newConfigFileData:any
+mongoose.connect(process.env.MONGO_DB, err => {(err === null) ? console.log('[INFO] Connected with Mongo!') : console.log(err + '\n[ERROR] MongoDB connection error!')})
 
 // Start listening on port 5000
 app.listen(5000, () => console.log('[INFO] Server running on: http://localhost:5000'))
 app.use(express.json())
 app.use(cors());
 
-app.get('/api/get', (req:any,res:any) => {
-    readConfig()
-    res.send(JSON.parse(configFileData))
+app.get('/api/get', async (req:any,res:any) => {
+    res.send(await User.find())
     console.log('[GET] Request served')
 })
-app.post('/api/post', (req:any,res:any) => {
-    readConfig()
+app.post('/api/post', async (req:any,res:any) => {
     console.log('[POST] Recieving request:')
-    newConfigFileData = req.body
     console.log(req.body)
     console.log('[POST] Request received.')
-    saveConfig()
+    const user = await User.create({ name: req.body.name, age: req.body.age })
     res.json({
         status: 'success',
-        message: 'received'
+        message: 'received and creatd user',
+        createdUser: user
     })
-})
-
-
-
-
-async function readConfig() {
-    try {
-        configFileData = fs.readFileSync('./src/config.json', 'utf8')
-      } catch (err) {
-        console.error(err)
-      }
-}
-
-// if new configuration, write to file
-function saveConfig() {
-    if ((configFileData !== newConfigFileData) && (newConfigFileData !== undefined))  {
-        try {
-            console.log('[Info] Saving new config ...')
-            fs.writeFileSync('./src/config.json', JSON.stringify(newConfigFileData))
-            //file written successfully
-            console.log('[Info] Data written, config saved!')
-        } catch (err) {
-            //error message
-            console.error(err)
-        }
-    } else if (configFileData === newConfigFileData) {
-        console.log('No writing action, new config and config file are the same.')
-    } else if (newConfigFileData == undefined) {
-        console.log('No writing action, new config is undefined')
-    } else {
-        console.log('New config not saved, an unknown error accured!')
-    }
-}
+});
