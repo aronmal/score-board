@@ -1,9 +1,12 @@
 import fs from 'fs';
+import bcrypt from 'bcrypt';
 import cors from 'cors';
+import dotenv from 'dotenv';
 import express from 'express';
 const app = express();
-import dotenv from 'dotenv';
+// import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 import { User } from './Schemas';
 
 try {
@@ -41,14 +44,21 @@ app.use(express.json())
 app.use(cors());
 
 app.get('/api/get', async (req:any,res:any) => {
-    res.send(await User.find())
+    console.log(req.body)
+    if (typeof req.body.username === 'string') {
+        const user = await User.findOne({ name: req.body.username })
+        res.send(bcrypt.compareSync(req.body.password, user.password));
+    } else {
+        res.send(await User.find())
+    }
     console.log('[GET] Request served')
 })
 app.post('/api/post', async (req:any,res:any) => {
-    console.log('[POST] Recieving request:')
-    console.log(req.body)
-    console.log('[POST] Request received.')
-    const user = await User.create({ name: req.body.name, age: req.body.age })
+    console.log('[POST] Recieving request:');
+    console.log(req.body);
+    console.log('[POST] Request received.');
+    const user = await User.create({ uuid: uuidv4(), username: req.body.username, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) });
+    console.log(user);
     res.json({
         status: 'success',
         message: 'received and creatd user',
