@@ -13,16 +13,18 @@ function New() {
   const [currentStep, setCurrentStep] = useState(0)
   const [redirectElem, setRedirectElem] = useState(<></>)
   const [form, setForm] = useState({});
+  const [groupnameAllowInput, setGroupnameAllowInput] = useState(true);
   const [groupnameInput, setGroupnameInput] = useState('');
   const [groupname, setGroupname] = useState('');
   const [description, setDescription] = useState('');
   const [ispublic, setIspublic] = useState(false);
+  const [playernameAllowInput, setPlayernameAllowInput] = useState(true);
   const [playernameInput, setPlayernameInput] = useState('');
   const [playername, setPlayername] = useState('');
   const [players, setPlayers] = useState<{ uuid:string, name:string }[]>([]);
   const [playerlist, setPlayerlist] = useState(<></>)
   const elemsCount = 2
-  const groupnameError = 'Bitte Gruppennamen eingeben!'
+  const groupnameError = 'Bitte Name eingeben!'
   const playernameError = 'Name bereits vergeben!'
 
   function validate(e:string) {
@@ -57,14 +59,18 @@ function New() {
       }, 3000)
     } else {
       if (currentStep === 0) {
-        if (groupname === '')  {
-          console.log('[WARN] groupname is empty!')
-          setGroupnameInput(groupnameError)
-          setTimeout(() => {
-            setGroupnameInput('')
-          }, 2000)
-        } else {
-          setCurrentStep(e => (e + 1))
+        if (groupnameAllowInput === true) {
+          if (groupname === '')  {
+            console.log('[WARN] groupname is empty!')
+            setGroupnameAllowInput(false)
+            setGroupnameInput(groupnameError)
+            setTimeout(() => {
+              setGroupnameInput('')
+              setGroupnameAllowInput(true)
+            }, 2000)
+          } else {
+            setCurrentStep(e => (e + 1))
+          }
         }
       } else {
         setCurrentStep(e => (e + 1))
@@ -73,20 +79,24 @@ function New() {
   };
 
   const addPlayer = () => {
-    if (playername !== '') {
-      if (!players.find((e) => e.name === playername)) {
-        setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playername}]})
-        console.log(`added ${playername}`)
-        setPlayernameInput('')
-      } else {
-        console.log('[WARN] player already exists!')
-        setPlayernameInput(playernameError)
-        setTimeout(() => {
+    if (playernameAllowInput === true) {
+      if (playername !== '') {
+        if (!players.find((e) => e.name === playername)) {
+          setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playername}]})
+          console.log(`added ${playername}`)
           setPlayernameInput('')
-        }, 2000)
+        } else {
+          console.log('[WARN] player already exists!')
+          setPlayernameAllowInput(false)
+          setPlayernameInput(playernameError)
+          setTimeout(() => {
+            setPlayernameInput('')
+            setPlayernameAllowInput(true)
+          }, 2000)
+        }
+      } else {
+        console.log('[WARN] playername is empty!')
       }
-    } else {
-      console.log('[WARN] playername is empty!')
     }
   };
 
@@ -124,7 +134,7 @@ function New() {
             placeholder='Neue Gruppe'
             value={groupnameInput}
             onChange={e => {
-              if (e.target.value.length <= 30) {
+              if (e.target.value.length <= 30 && groupnameAllowInput === true) {
                 setGroupnameInput(e.target.value)
               } else {
                 setGroupnameInput(e => e)
@@ -185,7 +195,7 @@ function New() {
             placeholder='Spielername'
             value={playernameInput}
             onChange={e => {
-              if (e.target.value.length <= 30) {
+              if (e.target.value.length <= 30 && playernameAllowInput === true) {
                 setPlayernameInput(e.target.value)
               } else {
                 setPlayernameInput(e => e)
