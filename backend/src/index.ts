@@ -45,20 +45,23 @@ app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://l
 app.use(express.json())
 app.use(cors());
 
-app.get('/api/get', async (req:any,res:any) => {
+app.post('/api/get', async (req:any,res:any) => {
     try {
-        let payload
-        if (typeof req.body.username === 'string') {
-            payload = await User.findOne({ name: req.body.username });
+        const payload = await User.find({ username: req.body.username });
+        if (payload.length === 1) {
+            res.json({
+                status: 'success',
+                message: 'found user',
+                data: payload
+            });
+            console.log('[POST] ' + 'Request served');
         } else {
-            payload = await User.find()
+            res.json({
+                status: 'nonsuccess',
+                message: 'no user found'
+            });
+            console.log('[POST] ' + 'Request served');
         }
-        res.json({
-            status: 'success',
-            message: 'received GET request',
-            data: payload
-        });
-        console.log('[GET] '.grey + 'Request served');
     } catch (e: any) {
         const payload = e.message
         res.json({
@@ -66,7 +69,7 @@ app.get('/api/get', async (req:any,res:any) => {
             message: 'An error occurred!',
             error: payload
         });
-        console.log('[GET] '.grey + '[ERROR] '.red + e.message);
+        console.log('[POST] ' + '[ERROR] '.red + e.message);
     };
 })
 app.post('/api/post', async (req:any,res:any) => {

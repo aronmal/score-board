@@ -2,8 +2,9 @@ import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
-import LoginOut from './components/LoginOut';
-import Test from './components/Test';
+import Register from './components/Register';
+import Login from './components/Login';
+import Logout from './components/Logout';
 import New from './components/New';
 import loginContext from './components/Context';
 import { useState, useMemo } from 'react';
@@ -22,9 +23,9 @@ function App() {
           <div className='content-div flex-col'>
             <Routes>
               <Route path='/' element={<Home />} />
-              <Route path='/login' element={<LoginOut />} />
-              <Route path='/logout' element={<LoginOut />} />
-              <Route path='/test' element={<Test />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/login' element={<Login />} />
+              <Route path='/logout' element={<Logout />} />
               <Route path='/new' element={<New />} />
             </Routes>
           </div>
