@@ -5,14 +5,14 @@ import Home from './components/Home';
 import LoginOut from './components/LoginOut';
 import Test from './components/Test';
 import New from './components/New';
-import loginContext, { ContextType } from './components/Context';
+import loginContext from './components/Context';
 import { useState, useMemo } from 'react';
 import './App.css';
 
 function App() {
 
-  const [login, setLogin] = useState<ContextType>({ login: false })
-  const value = useMemo(() => ({ data: login, setData: setLogin }), [login, setLogin])
+  const [login, setLogin] = useState<boolean>(false)
+  const value = useMemo(() => ({ isLoggedIn: login, setIsLoggedIn: setLogin }), [login, setLogin])
 
   return (
     <BrowserRouter>

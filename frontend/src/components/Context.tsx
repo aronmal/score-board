@@ -1,12 +1,8 @@
 import { createContext } from "react";
 
 interface ContextStateType {
-    setData: Function
-    data: ContextType
-}
-
-export interface ContextType {
-    login: boolean
+    setIsLoggedIn: Function
+    isLoggedIn: boolean
 }
 
 const loginContext = createContext({} as ContextStateType)

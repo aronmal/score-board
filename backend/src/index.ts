@@ -74,7 +74,7 @@ app.post('/api/post', async (req:any,res:any) => {
         const payload = await User.create({ uuid: uuidv4(), username: req.body.username, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) });
         res.json({
             status: 'success',
-            message: 'received and creatd user',
+            message: 'received and created user',
             createdUser: payload
         });
         console.log('[POST] ' + 'Request served' + ' [INFO] '.cyan + 'User created');

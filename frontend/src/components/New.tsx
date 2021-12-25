@@ -7,7 +7,7 @@ import './New.css';
 
 function New() {
 
-  const { data } = useContext(loginContext);
+  const { isLoggedIn } = useContext(loginContext);
   const [elem, setElem] = useState(<p>You are not logged in!</p>)
 
   const [currentStep, setCurrentStep] = useState(0)
@@ -53,7 +53,11 @@ function New() {
 
   const nextStep = () => {
     if (currentStep === (elemsCount - 1)){
-      setForm({ groupname, description, ispublic , players});
+      if (description === '' ) {
+        setForm({ groupname, description: 'Keine Beschreibung', ispublic , players });
+      } else {
+        setForm({ groupname, description, ispublic , players });
+      }
       setTimeout(() => {
         setRedirectElem(<Navigate to='/' />)
       }, 3000)
@@ -114,7 +118,7 @@ function New() {
   }, [players])
 
 
-  if (data.login === false) {
+  if (isLoggedIn === false) {
     setTimeout(() => {
       setElem(<Navigate to='/' />)
     }, 2000);
@@ -206,7 +210,7 @@ function New() {
                 addPlayer()
             }}
             />
-            <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
+          <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
         </div>
         <div className='flex-row player-list'>
           {playerlist}
