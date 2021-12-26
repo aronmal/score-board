@@ -111,7 +111,7 @@ function New() {
     }
     setPlayerlist(<> {players.map(({ uuid, name }) => (
       <div  id={uuid} key={uuid} className='flex-row'>
-        <p> { name } </p>
+        <p>{ name }</p>
         <button onClick={e => removePlayer(e)}>{'\u2A2F'}</button>
       </div>
     )) }</>)
@@ -138,8 +138,7 @@ function New() {
             placeholder='Neue Gruppe'
             value={groupnameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && groupnameAllowInput === true) {
-                setGroupnameInput(e.target.value)
+              if (e.target.value.length <= 30 && groupnameAllowInput === true) {setGroupnameInput(e.target.value)
               } else {
                 setGroupnameInput(e => e)
               }
@@ -151,7 +150,7 @@ function New() {
           <textarea
             placeholder='(optional)'
             value={description}
-            onChange={e => setDescription(e.target.value)}
+            onChange={e => {if (e.target.value.length <= 200) {setDescription(e.target.value.replace(/[^a-zA-Z\d-_./()!?,\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, ''))}}}
             ></textarea>
         </div>
         <div className='flex-row'>
@@ -164,8 +163,7 @@ function New() {
               checked={!ispublic}
               onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
-                if(e.code === 'Enter' || e.code === 'NumpadEnter') {
-                  (e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                if(e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -178,8 +176,7 @@ function New() {
               checked={ispublic}
               onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
-                if(e.code === 'Enter' || e.code === 'NumpadEnter') {
-                  (e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                if(e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -199,15 +196,13 @@ function New() {
             placeholder='Spielername'
             value={playernameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && playernameAllowInput === true) {
-                setPlayernameInput(e.target.value)
+              if (e.target.value.length <= 30 && playernameAllowInput === true) {setPlayernameInput(e.target.value)
               } else {
                 setPlayernameInput(e => e)
               }
             }}
             onKeyDown={e => {
-              if(e.code === 'Enter' || e.code === 'NumpadEnter')
-                addPlayer()
+              if(e.code === 'Enter' || e.code === 'NumpadEnter') addPlayer()
             }}
             />
           <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
