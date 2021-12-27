@@ -10,6 +10,7 @@ function Register() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordCheck, setPasswordCheck] = useState('');
+    const [passwordChecked, setPasswordChecked] = useState(false);
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -17,8 +18,12 @@ function Register() {
         }
     }, [isLoggedIn]);
 
+    useEffect(() => {
+        if (password !== '' && passwordCheck !== '') setPasswordChecked(password === passwordCheck)
+    }, [password,passwordCheck]);
+
     async function register() {
-        if (password === passwordCheck) {
+        if (passwordChecked) {
             try {
                 const postOptions = {
                     method: 'POST',
@@ -52,6 +57,9 @@ function Register() {
                     type='text'
                     value={username}
                     onChange={e => setUsername(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                    }}
                 />
             </div>
             <div className='flex-row'>
@@ -61,6 +69,9 @@ function Register() {
                     placeholder='(optional)'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                    }}
                 />
             </div>
             <div className='flex-row'>
@@ -69,6 +80,9 @@ function Register() {
                     type='password'
                     value={password}
                     onChange={e => setPassword(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                    }}
                 />
             </div>
             <div className='flex-row'>
@@ -77,6 +91,9 @@ function Register() {
                     type='password'
                     value={passwordCheck}
                     onChange={e => setPasswordCheck(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                    }}
                 />
             </div>
             <button onClick={() => register()}>Registrieren</button>

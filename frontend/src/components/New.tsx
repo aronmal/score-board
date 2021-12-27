@@ -163,7 +163,7 @@ function New() {
               checked={!ispublic}
               onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
-                if(e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                if (e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -176,7 +176,7 @@ function New() {
               checked={ispublic}
               onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
-                if(e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                if (e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -202,7 +202,7 @@ function New() {
               }
             }}
             onKeyDown={e => {
-              if(e.code === 'Enter' || e.code === 'NumpadEnter') addPlayer()
+              if (e.code === 'Enter' || e.code === 'NumpadEnter') addPlayer()
             }}
             />
           <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>

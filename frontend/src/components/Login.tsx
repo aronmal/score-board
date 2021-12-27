@@ -15,7 +15,7 @@ function Login() {
         }
     }, [isLoggedIn]);
 
-    async function Login() {
+    async function login() {
         try {
             const getOptions = {
                 method: 'GET',
@@ -56,6 +56,9 @@ function Login() {
                     type='text'
                     value={username}
                     onChange={e => setUsername(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
+                    }}
                 />
             </div>
             <div className='flex-row'>
@@ -64,6 +67,9 @@ function Login() {
                     type='password'
                     value={password}
                     onChange={e => setPassword(e.target.value)}
+                    onKeyDown={e => {
+                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
+                    }}
                 />
             </div>
             <button onClick={() => Login()}>Login</button>
