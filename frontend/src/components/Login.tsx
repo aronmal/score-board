@@ -16,24 +16,35 @@ function Login() {
     }, [isLoggedIn]);
 
     async function Login() {
-        const postOptions = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ username: username, password: password })
-        }
-        let response: any
-        await fetch('http://localhost:5000/api/get', postOptions)
-            .then(res => res.json())
-            .then(data => response = data)
-            .catch(err => console.log(err))
-        if (response.status === 'success') {
-            setIsLoggedIn(true)
-        } else {
-            console.log(response)
-            setElem(<p style={{color: 'red'}}>Benutzer nicht gefunden!</p>)
+        try {
+            const getOptions = {
+                method: 'GET',
+                headers: {'content-type': 'application/json', 'username': username, 'password': password},
+            }
+            await fetch('http://localhost:5000/api/login', getOptions)
+                .then(async (res: any) => {
+                    if (res.status === 200) {
+                        const response = await res.json()
+                        console.log(response.data)
+                        setIsLoggedIn(true)
+                    } else if (res.status === 401) {
+                        setElem(<p style={{color: 'red'}}>Benutzername oder Passwort ungültig!</p>)
+                        setTimeout(() => {
+                            setElem(<></>)
+                        }, 3000)
+                    } else {
+                        setElem(<p style={{color: 'red'}}>Unbekannter Fehler</p>)
+                        setTimeout(() => {
+                            setElem(<></>)
+                        }, 5000)
+                    }
+                })
+        } catch (err:any) {
+            console.log(err)
+            setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
             setTimeout(() => {
                 setElem(<></>)
-            }, 3000)
+            }, 5000)
         }
     }
 

@@ -4,7 +4,7 @@ import loginContext from './Context';
 
 function Register() {
     
-    const { isLoggedIn, setIsLoggedIn } = useContext(loginContext);
+    const { isLoggedIn } = useContext(loginContext);
     const [elem, setElem] = useState(<></>);
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
@@ -18,18 +18,24 @@ function Register() {
     }, [isLoggedIn]);
 
     async function register() {
-        const postOptions = {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({username: username, email: email, password: password})
-        }
         if (password === passwordCheck) {
-            await fetch('http://localhost:5000/api/post', postOptions)
-                .then(res => res.json())
-                .then(data => console.log(data))
-                .catch(err => console.log(err))
-            setIsLoggedIn(true)
-            setElem(<Navigate to='/login' />)
+            try {
+                const postOptions = {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({username: username, email: email, password: password})
+                }
+                await fetch('http://localhost:5000/api/register', postOptions)
+                    .then(res => {
+                        if (res.status === 201) setElem(<Navigate to='/login' />)
+                    })
+            } catch (err:any) {
+                console.log(err)
+                setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
+                setTimeout(() => {
+                    setElem(<></>)
+                }, 5000)
+            }
         } else {
             setElem(<p style={{color: 'red'}}>Passwörter stimmen nicht über ein!</p>)
             setTimeout(() => {

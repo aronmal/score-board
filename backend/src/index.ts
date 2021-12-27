@@ -6,7 +6,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 const app = express();
-// import jwt from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 import { User } from './Schemas';
@@ -17,10 +17,15 @@ try {
     console.log('[INFO] '.green + `'.env' file was found.`)
 } catch (err:any) {
     if (err.code === 'ENOENT') {
-        console.log('[ERROR] '.red + `${err.code}: no such file or directory, open '.env'`)
-        let newEnv = ('ACCESS_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex') + '\n' + 'REFRESH_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex'))
-        console.log('[WARN] '.yellow + `No '.env' file was found. A new one was generated.`)
-        fs.writeFileSync('.env', newEnv)
+        console.log(`[WARN] ${err.code}: the file '.env' could not be opened!`);
+        let newEnv = '\n';
+        newEnv = (newEnv + 'ACCESS_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex') + '\n');
+        newEnv = (newEnv + 'REFRESH_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex') + '\n');
+        newEnv = (newEnv + '# Customize: MONGO_DB=mongodb://TheUsername:UserPassword@YourMongoDBHostname:YourMongoDBPort/DBName' + '\n');
+        newEnv = (newEnv + '# For example, comment out:' + '\n');
+        newEnv = (newEnv + '# MONGO_DB=mongodb://username:securepassword1234@localhost:27017/testdb' + '\n');
+        console.log(`[WARN] No '.env' file was found. A new one was generated.`);
+        fs.writeFileSync('.env', newEnv);
         dotenv.config();
     } else {
         console.log(err)
@@ -34,7 +39,7 @@ if (process.env.ACCESS_TOKEN_SECRET === undefined) {
     console.log('[ERROR] '.red + `REFRESH_TOKEN_SECRET is undefinded! Delete the '.env' file and a new one will be generated on startup.`);
     process.exit(1);
 } else if (process.env.MONGO_DB === undefined) {
-    console.log('[ERROR] '.red +  `MONGO_DB is undefinded! Edit MONGO_DB parameter in the '.env' file make shure to uncomment it.`);
+    console.log('[ERROR] '.red +  `MONGO_DB is undefinded! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make shure to uncomment it.`);
     process.exit(1);
 };
 
@@ -45,49 +50,41 @@ app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://l
 app.use(express.json())
 app.use(cors());
 
-app.post('/api/get', async (req:any,res:any) => {
+app.get('/api/login', async (req:any,res:any) => {
     try {
-        const payload = await User.find({ username: req.body.username });
-        if (payload.length === 1) {
-            res.json({
-                status: 'success',
-                message: 'found user',
-                data: payload
-            });
-            console.log('[POST] ' + 'Request served');
+        let status
+        let payload
+        const user = await User.find({ username: req.headers.username });
+        console.log(user.length)
+        if (user.length === 1) {
+            if (bcrypt.compareSync(req.headers.password, user[0].password)) {
+                status = 200
+                payload = { accessToken: jwt.sign({ uuid: user[0].uuid, name : user[0].username}, process.env.ACCESS_TOKEN_SECRET as string) }
+                console.log(payload)
+            } else {
+                status = 401
+            }
+        } else if (user.length === 0) {
+            status = 401
         } else {
-            res.json({
-                status: 'nonsuccess',
-                message: 'no user found'
-            });
-            console.log('[POST] ' + 'Request served');
+            throw { message: 'More than one matching User found!!!' }
         }
-    } catch (e: any) {
-        const payload = e.message
-        res.json({
-            status: 'error',
-            message: 'An error occurred!',
-            error: payload
+        res.status(status).json({
+            'data': payload
         });
-        console.log('[POST] ' + '[ERROR] '.red + e.message);
+        console.log('[GET] ' + 'Request served');
+    } catch (e: any) {
+        res.sendStatus(500)
+        console.log('[GET] ' + '[ERROR] '.red + e.message);
     };
 })
-app.post('/api/post', async (req:any,res:any) => {
+app.post('/api/register', async (req:any,res:any) => {
     try {
-        const payload = await User.create({ uuid: uuidv4(), username: req.body.username, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) });
-        res.json({
-            status: 'success',
-            message: 'received and created user',
-            createdUser: payload
-        });
-        console.log('[POST] ' + 'Request served' + ' [INFO] '.cyan + 'User created');
+        const user = await User.create({ uuid: uuidv4(), username: req.body.username, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) });
+        res.sendStatus(201)
+        console.log('[POST] ' + 'Request served' + ' [INFO] User created : '.cyan + JSON.stringify(user));
     } catch (e: any) {
-        const payload = e.message
-        res.json({
-            status: 'error',
-            message: 'An error occurred!',
-            error: payload
-        });
+        res.sendStatus(500)
         console.log('[POST] ' + '[ERROR] '.red + e.message);
     };
 });
