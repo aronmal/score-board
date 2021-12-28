@@ -4,18 +4,18 @@ import colors from 'colors';
 colors.enable();
 import cors from 'cors';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { Request, Response } from 'express';
 const app = express();
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
-import { User } from './Schemas';
 
+// Check for dotenv file, otherwise generate one
 try {
     fs.readFileSync('.env', 'utf8')
     dotenv.config();
     console.log('[INFO] '.green + `'.env' file was found.`)
-} catch (err:any) {
+} catch (err: any) {
     if (err.code === 'ENOENT') {
         console.log(`[WARN] ${err.code}: the file '.env' could not be opened!`);
         let newEnv = '\n';
@@ -32,6 +32,7 @@ try {
     }
 }
 
+// Check for dotenv file variables, otherwise throw error
 if (process.env.ACCESS_TOKEN_SECRET === undefined) {
     console.log('[ERROR] '.red + `ACCESS_TOKEN_SECRET is undefinded! Delete the '.env' file and a new one will be generated on startup.`);
     process.exit(1);
@@ -43,48 +44,82 @@ if (process.env.ACCESS_TOKEN_SECRET === undefined) {
     process.exit(1);
 };
 
+// Connet to MongoDB 
 mongoose.connect(process.env.MONGO_DB, err => {(err === null) ? console.log('[INFO] '.green + 'Connected with Mongo!') : console.log(err + '\n' + '[ERROR] '.red + 'MongoDB connection error!')})
+
+// Schemas
+const userSchema = new mongoose.Schema({
+    uuid: {
+        type: String
+    },
+    username: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    password: {
+        type: String,
+        required: true
+    }
+})
+
+const Users = mongoose.model('users', userSchema);
+
 
 // Start listening on port 5000
 app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://localhost:5000'))
+// Middlewares
 app.use(express.json())
 app.use(cors());
 
-app.get('/api/login', async (req:any,res:any) => {
+// Login post route
+app.post('/api/login', async (req: Request, res: Response) => {
+    const { username, password } = req.body;
     try {
         let status
         let payload
-        const user = await User.find({ username: req.headers.username });
-        console.log(user.length)
-        if (user.length === 1) {
-            if (bcrypt.compareSync(req.headers.password, user[0].password)) {
+        const userByName = await Users.find({ username: username });
+        const userByEmail = await Users.find({ email: username });
+
+        if (userByName.length + userByEmail.length === 0) {
+            status = 401
+        } else if (userByName.length + userByEmail.length === 1) {
+            const user = userByName[0] || userByEmail[0]
+            if (bcrypt.compareSync(password, user.password)) {
                 status = 200
-                payload = { accessToken: jwt.sign({ uuid: user[0].uuid, name : user[0].username}, process.env.ACCESS_TOKEN_SECRET as string) }
-                console.log(payload)
+                payload = { accessToken: jwt.sign({ uuid: user.uuid, name : user.username}, process.env.ACCESS_TOKEN_SECRET as string) }
+                console.log('[Debug] '.grey + ' [INFO] Generated Access-Token : '.cyan + JSON.stringify(payload))
             } else {
                 status = 401
             }
-        } else if (user.length === 0) {
-            status = 401
+            res.status(status).json({
+                'data': payload
+            });
+            console.log('[Debug] '.grey + ' [INFO] User logged in : '.cyan + JSON.stringify(user))
+            console.log('[POST] ' + 'Request served');
         } else {
             throw { message: 'More than one matching User found!!!' }
         }
-        res.status(status).json({
-            'data': payload
-        });
-        console.log('[GET] ' + 'Request served');
-    } catch (e: any) {
+    } catch (err: any) {
         res.sendStatus(500)
-        console.log('[GET] ' + '[ERROR] '.red + e.message);
+        console.log('[POST] ' + '[ERROR] '.red + err.message);
     };
 })
-app.post('/api/register', async (req:any,res:any) => {
+
+// Register post route
+app.post('/api/register', async (req: Request, res: Response) => {
+    const { username, email, password } = req.body;
     try {
-        const user = await User.create({ uuid: uuidv4(), username: req.body.username, email: req.body.email, password: bcrypt.hashSync(req.body.password, 10) });
+        const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) });
         res.sendStatus(201)
         console.log('[POST] ' + 'Request served' + ' [INFO] User created : '.cyan + JSON.stringify(user));
-    } catch (e: any) {
+    } catch (err: any) {
         res.sendStatus(500)
-        console.log('[POST] ' + '[ERROR] '.red + e.message);
+        console.log('[POST] ' + '[ERROR] '.red + err.message);
     };
 });

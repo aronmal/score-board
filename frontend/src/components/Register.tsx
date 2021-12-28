@@ -25,13 +25,11 @@ function Register() {
     async function register() {
         if (passwordChecked) {
             try {
-                const postOptions = {
+                await fetch('http://localhost:5000/api/register', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({username: username, email: email, password: password})
-                }
-                await fetch('http://localhost:5000/api/register', postOptions)
-                    .then(res => {
+                    body: JSON.stringify({'username': username, 'email': email, 'password': password})
+                }).then((res: Response) => {
                         if (res.status === 201) setElem(<Navigate to='/login' />)
                     })
             } catch (err:any) {
@@ -66,7 +64,6 @@ function Register() {
                 <label style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</label>
                 <input
                     type='email'
-                    placeholder='(optional)'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     onKeyDown={e => {

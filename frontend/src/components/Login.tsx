@@ -16,13 +16,12 @@ function Login() {
     }, [isLoggedIn]);
 
     async function login() {
-        try {
-            const getOptions = {
-                method: 'GET',
-                headers: {'content-type': 'application/json', 'username': username, 'password': password},
-            }
-            await fetch('http://localhost:5000/api/login', getOptions)
-                .then(async (res: any) => {
+        try { 
+            await fetch('http://localhost:5000/api/login', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ 'username': username, 'password': password })
+            }).then(async (res: Response) => {
                     if (res.status === 200) {
                         const response = await res.json()
                         console.log(response.data)
@@ -51,7 +50,7 @@ function Login() {
     return (
         <>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</label>
+                <label style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</label>
                 <input
                     type='text'
                     value={username}
