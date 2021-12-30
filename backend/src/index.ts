@@ -9,6 +9,7 @@ const app = express();
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
+import { resolve } from 'path/posix';
 
 // Check for dotenv file, otherwise generate one
 try {
@@ -36,16 +37,20 @@ try {
 if (process.env.ACCESS_TOKEN_SECRET === undefined) {
     console.log('[ERROR] '.red + `ACCESS_TOKEN_SECRET is undefinded! Delete the '.env' file and a new one will be generated on startup.`);
     process.exit(1);
-} else if (process.env.REFRESH_TOKEN_SECRET === undefined) {
+}
+
+if (process.env.REFRESH_TOKEN_SECRET === undefined) {
     console.log('[ERROR] '.red + `REFRESH_TOKEN_SECRET is undefinded! Delete the '.env' file and a new one will be generated on startup.`);
     process.exit(1);
-} else if (process.env.MONGO_DB === undefined) {
-    console.log('[ERROR] '.red +  `MONGO_DB is undefinded! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make shure to uncomment it.`);
+}
+
+if (process.env.MONGO_DB === undefined) {
+    console.log('[ERROR] '.red + `MONGO_DB is undefinded! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make shure to uncomment it.`);
     process.exit(1);
 };
 
 // Connet to MongoDB 
-mongoose.connect(process.env.MONGO_DB, err => {(err === null) ? console.log('[INFO] '.green + 'Connected with Mongo!') : console.log(err + '\n' + '[ERROR] '.red + 'MongoDB connection error!')})
+mongoose.connect(process.env.MONGO_DB, err => { (err === null) ? console.log('[INFO] '.green + 'Connected with Mongo!') : console.log(err + '\n' + '[ERROR] '.red + 'MongoDB connection error!') })
 
 // Schemas
 const userSchema = new mongoose.Schema({
@@ -77,49 +82,48 @@ app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://l
 app.use(express.json())
 app.use(cors());
 
+const error = (message: string, res: Response) => {
+    res.status(500).send()
+    console.log('[POST] ' + '[ERROR] '.red + message);
+    console.log('[POST] ' + 'Request served with status 500');
+}
+
 // Login post route
 app.post('/api/login', async (req: Request, res: Response) => {
     const { username, password } = req.body;
-    try {
-        let status
-        let payload
-        const userByName = await Users.find({ username: username });
-        const userByEmail = await Users.find({ email: username });
+    
+    const userByName = await Users.find({ username: username }).catch((err: Error) => {error(err.message, res)}) || [];
+    const userByEmail = await Users.find({ email: username }).catch((err: Error) => {error(err.message, res)}) || [];
 
-        if (userByName.length + userByEmail.length === 0) {
-            status = 401
-        } else if (userByName.length + userByEmail.length === 1) {
-            const user = userByName[0] || userByEmail[0]
-            if (bcrypt.compareSync(password, user.password)) {
-                status = 200
-                payload = { accessToken: jwt.sign({ uuid: user.uuid, name : user.username}, process.env.ACCESS_TOKEN_SECRET as string) }
-                console.log('[Debug] '.grey + ' [INFO] Generated Access-Token : '.cyan + JSON.stringify(payload))
-            } else {
-                status = 401
-            }
-            res.status(status).json({
-                'data': payload
-            });
-            console.log('[Debug] '.grey + ' [INFO] User logged in : '.cyan + JSON.stringify(user))
-            console.log('[POST] ' + 'Request served');
-        } else {
-            throw { message: 'More than one matching User found!!!' }
-        }
-    } catch (err: any) {
-        res.sendStatus(500)
-        console.log('[POST] ' + '[ERROR] '.red + err.message);
-    };
+    if (userByName.length + userByEmail.length === 0) {
+        res.status(401).send();
+        return;
+    }
+
+    if (userByName.length + userByEmail.length !== 1) {
+        error('More than one matching User found!!!', res);
+        return;
+    }
+
+    const user = userByName[0] || userByEmail[0]
+    if (!bcrypt.compareSync(password, user.password)) {
+        res.status(401).send();
+        return;
+    }
+
+    let payload = { accessToken: jwt.sign({ uuid: user.uuid, name: user.username }, process.env.ACCESS_TOKEN_SECRET as string) }
+    console.log('[Debug] '.grey + ' [INFO] Generated Access-Token : '.cyan + JSON.stringify(payload))
+    res.status(200).json({
+        'data': payload
+    });
+    console.log('[Debug] '.grey + ' [INFO] User logged in : '.cyan + JSON.stringify(user))
+    console.log('[POST] ' + 'Request served');
 })
 
 // Register post route
 app.post('/api/register', async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
-    try {
-        const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) });
-        res.sendStatus(201)
-        console.log('[POST] ' + 'Request served' + ' [INFO] User created : '.cyan + JSON.stringify(user));
-    } catch (err: any) {
-        res.sendStatus(500)
-        console.log('[POST] ' + '[ERROR] '.red + err.message);
-    };
+    const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) }).catch((err: Error) => {error(err.message,res)})
+    res.status(201).send()
+    console.log('[POST] ' + 'Request served' + ' [INFO] User created : '.cyan + JSON.stringify(user));
 });
