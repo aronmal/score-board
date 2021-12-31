@@ -2,6 +2,7 @@ import fs from 'fs';
 import bcrypt from 'bcrypt';
 import colors from 'colors';
 colors.enable();
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Request, Response } from 'express';
@@ -68,11 +69,26 @@ const userSchema = new mongoose.Schema({
 
 const Users = mongoose.model('users', userSchema);
 
+const tokenSchema = new mongoose.Schema({
+    token: {
+        type: String,
+        required: true
+    },
+    owner: {
+        type: mongoose.Types.ObjectId,
+        ref: Users,
+        required: true
+    }
+})
+
+const Tokens = mongoose.model('tokens', tokenSchema);
+
 
 // Start listening on port 5000
 app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://localhost:5000'))
 // Middlewares
 app.use(express.json())
+app.use(cookieParser());
 app.use(cors());
 
 function errorLog(message: string) {
@@ -108,11 +124,18 @@ app.post('/api/login', async (req: Request, res: Response) => {
         return;
     }
 
-    let payload = { accessToken: jwt.sign({ uuid: user.uuid, name: user.username }, process.env.ACCESS_TOKEN_SECRET as string) }
-    console.log('[Debug] '.grey + ' [INFO] Generated Access-Token : '.cyan + JSON.stringify(payload))
-    res.status(200).json({
-        'data': payload
-    });
+    const resPayload: string = jwt.sign({ uuid: user.uuid, name: user.username }, process.env.ACCESS_TOKEN_SECRET as string)
+    console.log('[Debug] '.grey + ' [INFO] Generated Access-Token : '.cyan + JSON.stringify(resPayload))
+    console.log(req.cookies)
+    const token = await Tokens.create({ token: resPayload, owner: user._id }).catch((err: Error) => {errorRes(err.message,res)})
+    console.log(await token.populate({ path: 'owner', model: Users }))
+    res.status(200).cookie('token', resPayload, {
+        domain: 'localhost',
+        maxAge: 172800,
+        httpOnly: true,
+        // secure: true,
+        path: '/api/auth'
+    }).json(user);
     console.log('[Debug] '.grey + ' [INFO] User logged in : '.cyan + JSON.stringify(user))
     console.log('[POST] ' + 'Request served');
 })
@@ -121,6 +144,22 @@ app.post('/api/login', async (req: Request, res: Response) => {
 app.post('/api/register', async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
     const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) }).catch((err: Error) => {errorRes(err.message,res)})
+    if (!user)
+        return
     res.status(201).send()
     console.log('[POST] ' + 'Request served' + ' [INFO] User created : '.cyan + JSON.stringify(user));
+});
+
+// Auth gett route
+app.get('/api/auth', async (req: Request, res: Response) => {
+    const token: string = req.cookies.token
+    const validToken = await Users.exists({ token: token }).catch((err: Error) => {errorRes(err.message, res)});
+    console.log(validToken)
+    console.log(token)
+    const reqPayload = await new Promise(resolve => resolve(jwt.verify(token, process.env.ACCESS_TOKEN_SECRET as string))).catch((err: string) => {errorRes(err,res)})
+    console.log(!!reqPayload)
+    // const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) }).catch((err: Error) => {errorRes(err.message,res)})
+    res.status(200).send()
+    const user = 'test'
+    console.log('[GET] ' + 'Request served' + ' [INFO] User created Auth Token : '.cyan + JSON.stringify(user));
 });
