@@ -84,6 +84,21 @@ const tokenSchema = new mongoose.Schema({
 const Tokens = mongoose.model('tokens', tokenSchema);
 
 
+const groupSchema = new mongoose.Schema({
+    token: {
+        type: String,
+        required: true
+    },
+    owner: {
+        type: mongoose.Types.ObjectId,
+        ref: Users,
+        required: true
+    }
+})
+
+const Groups = mongoose.model('groups', groupSchema);
+
+
 // Start listening on port 5000
 app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://localhost:5000'))
 // Middlewares

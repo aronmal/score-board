@@ -13,38 +13,38 @@ function Register() {
     const [passwordChecked, setPasswordChecked] = useState(false);
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (isLoggedIn)
             setElem(<Navigate to='/' />)
-        }
     }, [isLoggedIn]);
 
     useEffect(() => {
-        if (password !== '' && passwordCheck !== '') setPasswordChecked(password === passwordCheck)
+        if (password !== '' && passwordCheck !== '')
+            setPasswordChecked(password === passwordCheck)
     }, [password,passwordCheck]);
 
     async function register() {
-        if (passwordChecked) {
-            try {
-                await fetch('http://localhost:5000/api/register', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({'username': username, 'email': email, 'password': password})
-                }).then((res: Response) => {
-                        if (res.status === 201) setElem(<Navigate to='/login' />)
-                    })
-            } catch (err:any) {
-                console.log(err)
-                setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-                setTimeout(() => {
-                    setElem(<></>)
-                }, 5000)
-            }
-        } else {
+        if (!passwordChecked) {
             setElem(<p style={{color: 'red'}}>Passwörter stimmen nicht über ein!</p>)
             setTimeout(() => {
                 setElem(<></>)
             }, 3000)
+            return
         }
+
+        await fetch('http://localhost:5000/api/register', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({'username': username, 'email': email, 'password': password})
+        }).then((res: Response) => {
+            if (res.status === 201)
+                setElem(<Navigate to='/login' />)
+        }).catch((err: Error) => {
+            console.log(err)
+            setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
+            setTimeout(() => {
+                setElem(<></>)
+            }, 5000)
+        })
     }
 
     return (

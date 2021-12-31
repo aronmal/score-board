@@ -10,41 +10,38 @@ function Login() {
     const [password, setPassword] = useState('');
 
     useEffect(() => {
-        if (isLoggedIn) {
+        if (isLoggedIn)
             setElem(<Navigate to='/' />)
-        }
     }, [isLoggedIn]);
 
     async function login() {
-        try { 
-            await fetch('http://localhost:5000/api/login', {
-                method: 'POST',
-                headers: { 'content-type': 'application/json' },
-                body: JSON.stringify({ 'username': username, 'password': password })
-            }).then(async (res: Response) => {
-                    if (res.status === 200) {
-                        const response = await res.json()
-                        console.log(response.data)
-                        setIsLoggedIn(true)
-                    } else if (res.status === 401) {
-                        setElem(<p style={{color: 'red'}}>Benutzername oder Passwort ungültig!</p>)
-                        setTimeout(() => {
-                            setElem(<></>)
-                        }, 3000)
-                    } else {
-                        setElem(<p style={{color: 'red'}}>Unbekannter Fehler</p>)
-                        setTimeout(() => {
-                            setElem(<></>)
-                        }, 5000)
-                    }
-                })
-        } catch (err:any) {
+        await fetch('http://localhost:5000/api/login', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ 'username': username, 'password': password })
+        }).then(async (res: Response) => {
+            if (res.status === 200) {
+                const response = await res.json()
+                console.log(response.data)
+                setIsLoggedIn(true)
+            } else if (res.status === 401) {
+                setElem(<p style={{color: 'red'}}>Benutzername oder Passwort ungültig!</p>)
+                setTimeout(() => {
+                    setElem(<></>)
+                }, 3000)
+            } else {
+                setElem(<p style={{color: 'red'}}>Unbekannter Fehler</p>)
+                setTimeout(() => {
+                    setElem(<></>)
+                }, 5000)
+            }
+        }).catch((err: Error) => {
             console.log(err)
             setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
             setTimeout(() => {
                 setElem(<></>)
             }, 5000)
-        }
+        })
     }
 
     return (

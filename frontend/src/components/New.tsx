@@ -32,23 +32,23 @@ function New() {
   }
 
   useEffect(() => {
-    if (groupnameInput !== groupnameError ) {
-      setGroupname(validate(groupnameInput))
-    } else {
+    if (groupnameInput === groupnameError ) {
       setGroupname('')
+      return
     }
+    setGroupname(validate(groupnameInput))
   }, [groupnameInput])
 
   useEffect(() => {
-    if (playernameInput !== playernameError ) {
-      setPlayername(validate(playernameInput))
-    } else {
+    if (playernameInput === playernameError ) {
       setPlayername('')
+      return
     }
+    setPlayername(validate(playernameInput))
   }, [playernameInput])
 
   useEffect(() => {
-  console.table(form)
+    console.table(form)
   }, [form])
 
   const nextStep = () => {
@@ -61,47 +61,48 @@ function New() {
       setTimeout(() => {
         setRedirectElem(<Navigate to='/' />)
       }, 3000)
-    } else {
-      if (currentStep === 0) {
-        if (groupnameAllowInput === true) {
-          if (groupname === '')  {
-            console.log('[WARN] groupname is empty!')
-            setGroupnameAllowInput(false)
-            setGroupnameInput(groupnameError)
-            setTimeout(() => {
-              setGroupnameInput('')
-              setGroupnameAllowInput(true)
-            }, 2000)
-          } else {
-            setCurrentStep(e => (e + 1))
-          }
-        }
-      } else {
-        setCurrentStep(e => (e + 1))
+    }
+
+    if (currentStep === 0) {
+      if (groupnameAllowInput !== true)
+        return
+  
+      if (groupname === '') {
+        console.log('[WARN] groupname is empty!')
+        setGroupnameAllowInput(false)
+        setGroupnameInput(groupnameError)
+        setTimeout(() => {
+          setGroupnameInput('')
+          setGroupnameAllowInput(true)
+        }, 2000)
+        return
       }
+      setCurrentStep(e => (e + 1))
     }
   };
 
   const addPlayer = () => {
-    if (playernameAllowInput === true) {
-      if (playername !== '') {
-        if (!players.find((e) => e.name === playername)) {
-          setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playername}]})
-          console.log(`added ${playername}`)
-          setPlayernameInput('')
-        } else {
-          console.log('[WARN] player already exists!')
-          setPlayernameAllowInput(false)
-          setPlayernameInput(playernameError)
-          setTimeout(() => {
-            setPlayernameInput('')
-            setPlayernameAllowInput(true)
-          }, 2000)
-        }
-      } else {
-        console.log('[WARN] playername is empty!')
-      }
+    if (playernameAllowInput !== true)
+      return
+
+    if (playername === '') {
+      console.log('[WARN] playername is empty!')
+      return
     }
+
+    if (!!players.find((e) => e.name === playername)) {
+      console.log('[WARN] player already exists!')
+      setPlayernameAllowInput(false)
+      setPlayernameInput(playernameError)
+      setTimeout(() => {
+        setPlayernameInput('')
+        setPlayernameAllowInput(true)
+      }, 2000)
+      return
+    }
+    setPlayers((prev) => {return [...prev,{uuid: uuidv4(), name: playername}]})
+    console.log(`added ${playername}`)
+    setPlayernameInput('')
   };
 
   useEffect(() => {
@@ -138,10 +139,11 @@ function New() {
             placeholder='Neue Gruppe'
             value={groupnameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && groupnameAllowInput === true) {setGroupnameInput(e.target.value)
-              } else {
-                setGroupnameInput(e => e)
+              if (e.target.value.length <= 30 && groupnameAllowInput === true) {
+                setGroupnameInput(e.target.value)
+                return
               }
+              setGroupnameInput(e => e)
             }}
             />
         </div>
@@ -163,7 +165,8 @@ function New() {
               checked={!ispublic}
               onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
-                if (e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                if (e.code === 'Enter' || e.code === 'NumpadEnter') {
+                  (e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -176,7 +179,8 @@ function New() {
               checked={ispublic}
               onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
               onKeyDown={(e) => {
-                if (e.code === 'Enter' || e.code === 'NumpadEnter') {(e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                if (e.code === 'Enter' || e.code === 'NumpadEnter') {
+                  (e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -196,13 +200,15 @@ function New() {
             placeholder='Spielername'
             value={playernameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && playernameAllowInput === true) {setPlayernameInput(e.target.value)
-              } else {
-                setPlayernameInput(e => e)
+              if (e.target.value.length <= 30 && playernameAllowInput === true) {
+                setPlayernameInput(e.target.value)
+                return
               }
+              setPlayernameInput(e => e)
             }}
             onKeyDown={e => {
-              if (e.code === 'Enter' || e.code === 'NumpadEnter') addPlayer()
+              if (e.code === 'Enter' || e.code === 'NumpadEnter')
+                addPlayer()
             }}
             />
           <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
