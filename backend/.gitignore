@@ -6,5 +6,5 @@
 # production
 /build
 
-# misc
-.env*
+# dotenv
+.env
