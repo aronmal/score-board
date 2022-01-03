@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { errorLog} from './logging';
-import { register, login, auth } from './routes';
+import { register, login, auth, newgroup } from './routes';
 colors.enable();
 const app = express();
 
@@ -61,3 +61,6 @@ app.post('/api/login', login);
 
 // Auth get route
 app.get('/api/auth', auth);
+
+// New group post route
+app.post('/api/newgroup', newgroup);

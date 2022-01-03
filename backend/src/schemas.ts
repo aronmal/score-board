@@ -62,8 +62,29 @@ const tokenSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: Users,
         required: true
-    }
+    },
+    createdAt: {
+        type: Date,
+        immutable: true,
+        default: Date.now
+    },
+    expiresIn: {
+        type: Date
+    },
 })
+
+export interface tokenType {
+    user: string,
+    iat: Date,
+    exp: Date,
+}
+
+export interface DBtokenType {
+    token: string,
+    owner: mongoose.Types.ObjectId,
+    createdAt: Date,
+    expiresIn: Date,
+}
 
 export const Tokens = mongoose.model('tokens', tokenSchema);
 
@@ -80,6 +101,10 @@ const groupSchema = new mongoose.Schema({
         type: Array,
         required: true
     },
+    isPublic: {
+        type: Boolean,
+        required: true
+    },
     teams: {
         type: Array
     },
@@ -87,7 +112,7 @@ const groupSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: Users,
         required: true
-    }
+    },
 })
 
 export const Groups = mongoose.model('groups', groupSchema);

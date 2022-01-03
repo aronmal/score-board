@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import Login from './components/Login';
 import Logout from './components/Logout';
-import New from './components/New';
+import Newgroup from './components/Newgroup';
 import loginContext from './components/Context';
 import { useState, useMemo } from 'react';
 import './App.css';
@@ -28,7 +28,7 @@ function App() {
               <Route path='/register' element={<Register />} />
               <Route path='/login' element={<Login />} />
               <Route path='/logout' element={<Logout />} />
-              <Route path='/new' element={<New />} />
+              <Route path='/newgroup' element={<Newgroup />} />
             </Routes>
           </div>
           <Footer /> 
