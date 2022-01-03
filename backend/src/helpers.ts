@@ -7,7 +7,6 @@ export async function findUserByName(username: string, res:Response) {
 
     const userByName = await Users.find({ username: username }).catch((err: Error) => {errorRes(err.message, res)}) || [];
     const userByEmail = await Users.find({ email: username }).catch((err: Error) => {errorRes(err.message, res)}) || [];
-
     if (userByName.length + userByEmail.length === 0) {
         res.status(401).send();
         return;
@@ -25,17 +24,15 @@ export async function findUserByName(username: string, res:Response) {
 
 export async function findUserById(id: string, res:Response) {
 
-    const userById = await Users.find({ _id: new mongoose.Types.ObjectId(id) }).catch((err: Error) => {errorRes(err.message, res)}) || [];
+    const userById = await Users.find({ _id: new mongoose.Types.ObjectId(id) });
 
     if (userById.length === 0) {
         res.status(401).send();
         return;
     }
 
-    if (userById.length !== 1) {
-        errorRes('More than one matching User found!!!', res);
-        return;
-    }
+    if (userById.length !== 1)
+        throw new Error('More than one matching User found!!!');
 
     const user = userById[0];
 
@@ -44,19 +41,17 @@ export async function findUserById(id: string, res:Response) {
 
 export async function findUserByUuid(uuid: string, res:Response) {
 
-    const userById = await Users.find({ uuid: uuid }).catch((err: Error) => {errorRes(err.message, res)}) || [];
+    const userByUuid = await Users.find({ uuid: uuid }).catch((err: Error) => {errorRes(err.message, res)}) || [];
 
-    if (userById.length === 0) {
+    if (userByUuid.length === 0) {
         res.status(401).send();
         return;
     }
 
-    if (userById.length !== 1) {
-        errorRes('More than one matching User found!!!', res);
-        return;
-    }
+    if (userByUuid.length !== 1)
+        throw new Error('More than one matching User found!!!');
 
-    const user = userById[0];
+    const user = userByUuid[0];
 
     return user as userType;
 }

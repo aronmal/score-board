@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { errorLog} from './logging';
-import {auth, login, register } from './routes';
+import { register, login, auth } from './routes';
 colors.enable();
 const app = express();
 
