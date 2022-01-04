@@ -5,8 +5,8 @@ import mongoose from "mongoose";
 
 export async function findUserByName(username: string, res:Response) {
 
-    const userByName = await Users.find({ username: username }).catch((err: Error) => {errorRes(err.message, res)}) || [];
-    const userByEmail = await Users.find({ email: username }).catch((err: Error) => {errorRes(err.message, res)}) || [];
+    const userByName = await Users.find({ username: username });
+    const userByEmail = await Users.find({ email: username });
     if (userByName.length + userByEmail.length === 0) {
         res.status(401).send();
         return;
@@ -41,17 +41,17 @@ export async function findUserById(id: string, res:Response) {
 
 export async function findUserByUuid(uuid: string, res:Response) {
 
-    const userByUuid = await Users.find({ uuid: uuid }).catch((err: Error) => {errorRes(err.message, res)}) || [];
+    const userByUuid = await Users.findOne({ uuid: uuid });
 
-    if (userByUuid.length === 0) {
-        res.status(401).send();
-        return;
-    }
+    // if (userByUuid.length === 0) {
+    //     res.status(401).send();
+    //     return;
+    // }
 
-    if (userByUuid.length !== 1)
-        throw new Error('More than one matching User found!!!');
+    // if (userByUuid.length !== 1)
+    //     throw new Error('More than one matching User found!!!');
 
-    const user = userByUuid[0];
+    // const user = userByUuid[0];
 
-    return user as userType;
+    return userByUuid as userType;
 }

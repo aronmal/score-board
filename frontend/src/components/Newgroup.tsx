@@ -2,7 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import loginContext from './Context';
-import './New.css';
+import './Newgroup.css';
 
 
 function New() {
@@ -28,7 +28,7 @@ function New() {
   const playernameError = 'Name bereits vergeben!'
 
   function validate(e:string) {
-    return e.trim().replace(/[^a-zA-Z\d-_.,\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, '').replace(/\s+/g, ' ').replace(/[-]+/g, '-').replace(/[_]+/g, '_')
+    return e.trim().replace(/[^a-zA-Z\d-_.,!\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, '').replace(/\s+/g, ' ').replace(/[-]+/g, '-').replace(/[_]+/g, '_')
   }
 
   useEffect(() => {
@@ -48,7 +48,7 @@ function New() {
   }, [playernameInput])
 
   useEffect(() => {
-    console.table(form)
+    console.log(form)
   }, [form])
 
   const nextStep = () => {

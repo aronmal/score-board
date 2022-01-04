@@ -49,6 +49,7 @@ export interface userType {
     templates: any[],
     createdAt: Date,
     updatedAt: Date,
+    save: Function,
 }
 
 export const Users = mongoose.model('users', userSchema);
@@ -71,6 +72,10 @@ const tokenSchema = new mongoose.Schema({
     expiresIn: {
         type: Date
     },
+    used: {
+        type: Boolean,
+        default: false
+    },
 })
 
 export interface tokenType {
@@ -79,11 +84,13 @@ export interface tokenType {
     exp: Date,
 }
 
-export interface DBtokenType {
+export interface DBTokenType {
     token: string,
     owner: mongoose.Types.ObjectId,
     createdAt: Date,
     expiresIn: Date,
+    used: boolean,
+    save: Function,
 }
 
 export const Tokens = mongoose.model('tokens', tokenSchema);
@@ -112,6 +119,15 @@ const groupSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: Users,
         required: true
+    },
+    createdAt: {
+        type: Date,
+        immutable: true,
+        default: Date.now
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
     },
 })
 
