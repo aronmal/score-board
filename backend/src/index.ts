@@ -25,6 +25,7 @@ if (fs.existsSync('.env')) {
     fs.writeFileSync('.env', newEnv);
     dotenv.config();
 }
+
 // Check for dotenv file variables, otherwise throw error
 if (process.env.ACCESS_TOKEN_SECRET === undefined) {
     errorLog(`ACCESS_TOKEN_SECRET is undefined! Delete the '.env' file and a new one will be generated on startup.`);
@@ -42,8 +43,7 @@ if (process.env.MONGO_DB === undefined) {
 }
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_DB, err => { (err === null) ? console.log('[INFO] '.green + 'Connected with Mongo!') : console.log(err + '\n' + '[ERROR] '.red + 'MongoDB connection error!') })
-
+mongoose.connect(process.env.MONGO_DB as string, err => { (err === null) ? console.log('[INFO] '.green + 'Connected with Mongo!') : (errorLog('MongoDB connection error!'), process.exit(1)) })
 
 // Start listening on port 5000
 app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://localhost:5000'))
