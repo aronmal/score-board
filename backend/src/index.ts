@@ -5,8 +5,9 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import { errorLog} from './logging';
+import { errorLog } from './logging';
 import { register, login, auth, newgroup } from './routes';
+import { errorHandling, routeCatch } from './helpers';
 colors.enable();
 const app = express();
 
@@ -54,13 +55,20 @@ app.use(cookieParser());
 app.use(cors());
 
 // Register post route
-app.post('/api/register', register);
+app.post('/api/register', (req, res, next) => {next(register)});
 
 // Login post route
-app.post('/api/login', login);
+app.post('/api/login', (req, res, next) => {next(login)});
 
 // Auth get route
-app.get('/api/auth', auth);
+app.post('/api/auth', (req, res, next) => {next(auth)});
 
 // New group post route
-app.post('/api/newgroup', newgroup);
+app.post('/api/newgroup', (req, res, next) => {next(newgroup)});
+
+
+// Middlewares
+// Exexute the given route function and catch all error and respond propper
+app.use(routeCatch);
+// Error handling
+app.use(errorHandling);

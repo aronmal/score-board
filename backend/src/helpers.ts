@@ -1,57 +1,36 @@
-import {Response} from "express";
-import {Users, userType} from "./schemas";
-import {errorRes} from "./logging";
-import mongoose from "mongoose";
+import { Request, Response, NextFunction } from "express";
+import { errorLog, errorRes } from "./logging";
 
-export async function findUserByName(username: string, res:Response) {
 
-    const userByName = await Users.find({ username: username });
-    const userByEmail = await Users.find({ email: username });
-    if (userByName.length + userByEmail.length === 0) {
-        res.status(401).send();
-        return;
+export async function routeCatch(route: Function, req: Request, res: Response, next: NextFunction) {
+    try {
+        await route(req, res);
+    } catch (e: any) {
+        return next(e)
     }
-
-    if (userByName.length + userByEmail.length !== 1) {
-        errorRes('More than one matching User found!!!', res);
-        return;
-    }
-
-    const user = userByName[0] || userByEmail[0];
-
-    return user as userType;
 }
 
-export async function findUserById(id: string, res:Response) {
-
-    const userById = await Users.find({ _id: new mongoose.Types.ObjectId(id) });
-
-    if (userById.length === 0) {
-        res.status(401).send();
-        return;
-    }
-
-    if (userById.length !== 1)
-        throw new Error('More than one matching User found!!!');
-
-    const user = userById[0];
-
-    return user as userType;
+export function errorHandling(err: any, req: Request, res: Response, next: NextFunction) {
+    res.sendStatus(500);
+    errorLog(err.message);
+    console.log('[POST] ' + '[WARN] '.yellow + 'Request served with status 500');
 }
 
-export async function findUserByUuid(uuid: string, res:Response) {
-
-    const userByUuid = await Users.findOne({ uuid: uuid });
-
-    // if (userByUuid.length === 0) {
-    //     res.status(401).send();
-    //     return;
-    // }
-
-    // if (userByUuid.length !== 1)
-    //     throw new Error('More than one matching User found!!!');
-
-    // const user = userByUuid[0];
-
-    return userByUuid as userType;
+export async function jwtVerfiyCatch(tokenType: string, token: string, err:any, res: Response) {
+    if (err.message === 'jwt expired') {
+        console.log('[WARN] '.yellow + `JWT (${tokenType}) expired!`);
+        res.sendStatus(403);
+        return;
+    }
+    if (err.message === 'invalid signature') {
+        errorLog(`Invalid JWT (${tokenType}) signature! Token: ` + token);
+        res.sendStatus(401);
+        return;
+    }
+    if (err.message === 'jwt must be provided') {
+        errorLog(`No JWT (${tokenType}) given.`);
+        res.sendStatus(401);
+        return;
+    }
+    errorRes(err.message, res);
 }

@@ -1,16 +1,18 @@
-import {Request, Response} from "express";
-import {Tokens, Users, userType, Groups} from "./schemas";
+import { Request, Response } from "express";
+import { Tokens, Users, Groups } from "./schemas";
 import bcrypt from "bcrypt";
-import {errorLog, errorRes, getLog, postLog} from "./logging";
+import { debugLog, errorLog, errorRes, postLog } from "./logging";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
+import { jwtVerfiyCatch } from "./helpers";
 
 export async function register(req: Request, res: Response) {
     try {
         const { username, email, password } = req.body;
-        const user = (await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) })) as userType;
-        res.sendStatus(201)
-        postLog('Request served' + ' [INFO] User created : '.cyan + user._id);
+        const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) });
+        res.sendStatus(201);
+        debugLog('[INFO] User created : '.cyan + user._id);
+        postLog('Request served');
     } catch (err: any) {
         errorRes(err.message, res);
     }
@@ -34,7 +36,7 @@ export async function login(req: Request, res: Response) {
     
         const refreshToken = jwt.sign( { user: user.uuid } , process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: 172800 });
 
-        await Tokens.create({ token: refreshToken, owner: user._id, expiresIn: Date.now() + 172800000 });
+        const createdDBToken = await Tokens.create({ token: refreshToken, owner: user._id, expiresIn: Date.now() + 172800000 });
     
         res.status(200).cookie(
             'token', refreshToken,
@@ -45,44 +47,29 @@ export async function login(req: Request, res: Response) {
                 path: '/api',
             }
         );
-        console.log('[Debug] '.grey + '[INFO] User '.cyan + user._id + ' logged in and generated Refresh-Token: '.cyan + refreshToken)
-        getLog('Request served');
+        debugLog('[INFO] User '.cyan + user._id + ' logged in and generated Refresh-Token: '.cyan + createdDBToken._id)
+        postLog('Request served');
     } catch (err: any) {
         errorRes(err.message, res);
     }
 }
 
 export async function auth(req: Request, res: Response) {
-    const cookieRefreshToken: string = req.cookies.token
+    const refreshToken: string = req.cookies.token
 
     let refreshTokenData: string | jwt.JwtPayload = {};
     try {
-        refreshTokenData = jwt.verify(cookieRefreshToken, process.env.REFRESH_TOKEN_SECRET as string);            
+        refreshTokenData = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string);            
     } catch (err: any) {
-        if (err.message === 'jwt expired') {
-            console.log('[DEBUG] '.grey + 'JWT (cookieRefreshToken) expired!');
-            res.sendStatus(403);
-            return;
-        }
-        if (err.message === 'invalid signature') {
-            errorLog('Invalid JWT (cookieRefreshToken) signature! Token: ' + cookieRefreshToken);
-            res.sendStatus(401);
-            return;
-        }
-        if (err.message === 'jwt must be provided') {
-            errorLog('No JWT (cookieRefreshToken) given.');
-            res.sendStatus(401);
-            return;
-        }
-        errorRes(err.message, res);
+        jwtVerfiyCatch('refreshToken', refreshToken, err, res) 
     }
     if (typeof refreshTokenData === 'string') {
-        errorLog('cookieRefreshToken was a string. Token: ' + cookieRefreshToken);
+        errorLog('cookieRefreshToken was a string. Token: ' + refreshToken);
         res.sendStatus(401);
         return;
     }
 
-    const DBToken = await Tokens.findOne({ token: cookieRefreshToken });
+    const DBToken = await Tokens.findOne({ token: refreshToken });
     if (!DBToken) {
         errorLog('Token not found in DB!');
         res.sendStatus(401);
@@ -103,10 +90,11 @@ export async function auth(req: Request, res: Response) {
 
     const accessToken = jwt.sign( { user: user.uuid } , process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: 15 });
 
-    await Tokens.create({ token: accessToken, owner: user._id, expiresIn: Date.now() + 15000 });
+    const createdDBToken = await Tokens.create({ token: accessToken, owner: user._id, expiresIn: Date.now() + 15000 });
     
     res.status(200).json({ token: accessToken });
-    getLog('Served Access-Token.');
+    debugLog('[INFO] Access-Token generated: '.cyan + createdDBToken._id + ' with Refreshtoken-Token: '.cyan + DBToken._id);
+    postLog('Request served');
 }
 
 export async function newgroup(req: Request, res: Response) {
@@ -129,22 +117,7 @@ export async function newgroup(req: Request, res: Response) {
     try {
         accessTokenData = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string);            
     } catch (err: any) {
-        if (err.message === 'jwt expired') {
-            console.log('[WARN] '.yellow + 'JWT (accessToken) expired!');
-            res.sendStatus(403);
-            return;
-        }
-        if (err.message === 'invalid signature') {
-            errorLog('Invalid JWT (accessToken) signature! Token: ' + accessToken);
-            res.sendStatus(401);
-            return;
-        }
-        if (err.message === 'jwt must be provided') {
-            errorLog('No JWT (accessToken) given.');
-            res.sendStatus(401);
-            return;
-        }
-        errorRes(err.message, res);
+        jwtVerfiyCatch('accessToken', accessToken, err, res) 
     }
     if (typeof accessTokenData === 'string') {
         errorLog('accessTokenData was a string. Token: ' + accessToken);
@@ -169,6 +142,6 @@ export async function newgroup(req: Request, res: Response) {
     user.save();
 
     res.sendStatus(200);
-    console.log('[Debug] '.grey + '[INFO] Group created: '.cyan + group._id + ' with Access-Token: '.cyan + DBToken._id);
-    getLog('Request served');
+    debugLog('[INFO] Group created: '.cyan + group._id + ' with Access-Token: '.cyan + DBToken._id);
+    postLog('Request served');
 }
