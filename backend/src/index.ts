@@ -30,17 +30,17 @@ if (fs.existsSync('.env')) {
 // Check for dotenv file variables, otherwise throw error
 if (process.env.ACCESS_TOKEN_SECRET === undefined) {
     errorLog(`ACCESS_TOKEN_SECRET is undefined! Delete the '.env' file and a new one will be generated on startup.`);
-    process.exit(1);
+    process.exit(0);
 }
 
 if (process.env.REFRESH_TOKEN_SECRET === undefined) {
     errorLog(`REFRESH_TOKEN_SECRET is undefined! Delete the '.env' file and a new one will be generated on startup.`);
-    process.exit(1);
+    process.exit(0);
 }
 
 if (process.env.MONGO_DB === undefined) {
     errorLog(`MONGO_DB is undefined! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make sure to uncomment it.`);
-    process.exit(1);
+    process.exit(0);
 }
 
 // Connect to MongoDB

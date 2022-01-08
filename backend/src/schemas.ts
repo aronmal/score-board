@@ -132,3 +132,10 @@ const groupSchema = new mongoose.Schema({
 })
 
 export const Groups = mongoose.model('groups', groupSchema);
+
+export interface statusRes {
+    status: string,
+    code: number,
+    message: string,
+    body: object,
+}

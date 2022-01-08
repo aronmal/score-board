@@ -1,128 +1,153 @@
 import { Request, Response } from "express";
-import { Tokens, Users, Groups } from "./schemas";
+import { Tokens, Users, Groups, statusRes } from "./schemas";
 import bcrypt from "bcrypt";
-import { debugLog, errorLog, errorRes, postLog } from "./logging";
+import { debugLog, warnLog, errorLog } from "./logging";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { jwtVerfiyCatch } from "./helpers";
 
 export async function register(req: Request, res: Response) {
+    let status = {} as statusRes;
+    const { username, email, password } = req.body;
+    let user
     try {
-        const { username, email, password } = req.body;
-        const user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) });
-        res.sendStatus(201);
-        debugLog('[INFO] User created : '.cyan + user._id);
-        postLog('Request served');
+        user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) });
     } catch (err: any) {
-        errorRes(err.message, res);
+        if (err.code === 11000) {
+            warnLog(`Duplicate key error while creating User in DB!`);
+            status.code = 409;
+        } else {
+            errorLog(`Unknown error while creating User in DB.`);
+            status.code = 500;
+        }
+        return status;
     }
+
+    if (status.code !== undefined) {
+        errorLog('Early exit: ' + JSON.stringify(status));
+        return status;
+    }
+    status.code = 201;
+    debugLog('[INFO] User created : '.cyan + user._id);
+    return status;
 }
 
 export async function login(req: Request, res: Response) {
-    try {
-        const { username, password } = req.body;
-    
-        const user = await Users.findOne({ username: username });
-        if (!user) {
-            errorLog('User not found in DB!');
-            res.sendStatus(401);
-            return;
-        }
-    
-        if (!await bcrypt.compare(password, user.password)) {
-            res.sendStatus(401);
-            return;
-        }
-    
-        const refreshToken = jwt.sign( { user: user.uuid } , process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: 172800 });
+    let status = {} as statusRes;
+    const { username, password } = req.body;
 
-        const createdDBToken = await Tokens.create({ token: refreshToken, owner: user._id, expiresIn: Date.now() + 172800000 });
-    
-        res.status(200).cookie(
-            'token', refreshToken,
-            {
-                domain: 'localhost',
-                httpOnly: true,
-                // secure: true,
-                path: '/api',
-            }
-        );
-        debugLog('[INFO] User '.cyan + user._id + ' logged in and generated Refresh-Token: '.cyan + createdDBToken._id)
-        postLog('Request served');
-    } catch (err: any) {
-        errorRes(err.message, res);
+    const user = await Users.findOne({ username: username });
+    if (!user) {
+        errorLog('User not found in DB!');
+        status.code = 401;
+        return status;
     }
+
+    if (!await bcrypt.compare(password, user.password)) {
+        status.code = 401;
+        return status;
+    }
+
+    const refreshToken = jwt.sign( { user: user.uuid } , process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: 172800 });
+
+    const createdDBToken = await Tokens.create({ token: refreshToken, owner: user._id, expiresIn: Date.now() + 172800000 });
+
+    if (status.code !== undefined) {
+        errorLog('Early exit: ' + JSON.stringify(status));
+        return status;
+    }
+    status.code = 200;
+    res.cookie(
+        'token', refreshToken,
+        {
+            domain: 'localhost',
+            httpOnly: true,
+            // secure: true,
+            path: '/api',
+        }
+    );
+    debugLog('[INFO] User '.cyan + user._id + ' logged in and generated Refresh-Token: '.cyan + createdDBToken._id)
+    return status;
 }
 
 export async function auth(req: Request, res: Response) {
+    let status = {} as statusRes;
     const refreshToken: string = req.cookies.token
 
     let refreshTokenData: string | jwt.JwtPayload = {};
     try {
         refreshTokenData = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string);            
     } catch (err: any) {
-        jwtVerfiyCatch('refreshToken', refreshToken, err, res) 
+        jwtVerfiyCatch('refreshToken', refreshToken, err, status);
+        return status;
     }
     if (typeof refreshTokenData === 'string') {
-        errorLog('cookieRefreshToken was a string. Token: ' + refreshToken);
-        res.sendStatus(401);
-        return;
+        errorLog('Refresh-Token was a string. Token: ' + refreshToken);
+        status.code = 401;
+        return status;
     }
 
     const DBToken = await Tokens.findOne({ token: refreshToken });
     if (!DBToken) {
-        errorLog('Token not found in DB!');
-        res.sendStatus(401);
-        return;
+        errorLog('Refresh-Token not found in DB!');
+        status.code = 401;
+        return status;
     }
     if (DBToken.used) {
         errorLog('DBToken was alerady used!');
-        res.sendStatus(401);
-        return;
+        status.code = 401;
+        return status;
     }
     
     const user = await Users.findOne({ uuid: refreshTokenData.user });
     if (!user) {
-        errorLog('User of Token not found in DB!');
-        res.sendStatus(401);
-        return;
+        errorLog('User of Refresh-Token not found in DB!');
+        status.code = 401;
+        return status;
     }
 
     const accessToken = jwt.sign( { user: user.uuid } , process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: 15 });
 
     const createdDBToken = await Tokens.create({ token: accessToken, owner: user._id, expiresIn: Date.now() + 15000 });
-    
-    res.status(200).json({ token: accessToken });
+
+    if (status.code !== undefined) {
+        errorLog('Early exit: ' + JSON.stringify(status));
+        return status;
+    }
+    status.code = 200;
+    status.body = { token: accessToken };
     debugLog('[INFO] Access-Token generated: '.cyan + createdDBToken._id + ' with Refreshtoken-Token: '.cyan + DBToken._id);
-    postLog('Request served');
+    return status;
 }
 
 export async function newgroup(req: Request, res: Response) {
+    let status = {} as statusRes;
     const { groupname, description, ispublic , players } = req.body;
     const accessToken = req.body.token;
 
     const DBToken = await Tokens.findOne({ token: accessToken });
     if (!DBToken) {
-        errorLog('Token not found in DB!');
-        res.sendStatus(401);
-        return;
+        errorLog('Access-Token not found in DB!');
+        status.code = 401;
+        return status;
     }
     if (DBToken.used) {
         errorLog('DBToken was alerady used!');
-        res.sendStatus(401);
-        return;
+        status.code = 401;
+        return status;
     }
 
     let accessTokenData: string | jwt.JwtPayload = {};
     try {
         accessTokenData = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string);            
     } catch (err: any) {
-        jwtVerfiyCatch('accessToken', accessToken, err, res) 
+        jwtVerfiyCatch('accessToken', accessToken, err, status);
+        return status;
     }
     if (typeof accessTokenData === 'string') {
         errorLog('accessTokenData was a string. Token: ' + accessToken);
-        res.sendStatus(401);
-        return;
+        status.code = 401;
+        return status;
     }
 
     DBToken.used = true;
@@ -130,9 +155,9 @@ export async function newgroup(req: Request, res: Response) {
 
     const user = await Users.findOne({ uuid: accessTokenData.user });
     if (!user) {
-        errorLog('User of Token not found in DB!');
-        res.sendStatus(401);
-        return;
+        errorLog('User of Access-Token not found in DB!');
+        status.code = 401;
+        return status;
     }
 
     const group = await Groups.create({ name: groupname, description: description, isPublic: ispublic , players: players, owner: user._id });
@@ -141,7 +166,11 @@ export async function newgroup(req: Request, res: Response) {
     user.updatedAt = Date.now();
     user.save();
 
-    res.sendStatus(200);
+    if (status.code !== undefined) {
+        errorLog('Early exit: ' + JSON.stringify(status));
+        return status;
+    }
+    status.code = 200;
     debugLog('[INFO] Group created: '.cyan + group._id + ' with Access-Token: '.cyan + DBToken._id);
-    postLog('Request served');
+    return status;
 }

@@ -1,19 +1,21 @@
-import {Response} from "express";
-
-export function debugLog(message: string) {
+export function debugLog(message: string | number) {
     console.log('[Debug] '.grey + message);
 }
 
-export function postLog(message: string) {
+export function objectDebugLog(object: object) {
+    console.log('[Debug] '.grey + '\u2193');
+    console.log(object);
+    console.log('[Debug] '.grey + '\u2191');
+}
+
+export function postLog(message: string | number) {
     console.log('[POST] ' + message);
 }
 
-export function errorLog(message: string) {
-    console.log('[ERROR] '.red + message);
+export function warnLog(message: string | number) {
+    console.log('[WARN] '.yellow + message);
 }
 
-export function errorRes(message: string, res: Response) {
-    res.sendStatus(500);
-    errorLog(message);
-    console.log('[POST] ' + '[WARN] '.yellow + 'Request served with status 500');
+export function errorLog(message: string | number) {
+    console.log('[ERROR] '.red + message);
 }
