@@ -31,13 +31,13 @@ function Clock(type: string) {
     
   // clock function
 
-  var h = new Date().getHours();
-  var m = new Date().getMinutes();
-  var s = new Date().getSeconds();
+  const h = new Date().getHours();
+  const m = new Date().getMinutes();
+  const s = new Date().getSeconds();
 
-  var hh = h < 10 ? "0" + h : h;
-  var mm = m < 10 ? "0" + m : m;
-  var ss = s < 10 ? "0" + s : s;
+  const hh = h < 10 ? "0" + h : h;
+  const mm = m < 10 ? "0" + m : m;
+  const ss = s < 10 ? "0" + s : s;
 
   switch(type) {
     case'h':
@@ -56,9 +56,9 @@ function Clock(type: string) {
       return `${hh}:${mm}`
     default:
       return `${hh}:${mm}:${ss}`
-  };
+  }
 
-};
+}
 
 function Nav() {
 

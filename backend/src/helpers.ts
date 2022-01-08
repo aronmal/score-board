@@ -20,12 +20,8 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
         return next(err);
     }
     if (status.code === undefined || status.status === 'caughtError') {
-        try {
-            throw new Error('An unknown error occurred!');
-        } catch (err: any) {
-            debugLog('Uncaught error, giving it to the error-handling middleware.');
-            return next(err);
-        }
+        debugLog('Uncaught error, giving it to the error-handling middleware.');
+        return next(new Error('An unknown error occurred!'));
     }
     objectDebugLog(status);
     postLog('Request served');
@@ -37,13 +33,13 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
     res.json(status.body);
 }
 
-export function errorHandling(err: any, req: Request, res: Response, next: NextFunction) {
+export function errorHandling(err: any, req: Request, res: Response) {
     res.status(500).send();
     errorLog(err.message);
     console.log('[POST] ' + '[WARN] '.yellow + 'Request served with status 500');
 }
 
-export async function jwtVerfiyCatch(tokenType: string, token: string, err:any, status: statusRes) {
+export function jwtVerfiyCatch(tokenType: string, token: string, err:any, status: statusRes) {
     if (err.message === 'jwt expired') {
         warnLog(`JWT (${tokenType}) expired!`);
         status.code = 403;

@@ -6,7 +6,7 @@ import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { jwtVerfiyCatch } from "./helpers";
 
-export async function register(req: Request, res: Response) {
+export async function register(req: Request, _res: Response) {
     let status = {} as statusRes;
     const { username, email, password } = req.body;
     let user
@@ -70,7 +70,7 @@ export async function login(req: Request, res: Response) {
     return status;
 }
 
-export async function auth(req: Request, res: Response) {
+export async function auth(req: Request, _res: Response) {
     let status = {} as statusRes;
     const refreshToken: string = req.cookies.token
 
@@ -120,7 +120,7 @@ export async function auth(req: Request, res: Response) {
     return status;
 }
 
-export async function newgroup(req: Request, res: Response) {
+export async function newgroup(req: Request, _res: Response) {
     let status = {} as statusRes;
     const { groupname, description, ispublic , players } = req.body;
     const accessToken = req.body.token;

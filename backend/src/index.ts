@@ -44,7 +44,13 @@ if (process.env.MONGO_DB === undefined) {
 }
 
 // Connect to MongoDB
-mongoose.connect(process.env.MONGO_DB as string, err => { (err === null) ? console.log('[INFO] '.green + 'Connected with Mongo!') : (errorLog('MongoDB connection error!'), process.exit(1)) })
+mongoose.connect(process.env.MONGO_DB as string, err => {
+    if (err) {
+        errorLog('MongoDB connection error!');
+        process.exit(0);
+    }
+    console.log('[INFO] '.green + 'Connected with Mongo!');
+});
 
 // Start listening on port 5000
 app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://localhost:5000'))

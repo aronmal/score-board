@@ -17,7 +17,7 @@ function New() {
   const [groupnameInput, setGroupnameInput] = useState('');
   const [groupname, setGroupname] = useState('');
   const [description, setDescription] = useState('');
-  const [ispublic, setIspublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
   const [playernameAllowInput, setPlayernameAllowInput] = useState(true);
   const [playernameInput, setPlayernameInput] = useState('');
   const [playername, setPlayername] = useState('');
@@ -28,7 +28,7 @@ function New() {
   const playernameError = 'Name bereits vergeben!'
 
   function validate(e:string) {
-    return e.trim().replace(/[^a-zA-Z\d-_.,!\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, '').replace(/\s+/g, ' ').replace(/[-]+/g, '-').replace(/[_]+/g, '_')
+    return e.trim().replace(/[^a-zA-Z\d-_.,!\s\u00c4\u00e4\u00d6\u00f6\u00dc\u00fc\u00df]/g, '').replace(/\s+/g, ' ').replace(/[-]+/g, '-').replace(/[_]+/g, '_')
   }
 
   useEffect(() => {
@@ -54,9 +54,9 @@ function New() {
   const nextStep = () => {
     if (currentStep === (elemsCount - 1)){
       if (description === '' ) {
-        setForm({ groupname, description: 'Keine Beschreibung', ispublic , players });
+        setForm({ groupname, description: 'Keine Beschreibung', isPublic , players });
       } else {
-        setForm({ groupname, description, ispublic , players });
+        setForm({ groupname, description, isPublic , players });
       }
       setTimeout(() => {
         setRedirectElem(<Navigate to='/' />)
@@ -64,7 +64,7 @@ function New() {
     }
 
     if (currentStep === 0) {
-      if (groupnameAllowInput !== true)
+      if (!groupnameAllowInput)
         return
   
       if (groupname === '') {
@@ -82,7 +82,7 @@ function New() {
   };
 
   const addPlayer = () => {
-    if (playernameAllowInput !== true)
+    if (!playernameAllowInput)
       return
 
     if (playername === '') {
@@ -119,7 +119,7 @@ function New() {
   }, [players])
 
 
-  if (isLoggedIn === false) {
+  if (!isLoggedIn) {
     setTimeout(() => {
       setElem(<Navigate to='/' />)
     }, 2000);
@@ -139,7 +139,7 @@ function New() {
             placeholder='Neue Gruppe'
             value={groupnameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && groupnameAllowInput === true) {
+              if (e.target.value.length <= 30 && groupnameAllowInput) {
                 setGroupnameInput(e.target.value)
                 return
               }
@@ -152,8 +152,10 @@ function New() {
           <textarea
             placeholder='(optional)'
             value={description}
-            onChange={e => {if (e.target.value.length <= 200) {setDescription(e.target.value.replace(/[^a-zA-Z\d-_./()!?,\s\u00c4,\u00e4\u00d6,\u00f6\u00dc,\u00fc\u00df]/g, ''))}}}
-            ></textarea>
+            onChange={e => {
+              if (e.target.value.length <= 200) {
+                setDescription(e.target.value.replace(/[^a-zA-Z\d-_./()!?,\s\u00c4\u00e4\u00d6\u00f6\u00dc\u00fc\u00df]/g, ''))}}}
+          />
         </div>
         <div className='flex-row'>
           <label style={{alignSelf: 'start', marginRight: '5em'}}>Typ:</label>
@@ -162,11 +164,11 @@ function New() {
               <input
               className='radio'
               type='radio'
-              checked={!ispublic}
-              onChange={e => {(e.target.checked===false) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
+              checked={!isPublic}
+              onChange={e => {!e.target.checked ? setIsPublic(e.target.checked) : setIsPublic(!e.target.checked)}}
               onKeyDown={(e) => {
                 if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-                  (e.currentTarget.checked===false) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                  !e.currentTarget.checked ? setIsPublic(e.currentTarget.checked) : setIsPublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -176,11 +178,11 @@ function New() {
               <input
               className='radio'
               type='radio'
-              checked={ispublic}
-              onChange={e => {(e.target.checked===true) ? setIspublic(e.target.checked) : setIspublic(!e.target.checked)}}
+              checked={isPublic}
+              onChange={e => {e.target.checked ? setIsPublic(e.target.checked) : setIsPublic(!e.target.checked)}}
               onKeyDown={(e) => {
                 if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-                  (e.currentTarget.checked===true) ? setIspublic(e.currentTarget.checked) : setIspublic(!e.currentTarget.checked)
+                  e.currentTarget.checked ? setIsPublic(e.currentTarget.checked) : setIsPublic(!e.currentTarget.checked)
                 }
               }}
               />
@@ -200,7 +202,7 @@ function New() {
             placeholder='Spielername'
             value={playernameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && playernameAllowInput === true) {
+              if (e.target.value.length <= 30 && playernameAllowInput) {
                 setPlayernameInput(e.target.value)
                 return
               }
