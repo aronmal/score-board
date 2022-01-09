@@ -15,26 +15,10 @@ function Login() {
     }, [isLoggedIn]);
 
     async function login() {
-        await fetch('http://localhost:5000/api/login', {
+        const res = await fetch('/api/login', {
             method: 'POST',
             headers: { 'content-type': 'application/json' },
             body: JSON.stringify({ 'username': username, 'password': password })
-        }).then(async (res: Response) => {
-            if (res.status === 200) {
-                const response = await res.json()
-                console.log(response.data)
-                setIsLoggedIn(true)
-            } else if (res.status === 401) {
-                setElem(<p style={{color: 'red'}}>Benutzername oder Passwort ungültig!</p>)
-                setTimeout(() => {
-                    setElem(<></>)
-                }, 3000)
-            } else {
-                setElem(<p style={{color: 'red'}}>Unbekannter Fehler</p>)
-                setTimeout(() => {
-                    setElem(<></>)
-                }, 5000)
-            }
         }).catch((err: Error) => {
             console.log(err)
             setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
@@ -42,6 +26,22 @@ function Login() {
                 setElem(<></>)
             }, 5000)
         })
+        if (!res)
+            return;
+        if (res.status === 200) {
+            setIsLoggedIn(true)
+        } else if (res.status === 401) {
+            setElem(<p style={{color: 'red'}}>Benutzername oder Passwort ungültig!</p>)
+            setTimeout(() => {
+                setElem(<></>)
+            }, 3000)
+        } else {
+            console.log(res)
+            setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
+            setTimeout(() => {
+                setElem(<></>)
+            }, 5000)
+        }
     }
 
     return (
@@ -68,7 +68,7 @@ function Login() {
                     }}
                 />
             </div>
-            <button onClick={() => Login()}>Login</button>
+            <button onClick={() => login()}>Login</button>
             {elem}
         </>
     )

@@ -34,7 +34,15 @@ export async function register(req: Request, _res: Response) {
 
 export async function login(req: Request, res: Response) {
     let status = {} as statusRes;
+    const oldRefreshToken: string = req.cookies.token
     const { username, password } = req.body;
+
+    const oldDBToken = await Tokens.findOne({ token: oldRefreshToken });
+    if (oldDBToken && !oldDBToken.used) {
+        oldDBToken.used = true;
+        oldDBToken.save();
+        debugLog('Old token has been invalidated.')
+    }
 
     const user = await Users.findOne({ username: username });
     if (!user) {
@@ -60,13 +68,38 @@ export async function login(req: Request, res: Response) {
     res.cookie(
         'token', refreshToken,
         {
-            domain: 'localhost',
+            maxAge: 172800000,
             httpOnly: true,
-            // secure: true,
             path: '/api',
+            sameSite: true,
+            secure: true,
         }
     );
     debugLog('[INFO] User '.cyan + user._id + ' logged in and generated Refresh-Token: '.cyan + createdDBToken._id)
+    return status;
+}
+
+export async function logout(req: Request, res: Response) {
+    let status = {} as statusRes;
+    const oldRefreshToken: string = req.cookies.token
+
+    const oldDBToken = await Tokens.findOne({ token: oldRefreshToken });
+    if (!oldDBToken) {
+        warnLog('Old Access-Token not found in DB!');
+    }
+    if (!oldDBToken.used) {
+        oldDBToken.used = true;
+        oldDBToken.save();
+        debugLog('Old token has been invalidated.')
+    }
+
+    if (status.code !== undefined) {
+        errorLog('Early exit: ' + JSON.stringify(status));
+        return status;
+    }
+    status.code = 200;
+    res.clearCookie;
+    debugLog('[INFO] User of Token '.cyan + oldDBToken._id + ' logged out.'.cyan )
     return status;
 }
 
@@ -122,7 +155,7 @@ export async function auth(req: Request, _res: Response) {
 
 export async function newgroup(req: Request, _res: Response) {
     let status = {} as statusRes;
-    const { groupname, description, ispublic , players } = req.body;
+    const { groupname, description, isPublic , players } = req.body;
     const accessToken = req.body.token;
 
     const DBToken = await Tokens.findOne({ token: accessToken });
@@ -160,7 +193,7 @@ export async function newgroup(req: Request, _res: Response) {
         return status;
     }
 
-    const group = await Groups.create({ name: groupname, description: description, isPublic: ispublic , players: players, owner: user._id });
+    const group = await Groups.create({ name: groupname, description, isPublic , players, owner: user._id });
 
     user.groups.push(group._id);
     user.updatedAt = Date.now();

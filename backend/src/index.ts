@@ -6,7 +6,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { errorLog } from './logging';
-import { register, login, auth, newgroup } from './routes';
+import { register, login, logout, auth, newgroup } from './routes';
 import { errorHandling, routeCatch } from './helpers';
 colors.enable();
 const app = express();
@@ -17,11 +17,14 @@ if (fs.existsSync('.env')) {
     console.log('[INFO] '.green + `'.env' file was found.`)
 } else {
     let newEnv = '\n';
+    newEnv = (newEnv + '# Refresh-Token secret for Refresh-Token in cookie:' + '\n');
     newEnv = (newEnv + 'REFRESH_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex') + '\n');
+    newEnv = (newEnv + '# Access-Token secret for Access-Token in auth-route response body:' + '\n');
     newEnv = (newEnv + 'ACCESS_TOKEN_SECRET=' + require('crypto').randomBytes(64).toString('hex') + '\n');
-    newEnv = (newEnv + '# Customize: MONGO_DB=mongodb://TheUsername:UserPassword@YourMongoDBHostname:YourMongoDBPort/DBName' + '\n');
-    newEnv = (newEnv + '# For example, comment out:' + '\n');
-    newEnv = (newEnv + '# MONGO_DB=mongodb://username:securepassword1234@localhost:27017/dbname' + '\n');
+    newEnv = (newEnv + '# MongoDB path (with access credentials, if necessary) for mongoose:' + '\n');
+    newEnv = (newEnv + '### MONGO_DB=mongodb://username:securepassword1234@localhost:27017/dbname' + '\n');
+    newEnv = (newEnv + '# CORS origin header:' + '\n');
+    newEnv = (newEnv + '### CORS_HOST= https://scoreboard.your-domain.com' + '\n');
     console.log('[WARN] '.yellow + `No '.env' file was found. A new one was generated.`);
     fs.writeFileSync('.env', newEnv);
     dotenv.config();
@@ -29,17 +32,22 @@ if (fs.existsSync('.env')) {
 
 // Check for dotenv file variables, otherwise throw error
 if (process.env.ACCESS_TOKEN_SECRET === undefined) {
-    errorLog(`ACCESS_TOKEN_SECRET is undefined! Delete the '.env' file and a new one will be generated on startup.`);
+    errorLog(`ACCESS_TOKEN_SECRET is undefined! Delete the '.env' file, a new one will be generated on startup.`);
     process.exit(0);
 }
 
 if (process.env.REFRESH_TOKEN_SECRET === undefined) {
-    errorLog(`REFRESH_TOKEN_SECRET is undefined! Delete the '.env' file and a new one will be generated on startup.`);
+    errorLog(`REFRESH_TOKEN_SECRET is undefined! Delete the '.env' file, a new one will be generated on startup.`);
     process.exit(0);
 }
 
 if (process.env.MONGO_DB === undefined) {
     errorLog(`MONGO_DB is undefined! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make sure to uncomment it.`);
+    process.exit(0);
+}
+
+if (process.env.CORS_HOST === undefined) {
+    errorLog(`CORS_HOST is undefined! Open the '.env' file, edit the CORS_HOST parameter by entering the hostname for your website and make sure to uncomment it.`);
     process.exit(0);
 }
 
@@ -56,9 +64,11 @@ mongoose.connect(process.env.MONGO_DB as string, err => {
 app.listen(5000, () => console.log('[INFO] '.cyan + 'Server running on: http://localhost:5000'))
 
 // Middlewares
-app.use(express.json())
+app.use(express.json());
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+    origin: process.env.CORS_HOST,
+  }));
 
 // Register post route
 app.post('/api/register', (req, res, next) => {next(register)});
@@ -66,7 +76,10 @@ app.post('/api/register', (req, res, next) => {next(register)});
 // Login post route
 app.post('/api/login', (req, res, next) => {next(login)});
 
-// Auth get route
+// Logout delete route
+app.delete('/api/logout', (req, res, next) => {next(logout)});
+
+// Auth post route
 app.post('/api/auth', (req, res, next) => {next(auth)});
 
 // New group post route

@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { debugLog, objectDebugLog, postLog, warnLog, errorLog } from "./logging";
+import { debugLog, postLog, warnLog, errorLog } from "./logging";
 import { statusRes } from "./schemas";
 
 
@@ -23,18 +23,17 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
         debugLog('Uncaught error, giving it to the error-handling middleware.');
         return next(new Error('An unknown error occurred!'));
     }
-    objectDebugLog(status);
+    debugLog(status);
     postLog('Request served');
-    res.status(status.code);
-    if (status.body === undefined) {
-        res.end();
+    if (!status.body) {
+        res.sendStatus(status.code);
         return;
     }
-    res.json(status.body);
+    res.status(status.code).json(status.body);
 }
 
-export function errorHandling(err: any, req: Request, res: Response) {
-    res.status(500).send();
+export function errorHandling(err: any, _req: Request, res: Response, _next: NextFunction) {
+    res.sendStatus(500)
     errorLog(err.message);
     console.log('[POST] ' + '[WARN] '.yellow + 'Request served with status 500');
 }

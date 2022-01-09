@@ -2,17 +2,16 @@ import { useEffect, useState, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import { v4 as uuidv4 } from 'uuid';
 import loginContext from './Context';
+import auth from './Helpers';
 import './Newgroup.css';
 
 
 function New() {
 
   const { isLoggedIn } = useContext(loginContext);
-  const [elem, setElem] = useState(<p>You are not logged in!</p>)
+  const [elem, setElem] = useState(<></>)
 
   const [currentStep, setCurrentStep] = useState(0)
-  const [redirectElem, setRedirectElem] = useState(<></>)
-  const [form, setForm] = useState({});
   const [groupnameAllowInput, setGroupnameAllowInput] = useState(true);
   const [groupnameInput, setGroupnameInput] = useState('');
   const [groupname, setGroupname] = useState('');
@@ -47,20 +46,33 @@ function New() {
     setPlayername(validate(playernameInput))
   }, [playernameInput])
 
-  useEffect(() => {
-    console.log(form)
-  }, [form])
-
-  const nextStep = () => {
+  const nextStep = async () => {
     if (currentStep === (elemsCount - 1)){
-      if (description === '' ) {
-        setForm({ groupname, description: 'Keine Beschreibung', isPublic , players });
+      const token = await auth(setElem)
+      if (!token)
+        return;
+
+      const res = await fetch('/api/newgroup', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify((description === '' ) ? { groupname, description: 'Keine Beschreibung', isPublic , players, token } : { groupname, description, isPublic , players, token }),
+      }).catch((err: Error) => {
+        console.log(err)
+        setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
+        setTimeout(() => {
+            setElem(<></>)
+        }, 5000)
+      });
+      if (!res)
+        return;
+      if (res.status === 200) {
+        setElem(<Navigate to='/dashboard' />)
       } else {
-        setForm({ groupname, description, isPublic , players });
+        setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
+        setTimeout(() => {
+          setElem(<></>)
+        }, 5000)
       }
-      setTimeout(() => {
-        setRedirectElem(<Navigate to='/' />)
-      }, 3000)
     }
 
     if (currentStep === 0) {
@@ -231,7 +243,7 @@ function New() {
           <button className='step-button' onClick={() => nextStep()}>{(currentStep === (elemsCount - 1)) ? 'Gruppe erstellen' : 'Weiter \u279C'}</button>
         </div>
       </div>
-      { redirectElem }
+      { elem }
     </div> 
   );
 }
