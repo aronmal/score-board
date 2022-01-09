@@ -44,12 +44,14 @@ export async function login(req: Request, res: Response) {
         debugLog('Old token has been invalidated.')
     }
 
-    const user = await Users.findOne({ username: username });
-    if (!user) {
+    const userByName = await Users.findOne({ username: username });
+    const userByEmail = await Users.findOne({ email: username });
+    if (!userByName && !userByEmail) {
         errorLog('User not found in DB!');
         status.code = 401;
         return status;
     }
+    const user = userByName || userByEmail;
 
     if (!await bcrypt.compare(password, user.password)) {
         status.code = 401;
