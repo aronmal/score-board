@@ -1,8 +1,8 @@
 @font-face {
-    font-family: logo;
-    src: url(./fonts/advanced-led-board-7/advanced_led_board-7.ttf);
-  }
-  @font-face {
-    font-family: time;
-    src: url(./fonts/sf-digital-readout-font/SfDigitalReadoutMedium-q3rq.ttf);
-  }
+  font-family: logo;
+  src: url(./fonts/advanced-led-board-7/advanced_led_board-7.ttf);
+}
+@font-face {
+  font-family: time;
+  src: url(./fonts/sf-digital-readout-font/SfDigitalReadoutMedium-q3rq.ttf);
+}
