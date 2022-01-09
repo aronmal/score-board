@@ -48,7 +48,8 @@ function Register() {
     }
 
     return (
-        <>
+        <div className='flex-col step-form'>
+            <h2>Registrieren</h2>
             <div className='flex-row'>
                 <label style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</label>
                 <input
@@ -56,7 +57,7 @@ function Register() {
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                     onKeyDown={e => {
-                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
             </div>
@@ -67,7 +68,7 @@ function Register() {
                     value={email}
                     onChange={e => setEmail(e.target.value)}
                     onKeyDown={e => {
-                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
             </div>
@@ -78,7 +79,7 @@ function Register() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     onKeyDown={e => {
-                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
             </div>
@@ -89,13 +90,17 @@ function Register() {
                     value={passwordCheck}
                     onChange={e => setPasswordCheck(e.target.value)}
                     onKeyDown={e => {
-                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
             </div>
-            <button onClick={() => register()}>Registrieren</button>
-            {elem}
-        </>
+            <div className='steps'>
+                <div className='flex-row' style={{float: 'right'}}>
+                <button className='step-button' onClick={() => register()}>{'Registrieren \u279C'}</button>
+                </div>
+            </div>
+            { elem }
+        </div>
     )
 }
 

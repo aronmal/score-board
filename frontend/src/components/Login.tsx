@@ -45,7 +45,8 @@ function Login() {
     }
 
     return (
-        <>
+        <div className='flex-col step-form'>
+            <h2>Login</h2>
             <div className='flex-row'>
                 <label style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</label>
                 <input
@@ -53,7 +54,7 @@ function Login() {
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                     onKeyDown={e => {
-                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
+                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
                     }}
                 />
             </div>
@@ -64,13 +65,17 @@ function Login() {
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     onKeyDown={e => {
-                      if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
+                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
                     }}
                 />
             </div>
-            <button onClick={() => login()}>Login</button>
-            {elem}
-        </>
+            <div className='steps'>
+                <div className='flex-row' style={{float: 'right'}}>
+                <button className='step-button' onClick={() => login()}>{'Login \u279C'}</button>
+                </div>
+            </div>
+            { elem }
+        </div>
     )
 }
 
