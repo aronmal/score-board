@@ -84,10 +84,17 @@ export async function login(req: Request, res: Response) {
 export async function logout(req: Request, res: Response) {
     let status = {} as statusRes;
     const oldRefreshToken: string = req.cookies.token
+    if (!oldRefreshToken) {
+        errorLog('No Access-Token cookie present!');
+        status.code = 200;
+        return status;
+    }
 
     const oldDBToken = await Tokens.findOne({ token: oldRefreshToken });
     if (!oldDBToken) {
         warnLog('Old Access-Token not found in DB!');
+        status.code = 200;
+        return status;
     }
     if (!oldDBToken.used) {
         oldDBToken.used = true;
@@ -129,7 +136,7 @@ export async function auth(req: Request, _res: Response) {
         return status;
     }
     if (DBToken.used) {
-        errorLog('DBToken was alerady used!');
+        warnLog('DBToken was already used!');
         status.code = 401;
         return status;
     }
@@ -167,7 +174,7 @@ export async function newgroup(req: Request, _res: Response) {
         return status;
     }
     if (DBToken.used) {
-        errorLog('DBToken was alerady used!');
+        warnLog('DBToken was already used!');
         status.code = 401;
         return status;
     }
