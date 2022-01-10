@@ -28,20 +28,8 @@ function App() {
     }).catch((err: Error) => console.log(err))
     if (!res)
       return;
-    if (res.status !== 401) {
+    if (res.status === 200) {
       setLogin(true)
-      setElem(
-        <div className='content-div flex-col'>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/dashboard' element={<Dashboard />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/login' element={<Login />} />
-            <Route path='/logout' element={<Logout />} />
-            <Route path='/newgroup' element={<Newgroup />} />
-          </Routes>
-        </div>
-        )
     }
     setElem(
       <div className='content-div flex-col'>
