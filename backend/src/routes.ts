@@ -202,7 +202,7 @@ export async function newgroup(req: Request, _res: Response) {
         return status;
     }
 
-    const group = await Groups.create({ name: groupname, description, isPublic , players, owner: user._id });
+    const group = await Groups.create({ uuid: uuidv4(), name: groupname, description, isPublic , players, owner: user._id });
 
     user.groups.push(group._id);
     user.updatedAt = Date.now();
@@ -212,7 +212,7 @@ export async function newgroup(req: Request, _res: Response) {
         errorLog('Early exit: ' + JSON.stringify(status));
         return status;
     }
-    status.code = 200;
+    status.code = 201;
     debugLog('[INFO] Group created: '.cyan + group._id + ' with Access-Token: '.cyan + DBToken._id);
     return status;
 }

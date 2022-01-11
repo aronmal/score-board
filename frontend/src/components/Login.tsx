@@ -48,7 +48,7 @@ function Login() {
         <div className='flex-col step-form'>
             <h2>Login</h2>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</label>
+                <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>
                 <input
                     type='text'
                     value={username}
@@ -59,7 +59,7 @@ function Login() {
                 />
             </div>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</label>
+                <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
                 <input
                     type='password'
                     value={password}

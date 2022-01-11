@@ -64,7 +64,7 @@ function New() {
       });
       if (!res)
         return;
-      if (res.status === 200) {
+      if (res.status === 201) {
         setElem(<Navigate to='/dashboard' />)
       } else {
         setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
@@ -143,61 +143,55 @@ function New() {
       <>
         <h2 style={(groupname === '' || groupname === groupnameError) ? {borderBottom: '.25rem solid transparent'} : {borderBottom: '.25rem solid var(--gbs-color)'}}>{(groupname === '' || groupname === groupnameError) ? 'Neue Gruppe' : groupname}</h2>
         <div className='flex-row'>
-          <label style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</label>
+          <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
           <input
             style={(groupnameInput === groupnameError) ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
             value={groupnameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && groupnameAllowInput) {
+              if (e.target.value.length <= 30 && groupnameAllowInput)
                 setGroupnameInput(e.target.value)
-                return
-              }
-              setGroupnameInput(e => e)
+              else
+                setGroupnameInput(e => e)
+            }}
+            onKeyDown={e => {
+              if (e.code === 'Enter' || e.code === 'NumpadEnter')
+                nextStep()
             }}
             />
         </div>
         <div className='flex-col'>
-          <label style={{marginBottom: '.5em'}}>Beschreibung:</label>
+          <p style={{marginBottom: '.5em'}}>Beschreibung:</p>
           <textarea
             placeholder='(optional)'
             value={description}
             onChange={e => {
-              if (e.target.value.length <= 200) {
-                setDescription(e.target.value.replace(/[^a-zA-Z\d-_./()!?,\s\u00c4\u00e4\u00d6\u00f6\u00dc\u00fc\u00df]/g, ''))}}}
+              if (e.target.value.length <= 200)
+                setDescription(e.target.value.replace(/[^a-zA-Z\d-_./()!?,\s\u00c4\u00e4\u00d6\u00f6\u00dc\u00fc\u00df]/g, ''))
+            }}
           />
         </div>
         <div className='flex-row'>
-          <label style={{alignSelf: 'start', marginRight: '5em'}}>Typ:</label>
+          <p style={{alignSelf: 'start', marginRight: 'auto'}}>Typ:</p>
           <div className='flex-row'>
             <div className='flex-row left'>
               <input
-              className='radio'
-              type='radio'
-              checked={!isPublic}
-              onChange={e => {!e.target.checked ? setIsPublic(e.target.checked) : setIsPublic(!e.target.checked)}}
-              onKeyDown={(e) => {
-                if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-                  !e.currentTarget.checked ? setIsPublic(e.currentTarget.checked) : setIsPublic(!e.currentTarget.checked)
-                }
-              }}
+                className='radio'
+                type='radio'
+                checked={!isPublic}
+                onChange={e => setIsPublic(false)}
               />
-              <label>Privat</label>
+              <p>Privat</p>
             </div>
             <div className='flex-row left'>
               <input
-              className='radio'
-              type='radio'
-              checked={isPublic}
-              onChange={e => {e.target.checked ? setIsPublic(e.target.checked) : setIsPublic(!e.target.checked)}}
-              onKeyDown={(e) => {
-                if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-                  e.currentTarget.checked ? setIsPublic(e.currentTarget.checked) : setIsPublic(!e.currentTarget.checked)
-                }
-              }}
+                className='radio'
+                type='radio'
+                checked={isPublic}
+                onChange={e => setIsPublic(true)}
               />
-              <label>Öffentlich</label>
+              <p>Öffentlich</p>
             </div>
           </div>
         </div>
@@ -207,17 +201,17 @@ function New() {
         <h2>Spieler hinzufügen zu <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
         <div className="flex-row player-input" style={{justifyContent: 'flex-start'}}>
           <input
+            autoFocus
             className='add-player-input'
             style={(playernameInput === playernameError) ? {color: 'red', width: '50%'} : {width: '50%'}}
             type='text'
             placeholder='Spielername'
             value={playernameInput}
             onChange={e => {
-              if (e.target.value.length <= 30 && playernameAllowInput) {
+              if (e.target.value.length <= 30 && playernameAllowInput)
                 setPlayernameInput(e.target.value)
-                return
-              }
-              setPlayernameInput(e => e)
+              else
+                setPlayernameInput(e => e)
             }}
             onKeyDown={e => {
               if (e.code === 'Enter' || e.code === 'NumpadEnter')

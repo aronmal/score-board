@@ -97,6 +97,12 @@ export const Tokens = mongoose.model('tokens', tokenSchema);
 
 
 const groupSchema = new mongoose.Schema({
+    uuid: {
+        type: String,
+        unique: true,
+        immutable: true,
+        required: true
+    },
     name: {
         type: String,
         required: true

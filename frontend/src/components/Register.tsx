@@ -6,6 +6,7 @@ function Register() {
     
     const { isLoggedIn } = useContext(loginContext);
     const [elem, setElem] = useState(<></>);
+
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -31,13 +32,10 @@ function Register() {
             return
         }
 
-        await fetch('/api/register', {
+        const res = await fetch('/api/register', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({'username': username, 'email': email, 'password': password})
-        }).then((res: Response) => {
-            if (res.status === 201)
-                setElem(<Navigate to='/login' />)
         }).catch((err: Error) => {
             console.log(err)
             setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
@@ -45,13 +43,29 @@ function Register() {
                 setElem(<></>)
             }, 5000)
         })
+        if (!res)
+            return;
+        if (res.status === 201) {
+            setElem(<Navigate to='/login' />)
+        } else if (res.status === 409) {
+            setElem(<p style={{color: 'red'}}>Benutzername oder E-Mail bereits vergeben!</p>)
+            setTimeout(() => {
+                setElem(<></>)
+            }, 3000)
+        } else {
+            console.log(res)
+            setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
+            setTimeout(() => {
+                setElem(<></>)
+            }, 5000)
+        }
     }
 
     return (
         <div className='flex-col step-form'>
             <h2>Registrieren</h2>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</label>
+                <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
                 <input
                     type='text'
                     value={username}
@@ -62,7 +76,7 @@ function Register() {
                 />
             </div>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</label>
+                <p style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</p>
                 <input
                     type='email'
                     value={email}
@@ -73,7 +87,7 @@ function Register() {
                 />
             </div>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</label>
+                <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
                 <input
                     type='password'
                     value={password}
@@ -84,7 +98,7 @@ function Register() {
                 />
             </div>
             <div className='flex-row'>
-                <label style={{alignSelf: 'center', marginRight: '1em'}}>Passwort Wiederholen:</label>
+                <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort Wiederholen:</p>
                 <input
                     type='password'
                     value={passwordCheck}
