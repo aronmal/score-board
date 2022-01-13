@@ -22,7 +22,7 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
         await logging('Uncaught error, giving it to the error-handling middleware.', ['debug'], req);
         return next(new Error('An unknown error occurred!'));
     }
-    await logging('Request served' + JSON.stringify(status), ['post'], req);
+    await logging('Request served ' + JSON.stringify(status), ['post'], req);
     if (!status.body) {
         res.sendStatus(status.code);
         return;
