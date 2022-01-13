@@ -5,7 +5,7 @@
 
 # production
 /build
+/log
 
 # dotenv
 .env
-request.rest

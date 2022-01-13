@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Tokens, Users, Groups, statusRes } from "./schemas";
 import bcrypt from "bcrypt";
-import { debugLog, warnLog, errorLog } from "./logging";
+import { logging } from "./logging";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { jwtVerfiyCatch } from "./helpers";
@@ -14,21 +14,21 @@ export async function register(req: Request, _res: Response) {
         user = await Users.create({ uuid: uuidv4(), username: username, email: email, password: bcrypt.hashSync(password, 10) });
     } catch (err: any) {
         if (err.code === 11000) {
-            warnLog(`Duplicate key error while creating User in DB!`);
+            logging(`Duplicate key error while creating User in DB!`, ['warn'], req);
             status.code = 409;
         } else {
-            errorLog(`Unknown error while creating User in DB.`);
+            logging(`Unknown error while creating User in DB.`, ['error'], req);
             status.code = 500;
         }
         return status;
     }
 
     if (status.code !== undefined) {
-        errorLog('Early exit: ' + JSON.stringify(status));
+        logging('Early exit: ' + JSON.stringify(status), ['error'], req);
         return status;
     }
     status.code = 201;
-    debugLog('[INFO] User created : '.cyan + user._id);
+    logging('User created : ' + user._id, ['debug','info.cyan'], req);
     return status;
 }
 
@@ -41,13 +41,13 @@ export async function login(req: Request, res: Response) {
     if (oldDBToken && !oldDBToken.used) {
         oldDBToken.used = true;
         oldDBToken.save();
-        debugLog('Old token has been invalidated.')
+        logging('Old token has been invalidated.', ['debug'], req)
     }
 
     const userByName = await Users.findOne({ username: username });
     const userByEmail = await Users.findOne({ email: username });
     if (!userByName && !userByEmail) {
-        errorLog('User not found in DB!');
+        logging('User not found in DB!', ['error'], req);
         status.code = 401;
         return status;
     }
@@ -63,7 +63,7 @@ export async function login(req: Request, res: Response) {
     const createdDBToken = await Tokens.create({ token: refreshToken, owner: user._id, expiresIn: Date.now() + 172800000 });
 
     if (status.code !== undefined) {
-        errorLog('Early exit: ' + JSON.stringify(status));
+        logging('Early exit: ' + JSON.stringify(status), ['error'], req);
         return status;
     }
     status.code = 200;
@@ -77,7 +77,7 @@ export async function login(req: Request, res: Response) {
             secure: true,
         }
     );
-    debugLog('[INFO] User '.cyan + user._id + ' logged in and generated Refresh-Token: '.cyan + createdDBToken._id)
+    logging('User ' + user._id + ' logged in and generated Refresh-Token: ' + createdDBToken._id, ['debug','info.cyan'], req)
     return status;
 }
 
@@ -85,30 +85,30 @@ export async function logout(req: Request, res: Response) {
     let status = {} as statusRes;
     const oldRefreshToken: string = req.cookies.token
     if (!oldRefreshToken) {
-        errorLog('No Access-Token cookie present!');
+        logging('No Access-Token cookie present!', ['error'], req);
         status.code = 200;
         return status;
     }
 
     const oldDBToken = await Tokens.findOne({ token: oldRefreshToken });
     if (!oldDBToken) {
-        warnLog('Old Access-Token not found in DB!');
+        logging('Old Access-Token not found in DB!', ['warn'], req);
         status.code = 200;
         return status;
     }
     if (!oldDBToken.used) {
         oldDBToken.used = true;
         oldDBToken.save();
-        debugLog('Old token has been invalidated.')
+        logging('Old token has been invalidated.', ['debug'], req)
     }
 
     if (status.code !== undefined) {
-        errorLog('Early exit: ' + JSON.stringify(status));
+        logging('Early exit: ' + JSON.stringify(status), ['error'], req);
         return status;
     }
     status.code = 200;
     res.clearCookie;
-    debugLog('[INFO] User of Token '.cyan + oldDBToken._id + ' logged out.'.cyan )
+    logging('User of Token ' + oldDBToken._id + ' logged out.', ['debug','info.cyan'], req)
     return status;
 }
 
@@ -120,30 +120,30 @@ export async function auth(req: Request, _res: Response) {
     try {
         refreshTokenData = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string);            
     } catch (err: any) {
-        jwtVerfiyCatch('refreshToken', refreshToken, err, status);
+        jwtVerfiyCatch('refreshToken', refreshToken, err, status, req);
         return status;
     }
     if (typeof refreshTokenData === 'string') {
-        errorLog('Refresh-Token was a string. Token: ' + refreshToken);
+        logging('Refresh-Token was a string. Token: ' + refreshToken, ['error'], req);
         status.code = 401;
         return status;
     }
 
     const DBToken = await Tokens.findOne({ token: refreshToken });
     if (!DBToken) {
-        errorLog('Refresh-Token not found in DB!');
+        logging('Refresh-Token not found in DB!', ['error'], req);
         status.code = 401;
         return status;
     }
     if (DBToken.used) {
-        warnLog('DBToken was already used!');
+        logging('DBToken was already used!', ['warn'], req);
         status.code = 401;
         return status;
     }
     
     const user = await Users.findOne({ uuid: refreshTokenData.user });
     if (!user) {
-        errorLog('User of Refresh-Token not found in DB!');
+        logging('User of Refresh-Token not found in DB!', ['error'], req);
         status.code = 401;
         return status;
     }
@@ -153,12 +153,12 @@ export async function auth(req: Request, _res: Response) {
     const createdDBToken = await Tokens.create({ token: accessToken, owner: user._id, expiresIn: Date.now() + 15000 });
 
     if (status.code !== undefined) {
-        errorLog('Early exit: ' + JSON.stringify(status));
+        logging('Early exit: ' + JSON.stringify(status), ['error'], req);
         return status;
     }
     status.code = 200;
     status.body = { token: accessToken };
-    debugLog('[INFO] Access-Token generated: '.cyan + createdDBToken._id + ' with Refreshtoken-Token: '.cyan + DBToken._id);
+    logging('Access-Token generated: ' + createdDBToken._id + ' with Refreshtoken-Token: ' + DBToken._id, ['debug','info.cyan'], req);
     return status;
 }
 
@@ -169,12 +169,12 @@ export async function newgroup(req: Request, _res: Response) {
 
     const DBToken = await Tokens.findOne({ token: accessToken });
     if (!DBToken) {
-        errorLog('Access-Token not found in DB!');
+        logging('Access-Token not found in DB!', ['error'], req);
         status.code = 401;
         return status;
     }
     if (DBToken.used) {
-        warnLog('DBToken was already used!');
+        logging('DBToken was already used!', ['warn'], req);
         status.code = 401;
         return status;
     }
@@ -183,11 +183,11 @@ export async function newgroup(req: Request, _res: Response) {
     try {
         accessTokenData = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string);            
     } catch (err: any) {
-        jwtVerfiyCatch('accessToken', accessToken, err, status);
+        jwtVerfiyCatch('accessToken', accessToken, err, status, req);
         return status;
     }
     if (typeof accessTokenData === 'string') {
-        errorLog('accessTokenData was a string. Token: ' + accessToken);
+        logging('accessTokenData was a string. Token: ' + accessToken, ['error'], req);
         status.code = 401;
         return status;
     }
@@ -197,7 +197,7 @@ export async function newgroup(req: Request, _res: Response) {
 
     const user = await Users.findOne({ uuid: accessTokenData.user });
     if (!user) {
-        errorLog('User of Access-Token not found in DB!');
+        logging('User of Access-Token not found in DB!', ['error'], req);
         status.code = 401;
         return status;
     }
@@ -209,10 +209,10 @@ export async function newgroup(req: Request, _res: Response) {
     user.save();
 
     if (status.code !== undefined) {
-        errorLog('Early exit: ' + JSON.stringify(status));
+        logging('Early exit: ' + JSON.stringify(status), ['error'], req);
         return status;
     }
     status.code = 201;
-    debugLog('[INFO] Group created: '.cyan + group._id + ' with Access-Token: '.cyan + DBToken._id);
+    logging('Group created: ' + group._id + ' with Access-Token: ' + DBToken._id, ['debug','info.cyan'], req);
     return status;
 }

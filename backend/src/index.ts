@@ -1,20 +1,20 @@
 import fs from 'fs';
-import colors from 'colors';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
-import { errorLog } from './logging';
+import { logStartup, logging } from './logging';
 import { register, login, logout, auth, newgroup } from './routes';
 import { errorHandling, routeCatch } from './helpers';
-colors.enable();
 const app = express();
+
+logStartup();
 
 // Check for dotenv file, otherwise generate one
 if (fs.existsSync('.env')) {
     dotenv.config();
-    console.log('[INFO] '.green + `'.env' file was found.`)
+    logging(`'.env' file was found.`, ['info.green']);
 } else {
     let newEnv = '\n';
     newEnv = (newEnv + '# Refresh-Token secret for Refresh-Token in cookie:' + '\n');
@@ -27,44 +27,44 @@ if (fs.existsSync('.env')) {
     newEnv = (newEnv + '### CORS_HOST=https://scoreboard.your-domain.com' + '\n');
     newEnv = (newEnv + '# API port:' + '\n');
     newEnv = (newEnv + '### API_PORT=5000' + '\n');
-    console.log('[WARN] '.yellow + `No '.env' file was found. A new one was generated.`);
+    logging(`No '.env' file was found. A new one was generated.`, ['warn']);
     fs.writeFileSync('.env', newEnv);
     dotenv.config();
 }
 
 // Check for dotenv file variables, otherwise throw error
 if (process.env.ACCESS_TOKEN_SECRET === undefined) {
-    errorLog(`ACCESS_TOKEN_SECRET is undefined! Delete the '.env' file, a new one will be generated on startup.`);
+    logging(`ACCESS_TOKEN_SECRET is undefined! Delete the '.env' file, a new one will be generated on startup.`, ['error']);
     process.exit(0);
 }
 if (process.env.REFRESH_TOKEN_SECRET === undefined) {
-    errorLog(`REFRESH_TOKEN_SECRET is undefined! Delete the '.env' file, a new one will be generated on startup.`);
+    logging(`REFRESH_TOKEN_SECRET is undefined! Delete the '.env' file, a new one will be generated on startup.`, ['error']);
     process.exit(0);
 }
 if (process.env.MONGO_DB === undefined) {
-    errorLog(`MONGO_DB is undefined! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make sure to uncomment it.`);
+    logging(`MONGO_DB is undefined! Open the '.env' file, edit the MONGO_DB parameter by entering the path for your database and make sure to uncomment it.`, ['error']);
     process.exit(0);
 }
 if (process.env.CORS_HOST === undefined) {
-    errorLog(`CORS_HOST is undefined! Open the '.env' file, edit the CORS_HOST parameter by entering the hostname for your website and make sure to uncomment it.`);
+    logging(`CORS_HOST is undefined! Open the '.env' file, edit the CORS_HOST parameter by entering the hostname for your website and make sure to uncomment it.`, ['error']);
     process.exit(0);
 }
 if (process.env.API_PORT === undefined) {
-    errorLog(`API_PORT is undefined! Open the '.env' file, edit the API_PORT parameter by entering the port for your backend and make sure to uncomment it.`);
+    logging(`API_PORT is undefined! Open the '.env' file, edit the API_PORT parameter by entering the port for your backend and make sure to uncomment it.`, ['error']);
     process.exit(0);
 }
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_DB, err => {
     if (err) {
-        errorLog('MongoDB connection error!');
+        logging('MongoDB connection error!', ['error']);
         process.exit(0);
     }
-    console.log('[INFO] '.green + 'Connected with Mongo!');
+    logging('Connected with Mongo!', ['info.green']);
 });
 
 // Start listening on port 5000
-app.listen(process.env.API_PORT, () => console.log('[INFO] '.cyan + `Server running on: ${process.env.CORS_HOST}:${process.env.API}`))
+app.listen(+process.env.API_PORT, () => logging(`Server running on: ${process.env.CORS_HOST}:${process.env.API}`, ['info.cyan']))
 
 // Middlewares
 app.use(express.json());
