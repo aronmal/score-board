@@ -6,13 +6,13 @@ colors.enable();
 export async function logStartup() {
     await fs.promises.stat('log').catch(async () => {
         await fs.promises.mkdir('log');
-        logging(`Created 'log' Folder.`, ['info.cyan']);
+        await logging(`Created 'log' Folder.`, ['info.cyan']);
     })
 }
 
 export async function logging(message: string, types: string[], req?: Request) {
     let messages = { console: message, file: message }
-    types.slice().reverse().forEach((type) => {
+    types.slice().reverse().forEach(async (type) => {
         if (type === 'info.green') {
             messages.console = '[INFO] '.green + messages.console;
             messages.file = '[INFO] ' + messages.file;
@@ -32,7 +32,7 @@ export async function logging(message: string, types: string[], req?: Request) {
             messages.console = '[ERROR] '.red + messages.console;
             messages.file = '[ERROR] ' + messages.file;
         } else {
-            logging('Invalid logging argument! The Argument was: ' + type, ['error']);
+            await logging('Invalid logging argument! The Argument was: ' + type, ['error']);
         }
     })
     messages.console = `[${new Date().toString().slice(0, 33)}] ` + messages.console;

@@ -2,12 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { logging } from "./logging";
 import { statusRes } from "./schemas";
 
-
 export async function routeCatch(route: any, req: Request, res: Response, next: NextFunction) {
     if (typeof route !== 'function')
-        logging('Unexpected Error: Non-function argument', ['error'], req);
+        await logging('Unexpected Error: Non-function argument', ['error'], req);
     if (route.status !== undefined) {
-        logging(route.message, ['error'], req);
+        await logging(route.message, ['error'], req);
         res.sendStatus(route.status);
         return;
     }
@@ -16,14 +15,14 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
         status = await route(req, res);
     } catch (err: any) {
         status.status = 'caughtError';
-        logging('Catched error, giving it to the error-handling middleware.', ['debug'], req);
+        await logging('Catched error, giving it to the error-handling middleware.', ['debug'], req);
         return next(err);
     }
     if (status.code === undefined || status.status === 'caughtError') {
-        logging('Uncaught error, giving it to the error-handling middleware.', ['debug'], req);
+        await logging('Uncaught error, giving it to the error-handling middleware.', ['debug'], req);
         return next(new Error('An unknown error occurred!'));
     }
-    logging('Request served' + JSON.stringify(status), ['post'], req);
+    await logging('Request served' + JSON.stringify(status), ['post'], req);
     if (!status.body) {
         res.sendStatus(status.code);
         return;
@@ -31,24 +30,24 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
     res.status(status.code).json(status.body);
 }
 
-export function errorHandling(err: any, req: Request, res: Response, _next: NextFunction) {
+export async function errorHandling(err: any, req: Request, res: Response, _next: NextFunction) {
     res.sendStatus(500)
-    logging(err.message, ['error'], req);
-    logging('Request served with status 500', ['post', 'warn'], req);
+    await logging(err.message, ['error'], req);
+    await logging('Request served with status 500', ['post', 'warn'], req);
 }
 
-export function jwtVerfiyCatch(tokenType: string, token: string, err:any, status: statusRes, req: Request) {
+export async function jwtVerfiyCatch(tokenType: string, token: string, err:any, status: statusRes, req: Request) {
     if (err.message === 'jwt expired') {
-        logging(`JWT (${tokenType}) expired!`, ['warn'], req);
+        await logging(`JWT (${tokenType}) expired!`, ['warn'], req);
         status.code = 403;
     } else if (err.message === 'invalid signature') {
-        logging(`Invalid JWT (${tokenType}) signature! Token: ` + token, ['error'], req);
+        await logging(`Invalid JWT (${tokenType}) signature! Token: ` + token, ['error'], req);
         status.code = 401;
     } else if (err.message === 'jwt must be provided') {
-        logging(`No JWT (${tokenType}) given.`, ['error'], req);
+        await logging(`No JWT (${tokenType}) given.`, ['error'], req);
         status.code = 401;
     } else {
-        logging(`Unknown error on 'JWT.verify()'.`, ['error'], req);
+        await logging(`Unknown error on 'JWT.verify()'.`, ['error'], req);
         status.code = 500;
     }
 }
