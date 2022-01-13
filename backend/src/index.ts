@@ -67,7 +67,7 @@ async function startup() {
     });
 
     // Start listening on port 5000
-    app.listen(+process.env.API_PORT, async () => await logging(`Server running on: ${process.env.CORS_HOST}:${process.env.API}`, ['info.cyan']))
+    app.listen(+process.env.API_PORT, async () => await logging(`Server running on: ${process.env.CORS_HOST}:${process.env.API_PORT}`, ['info.cyan']))
     
     // Middlewares
     app.use(express.json());
