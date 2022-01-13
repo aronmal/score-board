@@ -64,9 +64,10 @@ function Register() {
     return (
         <div className='flex-col step-form'>
             <h2>Registrieren</h2>
-            <div className='flex-row'>
+            <div className='grid-2-col'>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
                 <input
+                    className='input-box'
                     type='text'
                     value={username}
                     onChange={e => setUsername(e.target.value)}
@@ -74,10 +75,9 @@ function Register() {
                         if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
-            </div>
-            <div className='flex-row'>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</p>
                 <input
+                    className='input-box'
                     type='email'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
@@ -85,10 +85,9 @@ function Register() {
                         if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
-            </div>
-            <div className='flex-row'>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
                 <input
+                    className='input-box'
                     type='password'
                     value={password}
                     onChange={e => setPassword(e.target.value)}
@@ -96,10 +95,9 @@ function Register() {
                         if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
                     }}
                 />
-            </div>
-            <div className='flex-row'>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort Wiederholen:</p>
                 <input
+                    className='input-box'
                     type='password'
                     value={passwordCheck}
                     onChange={e => setPasswordCheck(e.target.value)}
@@ -109,9 +107,7 @@ function Register() {
                 />
             </div>
             <div className='steps'>
-                <div className='flex-row' style={{float: 'right'}}>
-                <button className='step-button' onClick={() => register()}>{'Registrieren \u279C'}</button>
-                </div>
+                <button className='next-step-button' style={{float: 'right'}} onClick={() => register()}>{'Registrieren \u279C'}</button>
             </div>
             { elem }
         </div>

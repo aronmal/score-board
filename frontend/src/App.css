@@ -180,13 +180,28 @@ footer {
 
 
 
+.grid-2-col {
+  display: grid;
+  grid-template-columns: auto 50%;
+}
 .step-form {
-  /* border: 1px solid red; */
-  width: 60%;
-  /* max-width: 50%; */
+  width: clamp(25em, 50%, 40em);
   font-size: 2em;
   margin: 0 auto;
-  /* text-align: center; */
+}
+.step-form .input-box {
+  outline: none;
+  margin: .1em 0;
+  border: 1px solid gray;
+}
+.step-form .input-box:focus-visible, .teamname-input:hover, .teamname-input:focus-visible {
+  border-color: var(--gbs-color);
+  border-style: solid;
+}
+.step-form input[type='radio']:focus-visible {
+  outline-offset: .1em;
+  outline-style: solid;
+  outline-color: var(--gbs-color);
 }
 .step-form > *, textarea {
   margin: .125em 0;
@@ -246,12 +261,15 @@ textarea {
 .steps {
   margin: 2em 0;
 }
-.step-button {
+.next-step-button {
   background: var(--gbs-color);
   color: #fff;
   border: 0;
   padding: 8px 12px;
   cursor: pointer;
+}
+.next-step-button:hover, .next-step-button:focus-visible {
+  background-color: skyblue;
 }
 .step-info {
   padding: 0 2em;

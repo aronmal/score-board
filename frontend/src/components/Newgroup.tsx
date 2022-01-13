@@ -230,10 +230,10 @@ function New() {
       </> : <></>}
       <div className='steps'>
         {(currentStep === 0) ? <></> :
-        <button className='step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
+        <button className='next-step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
         <div className='flex-row' style={{float: 'right'}}>
           <p className='step-info'>Schritt {currentStep + 1} von {elemsCount}</p>
-          <button className='step-button' onClick={() => nextStep()}>{(currentStep === (elemsCount - 1)) ? 'Gruppe erstellen' : 'Weiter \u279C'}</button>
+          <button className='next-step-button' onClick={() => nextStep()}>{(currentStep === (elemsCount - 1)) ? 'Gruppe erstellen' : 'Weiter \u279C'}</button>
         </div>
       </div>
       { elem }
