@@ -47,7 +47,7 @@ function Login() {
     return (
         <div className='flex-col step-form'>
             <h2>Login</h2>
-            <div className="grid-2-col">
+            <div className="grid-2-col-auto-50">
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>
                 <input
                     className='input-box'

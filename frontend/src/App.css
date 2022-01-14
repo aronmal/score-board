@@ -13,6 +13,24 @@
   margin: 0;
   padding: 0;
 }
+*:focus-visible {
+  outline: none;
+}
+button, button span, .logo-a, .active, .card, .svg-symbol, input, textarea, .player-list > div p {
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+button:hover, button:focus-visible,
+button:hover span, button:focus-visible span,
+.logo-a:hover, .logo-a:focus-visible,
+.active:hover, .active:focus-visible,
+.card-a:hover .card, .card-a:focus-visible .card,
+input:focus-visible, textarea:focus-visible,
+.player-list > div:hover p,
+.player-list > div:focus-visible p {
+  transition: .2s;
+  -webkit-transition: .2s;
+}
 .flex-row{
   display: flex;
   flex-direction: row;
@@ -63,6 +81,9 @@ a{
   width: 64px;
   margin: 0 1em;
 }
+.logo-a:hover, .logo-a:focus-visible {
+  transform: scale(1.05);
+}
 
 #fonts {
   display: flex;
@@ -90,7 +111,7 @@ a{
 .svg-navlink {
   fill: var(--svg-navlink-color);
 }
-.navlink:not(.active):hover > p{
+.navlink:not(.active):hover > p, .navlink:not(.active):focus-visible > p {
   border-top: .25rem solid transparent;
   border-bottom: .25rem solid var(--gbs-color);
 }
@@ -98,6 +119,9 @@ a{
   color: white;
   --svg-navlink-color: white ;
   background: var(--gbs-color);
+}
+.active:hover, .active:focus-visible {
+  transform: scale(1.05);
 }
 
 #logo {
@@ -135,23 +159,19 @@ a{
 }
 .card {
   color: var(--svg-symbol-color);
-  --svg-symbol-color: grey;
+  --svg-symbol-color: gray;
   height: 6em;
   width: 10em;
   font-size: 3em;
   align-items: center;
   border-radius: .5em;
   box-shadow: 0 0 .5em gray;
-  transition: .2s;
-  -webkit-transition: .2s;
 }
-.card:hover {
+.card-a:hover .card, .card-a:focus-visible .card {
   color: var(--svg-symbol-color);
   --svg-symbol-color: black;
   box-shadow: 0 0 .75em var(--gbs-color);
   transform: scale(1.05);
-  transition: .2s;
-  -webkit-transition: .2s;
 }
 .card > * {
   box-sizing: content-box;
@@ -163,8 +183,6 @@ a{
 }
 .svg-symbol {
   fill: var(--svg-symbol-color);
-  transition: .2s;
-  -webkit-transition: .2s;
 }
 
 footer {
@@ -173,16 +191,26 @@ footer {
   font-size: 1.25em;
   padding: 1em 0;
 }
+.link:hover, .link:focus-visible {
+  color: lightgray;
+}
 
 #secret {
   cursor: wait;
 }
 
 
-
-.grid-2-col {
+.grid-2-col-auto-50 {
   display: grid;
   grid-template-columns: auto 50%;
+}
+.grid-team-playernames {
+  display: grid;
+  grid-gap: .25em;
+}
+.playername-columns-input {
+  margin-left: auto !important;
+  width: 2em;
 }
 .step-form {
   width: clamp(25em, 50%, 40em);
@@ -232,6 +260,11 @@ textarea {
   border: 0;
   padding: 8px;
   cursor: pointer;
+  height: 1.75em;
+  margin: .1em 0;
+}
+.add-player-button:hover, .add-player-button:focus-visible {
+  background-color: limegreen;
 }
 .player-input {
   margin: .5em 0 2em 0;
@@ -244,19 +277,148 @@ textarea {
 }
 .player-list > div {
   margin: .25em .5em .25em 0;
-  overflow: hidden;
   border: 1px solid gray;
 }
 .player-list p {
   align-self: center;
-  padding: 0.125em .5em;
+  padding: 0.125em .625em;
 }
-.player-list button {
+.player-x-button {
   background: red;
   color: #fff;
   border: 0;
-  padding: 0 .5rem;
+  padding: 0;
   cursor: pointer;
+  height: 1.5em;
+}
+.player-list > div:hover p {
+  cursor: default;
+}
+.player-list > div:hover .player-x-button, .player-x-button:focus-visible {
+  padding: 0 .5rem;
+}
+.player-x-button span {
+  opacity: 0;
+}
+.player-list > div:hover span, .player-x-button:focus-visible span {
+  opacity: 1;
+}
+
+.player-list > div:hover p, .player-list > div:focus-visible p {
+  padding: 0.125em .375em;
+}
+.team-div {
+  position: relative;
+  border-bottom: .125em solid var(--gbs-color);
+}
+.team-div-real {
+  width: 80vw;
+  align-self: center;
+}
+.team-div > div > svg {
+  box-sizing: content-box;
+  padding: 0 .5em;
+}
+.team-div > div {
+  align-items: center;
+}
+.team-div:nth-child(1) {
+  padding-bottom: .325em;
+}
+.add-team-button {
+  color: white;
+  background-color: limegreen;
+  border: 0;
+  width: 5em;
+  padding: 0;
+  height: 1.25em;
+  justify-self: center;
+}
+.add-team-button:hover, .add-team-button:focus-visible {
+  background-color: green;
+}
+  .teamname-input {
+  width: 7em;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.playername-in-team {
+  font-size: 1em;
+  background-color: transparent;
+  height: 1.75em;
+  width: 100%;
+  padding: 0 .25em;
+}
+.team-player-edit-button {
+  background: green;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  top: -.5em;
+  right: .625em;
+  border-radius: 50%;
+  height: 1em;
+  width: 1em;
+  display: none;
+}
+.team-player-edit-button svg {
+  background: transparent;
+  color: #fff;
+  font-size: 1.5em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+.team-player-edit-button path {
+  fill: #fff;
+}
+.team-minus-button {
+  background: red;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  top: -.5em;
+  left: -.5em;
+  border-radius: 50%;
+  height: 1em;
+  width: 1em;
+}
+.team-minus-button span {
+  background: transparent;
+  color: #fff;
+  font-size: 1.5em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+.team-player-minus-button {
+  background: red;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  position: absolute;
+  top: -.5em;
+  right: -.5em;
+  border-radius: 50%;
+  height: 1em;
+  width: 1em;
+  display: none;
+}
+.team-player-minus-button span {
+  background: transparent;
+  color: #fff;
+  font-size: 1.5em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+.player-in-team-div > .playername-in-team:hover > .team-player-minus-button, .player-in-team-div > .playername-in-team:hover > .team-player-edit-button, .player-in-team-div > .playername-in-team:focus-visible > .team-player-minus-button, .player-in-team-div > .playername-in-team:focus-visible > .team-player-edit-button {
+  display: inherit;
 }
 .steps {
   margin: 2em 0;

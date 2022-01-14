@@ -64,7 +64,7 @@ function Register() {
     return (
         <div className='flex-col step-form'>
             <h2>Registrieren</h2>
-            <div className='grid-2-col'>
+            <div className='grid-2-col-auto-50'>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
                 <input
                     className='input-box'

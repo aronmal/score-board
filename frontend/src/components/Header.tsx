@@ -16,7 +16,7 @@ function Header() {
     <header>
       <p id='top-banner'>This webpage is under construction and is not finished yet!</p>
       <div id='top-header'>
-        <Link className="flex-row" to='/'>
+        <Link className='flex-row logo-a' to='/'>
           <img id='logo-icon' src="/images/logo192.png" alt="logo" />
           <p id='logo'>Score:Board</p>
         </Link>
