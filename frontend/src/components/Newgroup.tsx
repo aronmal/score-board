@@ -15,7 +15,7 @@ function New() {
   const [groupnameInput, setGroupnameInput] = useState('');
   const [groupname, setGroupname] = useState('');
   const [description, setDescription] = useState('');
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(true);
   const [playernameAllowInput, setPlayernameAllowInput] = useState(true);
   const [playernameInput, setPlayernameInput] = useState('');
   const [playername, setPlayername] = useState('');
@@ -23,8 +23,9 @@ function New() {
   const [playerlist, setPlayerlist] = useState(<></>);
   const [teams, setTeams] = useState<{ uuid:string, name:string, players: { uuid:string, name:string }[] }[]>([]);
   const [teamlist, setTeamlist] = useState(<></>);
-  const [playernameColumns, setPlayernameColumns] = useState(1);
-  const elemsCount = 3
+  const [playernameColumns, setPlayernameColumns] = useState(2);
+  const [doTeams, setDoTeams] = useState(false);
+  const [elemsCount, setElemsCount] = useState(3);
   const groupnameError = 'Bitte Name eingeben!'
   const playernameError = 'Name bereits vergeben!'
 
@@ -47,56 +48,6 @@ function New() {
     }
     setPlayername(validate(playernameInput))
   }, [playernameInput])
-
-  const nextStep = async () => {
-    if (currentStep === (elemsCount - 1)){
-      const token = await auth(setElem)
-      if (!token)
-        return;
-
-      const res = await fetch('/api/newgroup', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify((description === '' ) ? { groupname, description: 'Keine Beschreibung', isPublic , players, token } : { groupname, description, isPublic , players, token }),
-      }).catch((err: Error) => {
-        console.log(err)
-        setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-        setTimeout(() => {
-            setElem(<></>)
-        }, 5000)
-      });
-      if (!res)
-        return;
-      if (res.status === 201) {
-        setElem(<Navigate to='/dashboard' />)
-      } else {
-        setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 5000)
-      }
-    }
-
-    if (currentStep === 0) {
-      if (!groupnameAllowInput)
-        return
-  
-      if (groupname === '') {
-        console.log('[WARN] groupname is empty!')
-        setGroupnameAllowInput(false)
-        setGroupnameInput(groupnameError)
-        setTimeout(() => {
-          setGroupnameInput('')
-          setGroupnameAllowInput(true)
-        }, 2000)
-        return
-      }
-      setCurrentStep(e => (e + 1))
-    }
-
-    if (currentStep === 1)
-      setCurrentStep(e => (e + 1))
-  };
 
   const addPlayer = () => {
     if (!playernameAllowInput)
@@ -127,12 +78,14 @@ function New() {
       let match = players.findIndex((e) => e.uuid === theButton.target.parentElement.id)
       setPlayers((prev) => {let old = [...prev]; old.splice(match, 1); return old})
     }
-    setPlayerlist(<> {players.map(({ uuid, name }) => (
-      <div  id={uuid} key={uuid} className='flex-row'>
-        <p>{ name }</p>
-        <button className='player-x-button' onClick={e => removePlayer(e)}><span>{'\u2A2F'}</span></button>
-      </div>
-    )) }</>)
+    setPlayerlist(<>
+      {players.map(({ uuid, name }) => (
+        <div  id={uuid} key={uuid} className='flex-row'>
+          <p>{ name }</p>
+          <button className='player-x-button' onClick={e => removePlayer(e)}><span>{'\u2A2F'}</span></button>
+        </div>
+      ))}
+    </>)
   }, [players])
 
   const [teamname, setTeamname] =useState('Team 1')
@@ -181,13 +134,6 @@ function New() {
 
             {team.players.map((player) => (
               <div id={ player.uuid } key={ player.uuid } className='player-in-team-div'>
-                {/* <input className='playername-in-team input-box' type="text" /> */}
-                {/* <select className='playername-in-team input-box'>
-                  <option value="" disabled selected>Auswählen...</option>
-                  {players.map(({ uuid, name}) => (
-                      <option key={ uuid } value={ uuid }>{ name }</option>
-                    ))}
-                </select> */}
                 <input className='playername-in-team input-box' type="text" list="namelist" placeholder='Spielername'/>
                 <datalist id="namelist">
                   {players.map(({ uuid, name}) => (
@@ -202,33 +148,71 @@ function New() {
           </div>
         </div>
       ))}
-
-    {/* {players.map(({ uuid, name }) => (
-      {/* <div className="flex-row player-input" style={{justifyContent: 'flex-start'}}>
-        <button className='add-player-button' onClick={() => addPlayer()}>{ '\u002B' }</button>
-      </div> */
-      
-
-      /* <input
-        type='text'
-        style={(playernameInput === playernameError) ? {color: 'red'} : {}}
-        className='teamname-input'
-        value={ 'Team 1' }
-      /> */}
-      </>)
+    </>)
   }, [players,teams,teamname,playernameColumns])
 
-  if (!isLoggedIn) {
-    setTimeout(() => {
-      setElem(<Navigate to='/' />)
-    }, 2000);
-    return <div>{elem}</div>
-  }
+  useEffect(() => {
+    if (!doTeams)
+      setElemsCount(2)
+    else
+      setElemsCount(3)
+  }, [doTeams])
+
+  async function nextStep() {
+    if (currentStep === (elemsCount - 1)){
+      const token = await auth(setElem)
+      if (!token)
+        return;
+
+      const res = await fetch('/api/newgroup', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify((description === '' ) ? { groupname, description: 'Keine Beschreibung', isPublic , players, token } : { groupname, description, isPublic , players, token }),
+      }).catch((err: Error) => {
+        console.log(err)
+        setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
+        setTimeout(() => {
+            setElem(<></>)
+        }, 5000)
+      });
+      if (!res)
+        return;
+      if (res.status === 201) {
+        setElem(<Navigate to='/dashboard' />)
+      } else {
+        setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
+        setTimeout(() => {
+          setElem(<></>)
+        }, 5000)
+      }
+    }
+
+    if (currentStep === 0) {
+      if (!groupnameAllowInput)
+        return
+  
+      if (groupname === '') {
+        console.log('[WARN] groupname is empty!')
+        setGroupnameAllowInput(false)
+        setGroupnameInput(groupnameError)
+        setTimeout(() => {
+          setGroupnameInput('')
+          setGroupnameAllowInput(true)
+        }, 2000)
+        return
+      }
+      setCurrentStep(1)
+    }
+
+    if (currentStep === 1 && doTeams)
+      setCurrentStep(2)
+  };
+
+  if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
     <div className='flex-col step-form'>
-      {(currentStep === 0) ?
-      <>
+      {(currentStep === 0) ? <>
         <h2 style={(groupname === '' || groupname === groupnameError) ? {borderBottom: '.25rem solid transparent'} : {borderBottom: '.25rem solid var(--gbs-color)'}}>{(groupname === '' || groupname === groupnameError) ? 'Neue Gruppe' : groupname}</h2>
         <div className='flex-row'>
           <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
@@ -262,34 +246,51 @@ function New() {
             }}
           />
         </div>
-        <div className='flex-row'>
-          <p style={{alignSelf: 'start', marginRight: 'auto'}}>Typ:</p>
-          <div className='flex-row'>
-            <div className='flex-row left'>
-              <input
-                className='radio'
-                type='radio'
-                checked={!isPublic}
-                onChange={() => setIsPublic(false)}
-              />
-              <p>Privat</p>
-            </div>
-            <div className='flex-row left'>
-              <input
-                className='radio'
-                type='radio'
-                checked={isPublic}
-                onChange={() => setIsPublic(true)}
-              />
-              <p>Öffentlich</p>
-            </div>
-          </div>
+        <div className='grid-radios'>
+          <p>Sichtbarkeit:</p>
+          <input
+            className='radio'
+            type='radio'
+            checked={isPublic}
+            onChange={() => setIsPublic(true)}
+          />
+          <p>Öffentlich</p>
+          <input
+            className='radio'
+            type='radio'
+            checked={!isPublic}
+            onChange={() => setIsPublic(false)}
+          />
+          <p>Privat</p>
+          <p>Einteilung:</p>
+          <input
+            className='radio'
+            type='radio'
+            checked={!doTeams}
+            onChange={() => setDoTeams(false)}
+          />
+          <p>Einzelspieler</p>
+          <input
+            className='radio'
+            type='radio'
+            checked={doTeams}
+            onChange={() => setDoTeams(true)}
+          />
+          <p>Teams</p>
         </div>
       </> : <></>}
-      {(currentStep === 2) ?
-      <>
-        <h2>Spieler hinzufügen zu <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
-        {/* <div className="flex-row player-input" style={{justifyContent: 'flex-start'}}>
+      {(currentStep === 1 && !doTeams) ? <>
+        <div className='flex-row'>
+          <h2>Spieler hinzufügen zu <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
+          <input
+            className='playername-columns-input input-box'
+            type='number'
+            min='2'
+            max='6'
+            value={playernameColumns}
+            onChange={e => setPlayernameColumns(+e.target.value)}/>
+        </div>
+        <div className="flex-row player-input" style={{justifyContent: 'flex-start'}}>
           <input
             autoFocus
             className='add-player-input input-box'
@@ -309,7 +310,7 @@ function New() {
             }}
             />
           <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
-        </div> */}
+        </div>
         <div className='flex-row player-list'>
           {playerlist}
           {(playername === '') ? <></> :
@@ -318,14 +319,13 @@ function New() {
           </div> }
         </div>
       </> : <></>}
-      {(currentStep === 1) ?
-      <>
+      {(currentStep === 1 && doTeams) ? <>
         <div className='flex-row'>
           <h2>Teams erstellen:</h2>
           <input
             className='playername-columns-input input-box'
             type='number'
-            min='1'
+            min='2'
             max='6'
             value={playernameColumns}
             onChange={e => setPlayernameColumns(+e.target.value)}/>
@@ -340,6 +340,21 @@ function New() {
               <button className='add-team-button input-box' onClick={() => addTeam()}>{ '\u002B' }</button>
             </div>
           </div>
+        </div>
+      </> : <></>}
+      {(currentStep === 2 && doTeams) ? <>
+        <div className='flex-row'>
+          <h2>Spieler von <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
+          <input
+            className='playername-columns-input input-box'
+            type='number'
+            min='1'
+            max='6'
+            value={playernameColumns}
+            onChange={e => setPlayernameColumns(+e.target.value)}/>
+        </div>
+        <div className='flex-row player-list'>
+          {playerlist}
         </div>
       </> : <></>}
       <div className='steps'>

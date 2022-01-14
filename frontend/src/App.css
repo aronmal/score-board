@@ -207,6 +207,13 @@ footer {
 .grid-team-playernames {
   display: grid;
   grid-gap: .25em;
+  justify-items: center;
+}
+.grid-radios {
+  display: grid;
+  grid-template-columns: 2fr repeat(2,.1fr 1fr);
+  grid-gap: .5em;
+  justify-items: left;
 }
 .playername-columns-input {
   margin-left: auto !important;
@@ -252,7 +259,7 @@ textarea {
   height: .75em;
   width: .75em;
   align-self: center;
-  margin: 0 1em 0 5em;
+  justify-self: right;
 }
 .add-player-button {
   background: green;
@@ -312,7 +319,7 @@ textarea {
   border-bottom: .125em solid var(--gbs-color);
 }
 .team-div-real {
-  width: 80vw;
+  width: clamp(100%, 100%, 80vw);
   align-self: center;
 }
 .team-div > div > svg {
@@ -347,6 +354,7 @@ textarea {
   background-color: transparent;
   height: 1.75em;
   width: 100%;
+  max-width: 10em;
   padding: 0 .25em;
 }
 .team-player-edit-button {
@@ -421,7 +429,7 @@ textarea {
   display: inherit;
 }
 .steps {
-  margin: 2em 0;
+  margin: 2em 0 1em;
 }
 .next-step-button {
   background: var(--gbs-color);
