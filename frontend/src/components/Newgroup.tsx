@@ -18,8 +18,8 @@ function New() {
   const [isPublic, setIsPublic] = useState(true);
   const [playernameAllowInput, setPlayernameAllowInput] = useState(true);
   const [playername, setPlayername] = useState('');
-  const [players, setPlayers] = useState<playersType[]>([]);
-  const [teams, setTeams] = useState<teamsType[]>([]);
+  const [players, setPlayers] = useState<playerType[]>([]);
+  const [teams, setTeams] = useState<teamType[]>([]);
   const [playernameColumns, setPlayernameColumns] = useState(2);
   const [doTeams, setDoTeams] = useState(false);
   const [elemsCount, setElemsCount] = useState(3);
@@ -45,7 +45,7 @@ function New() {
       setElemsCount(3)
   }, [doTeams])
 
-  const addPlayer = () => {
+  const addSinglePlayer = () => {
     if (!playernameAllowInput)
       return
 
@@ -122,6 +122,51 @@ function New() {
       setCurrentStep(2)
   };
 
+  const teamByUuid = (teamUuid: string) => teams[teams.findIndex((e) => e.uuid === teamUuid)];
+
+  const addPlayerToTeam = (teamUuid: string) => {
+    const playerUuid = uuidv4()
+    setPlayers(prev => [...prev, { uuid: playerUuid, name: '', team: teamUuid}])
+    const match = teams.findIndex((e) => e.uuid === teamUuid)
+    setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], players: [...prev[match].players, playerUuid]}}))
+  };
+
+  const changePlayername = (e: React.ChangeEvent<HTMLInputElement>, playerUuid: string) => {
+    const match = players.findIndex((e) => e.uuid === playerUuid)
+    setPlayers((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
+  };
+
+  const removePlayerFromTeam = (teamUuid: string, playerUuid: string) => {
+    const teamMatch = teams.findIndex((e) => e.uuid === teamUuid)
+    const playerMatch = players.findIndex((e) => e.uuid === playerUuid)
+    setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== playerUuid)]}}))
+    setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
+  };
+
+  const replacePlayerWithUuidTo = (e: React.ChangeEvent<HTMLInputElement>, teamUuid: string, playerUuid: string) => {
+    const oldPlayerMatchinPlayers = players.findIndex(e => e.uuid === playerUuid)
+    const newPlayerMatchinPlayers = players.findIndex(v => v.uuid === e.target.value)
+    const teamMatch = teams.findIndex(e => e.uuid === teamUuid)
+    const playerMatchinTeams = teams[teamMatch].players.findIndex(e => e === playerUuid)
+    setTeams(prev => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: Object.assign([...prev[teamMatch].players], { [playerMatchinTeams]: e.target.value})}}))
+    setPlayers(prev => Object.assign([...prev.filter((_, i) => i !== oldPlayerMatchinPlayers)], { [newPlayerMatchinPlayers]: {...players[newPlayerMatchinPlayers], team: teamUuid}}))
+  };
+
+  const addTeam = () => {
+    setTeams((prev) => [...prev,{ uuid: uuidv4(), name: `Team ${teamIndexCount}`, players: []}])
+    setTeamIndexCount(e => e + 1);
+  };
+
+  const changeTeamname = (e: React.ChangeEvent<HTMLInputElement>, teamUuid: string) => {
+    const match = teams.findIndex((e) => e.uuid === teamUuid)
+    setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
+  };
+
+  const removeTeam = (teamUuid: string) => {
+    const match = teams.findIndex((e) => e.uuid === teamUuid)
+    setTeams((prev) => [...prev.filter((_, i) => i !== match)])
+  };
+
   // if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
@@ -139,8 +184,14 @@ function New() {
             type='text'
             placeholder='Neue Gruppe'
             value={groupnameInput}
-            onChange={e => {if (e.target.value.length <= 30 && groupnameAllowInput) setGroupnameInput(e.target.value)}}
-            onKeyDown={e => {if (e.code === 'Enter' || e.code === 'NumpadEnter') nextStep()}}
+            onChange={e => {
+              if (e.target.value.length <= 30 && groupnameAllowInput)
+                setGroupnameInput(e.target.value);
+            }}
+            onKeyDown={e => {
+              if (e.code === 'Enter' || e.code === 'NumpadEnter')
+                nextStep();
+            }}
             />
         </div>
         <div className='flex-col'>
@@ -149,7 +200,10 @@ function New() {
             className='input-box'
             placeholder='(optional)'
             value={description}
-            onChange={e => {if (e.target.value.length <= 200) setDescription(validate(e.target.value))}}
+            onChange={e => {
+              if (e.target.value.length <= 200)
+                setDescription(validate(e.target.value));
+            }}
           />
         </div>
         <div className='grid-radios'>
@@ -209,44 +263,52 @@ function New() {
             type='text'
             placeholder='Spielername'
             value={playername}
-            onChange={e => {if (e.target.value.length <= 30 && playernameAllowInput) {
+            onChange={e => {
+              if (e.target.value.length <= 30 && playernameAllowInput) {
                 if (playername === playernameError )
-                  setPlayername('')
+                  setPlayername('');
                 else
-                  setPlayername(validate(e.target.value))
+                  setPlayername(validate(e.target.value));
               }
             }}
-            onKeyDown={e => {if (e.code === 'Enter' || e.code === 'NumpadEnter') addPlayer()}}
+            onKeyDown={e => {
+              if (e.code === 'Enter' || e.code === 'NumpadEnter')
+                addSinglePlayer();
+            }}
             />
-          <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
+          <button className='add-player-button' onClick={() => addSinglePlayer()}>Hinzufügen</button>
         </div> : <></>}
-        <div className='flex-row player-list'>
-          {[...players.filter((v) => v.name !== '')].map(({ uuid, name, team }) => {
+        <div className="grid-team-playernames">
+          {[...players.filter((v) => v.name !== '')].map(({ uuid: playerUuid, name, team: teamUuid }) => {
+            const team = teamByUuid(teamUuid);
             return (
-              <div key={ uuid } className='flex-row'>
-                <p>{ name }</p>
-                <button
-                  className='player-x-button'
-                  onClick={() => {
-                    if (team === '') {
-                      let match = players.findIndex((e) => e.uuid === uuid)
-                      setPlayers((prev) => [...prev.filter((_, i) => i !== match)])
-                    }
-                    else {
-                      const teamMatch = teams.findIndex((e) => e.uuid === team)
-                      const playerMatch = players.findIndex((e) => e.uuid === uuid)
-                      setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== uuid)]}}))
-                      setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
-                    }
-
+              <div key={ playerUuid } className='player-in-team-div'>
+                <input
+                  className='playername-in-team input-box'
+                  type="text"
+                  value={players[players.findIndex(e => e.uuid === playerUuid)].name}
+                  list="namelist"
+                  placeholder='Spielername'
+                  onChange={e => {
+                    if (players.findIndex(v => v.uuid === e.target.value) !== -1)
+                      replacePlayerWithUuidTo(e, teamUuid, playerUuid);
+                    if (e.target.value.length <= 20)
+                      changePlayername(e, playerUuid);
                   }}
+                  onKeyDown={e => {
+                    if ((team.players[team.players.length - 1] === playerUuid) && (e.code === 'Enter' || e.code === 'NumpadEnter'))
+                      addPlayerToTeam(teamUuid);
+                    if (e.code === 'Delete')
+                      removePlayerFromTeam(teamUuid, playerUuid);
+                  }}
+                />
+                <button
+                  tabIndex={-1}
+                  className='team-player-minus-button'
+                  onClick={() => removePlayerFromTeam(teamUuid, playerUuid)}
                 ><span>{ '\u2A2F' }</span></button>
               </div>
-          )})}
-          {(!doTeams && playername !== '') ?
-          <div className='flex-row'>
-            <p>{ playername }</p>
-          </div> : <></>}
+            )})}
         </div>
       </> : <></>}
 
@@ -261,90 +323,70 @@ function New() {
             min='2'
             max='6'
             value={playernameColumns}
-            onChange={e => {if (+e.target.value !== 0) setPlayernameColumns(+e.target.value)}}
+            onChange={e => {
+              if (+e.target.value !== 0)
+                setPlayernameColumns(+e.target.value);
+            }}
           />
         </div>
         <div className='team-content'>
           <div className="flex-col team-list">
-            {teams.map(team => (
-              <div key={ team.uuid } className='flex-col team-div team-div-real'>
+            {teams.map((team) => {
+              const { uuid: teamUuid, name: teamname, players: teamPlayers } = team;
+              return (
+              <div key={ teamUuid } className='flex-col team-div team-div-real'>
                 <div className='flex-row'>
                   <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path d="M17.997 18h-11.995l-.002-.623c0-1.259.1-1.986 1.588-2.33 1.684-.389 3.344-.736 2.545-2.209-2.366-4.363-.674-6.838 1.866-6.838 2.491 0 4.226 2.383 1.866 6.839-.775 1.464.826 1.812 2.545 2.209 1.49.344 1.589 1.072 1.589 2.333l-.002.619zm4.811-2.214c-1.29-.298-2.49-.559-1.909-1.657 1.769-3.342.469-5.129-1.4-5.129-1.265 0-2.248.817-2.248 2.324 0 3.903 2.268 1.77 2.246 6.676h4.501l.002-.463c0-.946-.074-1.493-1.192-1.751zm-22.806 2.214h4.501c-.021-4.906 2.246-2.772 2.246-6.676 0-1.507-.983-2.324-2.248-2.324-1.869 0-3.169 1.787-1.399 5.129.581 1.099-.619 1.359-1.909 1.657-1.119.258-1.193.805-1.193 1.751l.002.463z"/></svg>
                   <input
                     className='teamname-input input-box'
                     type='text'
-                    value={team.name}
-                    onChange={e => {if (e.target.value.length <= 20) {
-                      const match = teams.findIndex((e) => e.uuid === team.uuid)
-                      setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
-                    }}}
+                    value={teamname}
+                    onChange={e => {
+                      if (e.target.value.length <= 20)
+                        changeTeamname(e, teamUuid);
+                    }}
                   />
                   <button
                     className='team-minus-button input-box'
-                    onClick={() => {
-                      const match = teams.findIndex((e) => e.uuid === team.uuid)
-                      setTeams((prev) => [...prev.filter((_, i) => i !== match)])
-                    }}
+                    onClick={() => removeTeam(teamUuid)}
                   ><span>-</span></button>
                 </div>
                 <div className="grid-team-playernames">
-                  {team.players.map(playerId => (
-                      <div key={ playerId } className='player-in-team-div'>
+                  {team.players.map(playerUuid => (
+                      <div key={ playerUuid } className='player-in-team-div'>
                         <input
                           className='playername-in-team input-box'
                           type="text"
-                          value={players[players.findIndex(e => e.uuid === playerId)].name}
+                          value={players[players.findIndex(e => e.uuid === playerUuid)].name}
                           list="namelist"
                           placeholder='Spielername'
                           onChange={e => {
-                            if (players.findIndex(v => v.uuid === e.target.value) !== -1) {
-                              const oldPlayerMatchinPlayers = players.findIndex(e => e.uuid === playerId)
-                              const newPlayerMatchinPlayers = players.findIndex(v => v.uuid === e.target.value)
-                              const teamMatch = teams.findIndex(e => e.uuid === team.uuid)
-                              const playerMatchinTeams = teams[teamMatch].players.findIndex(e => e === playerId)
-                              setTeams(prev => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: Object.assign([...prev[teamMatch].players], { [playerMatchinTeams]: e.target.value})}}))
-                              setPlayers(prev => Object.assign([...prev.filter((_, i) => i !== oldPlayerMatchinPlayers)], { [newPlayerMatchinPlayers]: {...players[newPlayerMatchinPlayers], team: team.uuid}}))
-                            }
-                            if (e.target.value.length <= 20) {
-                              const match = players.findIndex((e) => e.uuid === playerId)
-                              setPlayers((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
-                            }
+                            if (players.findIndex(v => v.uuid === e.target.value) !== -1)
+                              replacePlayerWithUuidTo(e, teamUuid, playerUuid);
+                            if (e.target.value.length <= 20)
+                              changePlayername(e, playerUuid);
                           }}
                           onKeyDown={e => {
-                            if ((team.players[team.players.length - 1] === playerId) && (e.code === 'Enter' || e.code === 'NumpadEnter')) {
-                            }
-                            if (e.code === 'Delete') {
-                              const teamMatch = teams.findIndex((e) => e.uuid === team.uuid)
-                              const playerMatch = teams.findIndex((e) => e.uuid === playerId)
-                              setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== playerId)]}}))
-                              setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
-                            }
+                            if ((team.players[teamPlayers.length - 1] === playerUuid) && (e.code === 'Enter' || e.code === 'NumpadEnter'))
+                              addPlayerToTeam(teamUuid);
+                            if (e.code === 'Delete')
+                              removePlayerFromTeam(teamUuid, playerUuid);
                           }}
                         />
                         <button
                           tabIndex={-1}
                           className='team-player-minus-button'
-                          onClick={() => {
-                            const teamMatch = teams.findIndex((e) => e.uuid === team.uuid)
-                            const playerMatch = teams.findIndex((e) => e.uuid === playerId)
-                            setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== playerId)]}}))
-                            setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
-                          }}
+                          onClick={() => removePlayerFromTeam(teamUuid, playerUuid)}
                         ><span>{ '\u2A2F' }</span></button>
                       </div>
                     ))}
                   <button
                     className='add-button-in-team add-player-to-team-button input-box'
-                    onClick={() => {
-                      const playerId = uuidv4()
-                      setPlayers(prev => [...prev, { uuid: playerId, name: '', team: team.uuid}])
-                      const match = teams.findIndex((e) => e.uuid === team.uuid)
-                      setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], players: [...prev[match].players, playerId]}}))
-                    }}
+                    onClick={() => addPlayerToTeam(teamUuid)}
                   >{ '\u002B' }</button>
                 </div>
               </div>
-            ))}
+            )})}
             <datalist id="namelist">
               {[...players.filter((v) => v.team === '')].map(({ uuid, name }) =>
                 <option key={ uuid } value={ uuid }>{ name }</option>
@@ -357,10 +399,7 @@ function New() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path d="M.002 20h6.001c-.028-6.542 2.995-3.697 2.995-8.901 0-2.009-1.311-3.099-2.998-3.099-2.492 0-4.226 2.383-1.866 6.839.775 1.464-.825 1.812-2.545 2.209-1.49.344-1.589 1.072-1.589 2.333l.002.619zm20.498-7c-1.932 0-3.5 1.567-3.5 3.5s1.568 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.568-3.5-3.5-3.5zm1.5 4h-1v1h-1v-1h-1v-1h1v-1h1v1h1v1zm-4.814 3h-9.183l-.003-.829c0-1.679.133-2.649 2.118-3.107 2.243-.518 4.458-.981 3.394-2.945-3.156-5.82-.901-9.119 2.488-9.119 4.06 0 4.857 4.119 3.085 7.903-1.972.609-3.419 2.428-3.419 4.597 0 1.38.589 2.619 1.52 3.5z"/></svg>
                 <button
                   className='add-button-in-team add-team-button input-box'
-                  onClick={() => {
-                    setTeams((prev) => [...prev,{ uuid: uuidv4(), name: `Team ${teamIndexCount}`, players: []}])
-                    setTeamIndexCount(e => e + 1);
-                  }}
+                  onClick={() => addTeam()}
                 >{ '\u002B' }</button>
               </div>
             </div>
@@ -383,13 +422,13 @@ function New() {
   );
 }
 
-interface playersType {
+interface playerType {
   uuid: string,
   name: string,
   team: string,
 }
 
-interface teamsType {
+interface teamType {
   uuid: string,
   name: string,
   players: string[],
@@ -398,9 +437,9 @@ interface teamsType {
 interface newgroupType {
   groupname: string,
   description: string,
-  players: playersType[],
+  players: playerType[],
   isPublic: boolean,
-  teams: teamsType[],
+  teams: teamType[],
   token: string,
 }
 
