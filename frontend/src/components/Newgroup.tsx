@@ -75,7 +75,7 @@ function New() {
       const token = await auth(setElem)
       if (!token)
         return;
-      let newgroupReqBody = { groupname, isPublic , players, token } as newgroupType;
+      let newgroupReqBody = { groupname, isPublic , players: players.filter((v) => v.name !== ''), token } as newgroupType;
       newgroupReqBody.description = (description === '' ) ? 'Keine Beschreibung' : description;
       newgroupReqBody.teams = (doTeams) ? teams : [];
       const res = await fetch('/api/newgroup', {
@@ -126,6 +126,9 @@ function New() {
 
   return (
     <div className='flex-col step-form' style={{'--playername-columns': playernameColumns} as CSSProperties}>
+
+      {/* General settings of group to be created  */}
+
       {(currentStep === 0) ? <>
         <h2 style={(groupname === '' || groupname === groupnameError) ? {borderBottom: '.25rem solid transparent'} : {borderBottom: '.25rem solid var(--gbs-color)'}}>{(groupname === '' || groupname === groupnameError) ? 'Neue Gruppe' : groupname}</h2>
         <div className='flex-row'>
@@ -136,16 +139,8 @@ function New() {
             type='text'
             placeholder='Neue Gruppe'
             value={groupnameInput}
-            onChange={e => {
-              if (e.target.value.length <= 30 && groupnameAllowInput)
-                setGroupnameInput(e.target.value)
-              else
-                setGroupnameInput(e => e)
-            }}
-            onKeyDown={e => {
-              if (e.code === 'Enter' || e.code === 'NumpadEnter')
-                nextStep()
-            }}
+            onChange={e => {if (e.target.value.length <= 30 && groupnameAllowInput) setGroupnameInput(e.target.value)}}
+            onKeyDown={e => {if (e.code === 'Enter' || e.code === 'NumpadEnter') nextStep()}}
             />
         </div>
         <div className='flex-col'>
@@ -154,10 +149,7 @@ function New() {
             className='input-box'
             placeholder='(optional)'
             value={description}
-            onChange={e => {
-              if (e.target.value.length <= 200)
-                setDescription(validate(e.target.value))
-            }}
+            onChange={e => {if (e.target.value.length <= 200) setDescription(validate(e.target.value))}}
           />
         </div>
         <div className='grid-radios'>
@@ -193,6 +185,9 @@ function New() {
           <p>Teams</p>
         </div>
       </> : <></>}
+
+      {/* Create players or overview created players by 'teams' section */}
+
       {(((currentStep === 1) && !doTeams) || ((currentStep === 2) && doTeams)) ? <>
         <div className='flex-row'>
           {!doTeams ? <h2>Spieler hinzufügen zu <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2> : <></>}
@@ -214,42 +209,49 @@ function New() {
             type='text'
             placeholder='Spielername'
             value={playername}
-            onChange={e => {
-              if (e.target.value.length <= 30 && playernameAllowInput) {
+            onChange={e => {if (e.target.value.length <= 30 && playernameAllowInput) {
                 if (playername === playernameError )
                   setPlayername('')
                 else
                   setPlayername(validate(e.target.value))
               }
-              else
-                setPlayername(e => e)
             }}
-            onKeyDown={e => {
-              if (e.code === 'Enter' || e.code === 'NumpadEnter')
-                addPlayer()
-            }}
+            onKeyDown={e => {if (e.code === 'Enter' || e.code === 'NumpadEnter') addPlayer()}}
             />
           <button className='add-player-button' onClick={() => addPlayer()}>Hinzufügen</button>
         </div> : <></>}
         <div className='flex-row player-list'>
-          {players.map(({ uuid, name }) => (
-            <div  id={ uuid } key={ uuid } className='flex-row'>
-              <p>{ name }</p>
-              <button
-                className='player-x-button'
-                onClick={() => {
-                  let match = players.findIndex((e) => e.uuid === uuid)
-                  setPlayers((prev) => [...prev].splice(match, 1))
-                }}
-              ><span>{ '\u2A2F' }</span></button>
-            </div>
-          ))}
+          {[...players.filter((v) => v.name !== '')].map(({ uuid, name, team }) => {
+            return (
+              <div key={ uuid } className='flex-row'>
+                <p>{ name }</p>
+                <button
+                  className='player-x-button'
+                  onClick={() => {
+                    if (team === '') {
+                      let match = players.findIndex((e) => e.uuid === uuid)
+                      setPlayers((prev) => [...prev.filter((_, i) => i !== match)])
+                    }
+                    else {
+                      const teamMatch = teams.findIndex((e) => e.uuid === team)
+                      const playerMatch = players.findIndex((e) => e.uuid === uuid)
+                      setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== uuid)]}}))
+                      setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
+                    }
+
+                  }}
+                ><span>{ '\u2A2F' }</span></button>
+              </div>
+          )})}
           {(!doTeams && playername !== '') ?
           <div className='flex-row'>
             <p>{ playername }</p>
           </div> : <></>}
         </div>
       </> : <></>}
+
+      {/* Create teams and assign players */}
+
       {(currentStep === 1 && doTeams) ? <>
         <div className='flex-row'>
           <h2>Teams erstellen:</h2>
@@ -267,26 +269,23 @@ function New() {
             {teams.map(team => (
               <div key={ team.uuid } className='flex-col team-div team-div-real'>
                 <div className='flex-row'>
-                  <button
-                    className='team-minus-button'
-                    onClick={() => {
-                      const match = teams.findIndex((e) => e.uuid === team.uuid)
-                      setTeams((prev) => [...prev].splice(match, 1))
-                    }}
-                  ><span>-</span></button>
                   <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path d="M17.997 18h-11.995l-.002-.623c0-1.259.1-1.986 1.588-2.33 1.684-.389 3.344-.736 2.545-2.209-2.366-4.363-.674-6.838 1.866-6.838 2.491 0 4.226 2.383 1.866 6.839-.775 1.464.826 1.812 2.545 2.209 1.49.344 1.589 1.072 1.589 2.333l-.002.619zm4.811-2.214c-1.29-.298-2.49-.559-1.909-1.657 1.769-3.342.469-5.129-1.4-5.129-1.265 0-2.248.817-2.248 2.324 0 3.903 2.268 1.77 2.246 6.676h4.501l.002-.463c0-.946-.074-1.493-1.192-1.751zm-22.806 2.214h4.501c-.021-4.906 2.246-2.772 2.246-6.676 0-1.507-.983-2.324-2.248-2.324-1.869 0-3.169 1.787-1.399 5.129.581 1.099-.619 1.359-1.909 1.657-1.119.258-1.193.805-1.193 1.751l.002.463z"/></svg>
                   <input
                     className='teamname-input input-box'
                     type='text'
                     value={team.name}
-                    onChange={e => {
+                    onChange={e => {if (e.target.value.length <= 20) {
                       const match = teams.findIndex((e) => e.uuid === team.uuid)
-                      if (e.target.value.length <= 20)
-                        setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
-                      else
-                        setTeams(e => e)
-                    }}
+                      setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
+                    }}}
                   />
+                  <button
+                    className='team-minus-button input-box'
+                    onClick={() => {
+                      const match = teams.findIndex((e) => e.uuid === team.uuid)
+                      setTeams((prev) => [...prev.filter((_, i) => i !== match)])
+                    }}
+                  ><span>-</span></button>
                 </div>
                 <div className="grid-team-playernames">
                   {team.players.map(playerId => (
@@ -294,19 +293,44 @@ function New() {
                         <input
                           className='playername-in-team input-box'
                           type="text"
-                          value={players[players.findIndex((e) => e.uuid === playerId)].name}
+                          value={players[players.findIndex(e => e.uuid === playerId)].name}
                           list="namelist"
                           placeholder='Spielername'
                           onChange={e => {
-                            const match = players.findIndex((e) => e.uuid === playerId)
-                            if (e.target.value.length <= 20)
+                            if (players.findIndex(v => v.uuid === e.target.value) !== -1) {
+                              const oldPlayerMatchinPlayers = players.findIndex(e => e.uuid === playerId)
+                              const newPlayerMatchinPlayers = players.findIndex(v => v.uuid === e.target.value)
+                              const teamMatch = teams.findIndex(e => e.uuid === team.uuid)
+                              const playerMatchinTeams = teams[teamMatch].players.findIndex(e => e === playerId)
+                              setTeams(prev => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: Object.assign([...prev[teamMatch].players], { [playerMatchinTeams]: e.target.value})}}))
+                              setPlayers(prev => Object.assign([...prev.filter((_, i) => i !== oldPlayerMatchinPlayers)], { [newPlayerMatchinPlayers]: {...players[newPlayerMatchinPlayers], team: team.uuid}}))
+                            }
+                            if (e.target.value.length <= 20) {
+                              const match = players.findIndex((e) => e.uuid === playerId)
                               setPlayers((prev) => Object.assign([...prev], { [match]: {...prev[match], name: validate(e.target.value)}}))
-                            else
-                              setTeams(e => e)
+                            }
+                          }}
+                          onKeyDown={e => {
+                            if ((team.players[team.players.length - 1] === playerId) && (e.code === 'Enter' || e.code === 'NumpadEnter')) {
+                            }
+                            if (e.code === 'Delete') {
+                              const teamMatch = teams.findIndex((e) => e.uuid === team.uuid)
+                              const playerMatch = teams.findIndex((e) => e.uuid === playerId)
+                              setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== playerId)]}}))
+                              setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
+                            }
                           }}
                         />
-                        <button className='team-player-edit-button' onClick={() => console.log('edit')}><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path d="M18.363 8.464l1.433 1.431-12.67 12.669-7.125 1.436 1.439-7.127 12.665-12.668 1.431 1.431-12.255 12.224-.726 3.584 3.584-.723 12.224-12.257zm-.056-8.464l-2.815 2.817 5.691 5.692 2.817-2.821-5.693-5.688zm-12.318 18.718l11.313-11.316-.705-.707-11.313 11.314.705.709z"/></svg></button>
-                        <button className='team-player-minus-button' onClick={() => console.log('minus')}><span>-</span></button>
+                        <button
+                          tabIndex={-1}
+                          className='team-player-minus-button'
+                          onClick={() => {
+                            const teamMatch = teams.findIndex((e) => e.uuid === team.uuid)
+                            const playerMatch = teams.findIndex((e) => e.uuid === playerId)
+                            setTeams((prev) => Object.assign([...prev], { [teamMatch]: {...prev[teamMatch], players: [...prev[teamMatch].players.filter((v) => v !== playerId)]}}))
+                            setPlayers((prev) => [...prev.filter((_, i) => i !== playerMatch)])
+                          }}
+                        ><span>{ '\u2A2F' }</span></button>
                       </div>
                     ))}
                   <button
@@ -316,17 +340,15 @@ function New() {
                       setPlayers(prev => [...prev, { uuid: playerId, name: '', team: team.uuid}])
                       const match = teams.findIndex((e) => e.uuid === team.uuid)
                       setTeams((prev) => Object.assign([...prev], { [match]: {...prev[match], players: [...prev[match].players, playerId]}}))
-                      console.log(teams)
                     }}
                   >{ '\u002B' }</button>
                 </div>
               </div>
             ))}
             <datalist id="namelist">
-              {players.map(({ uuid, name, team}) => {
-                if (team === '')
-                  return <option key={ uuid + '-option' } value={ name }>{ name }</option>
-              })}
+              {[...players.filter((v) => v.team === '')].map(({ uuid, name }) =>
+                <option key={ uuid } value={ uuid }>{ name }</option>
+              )}
             </datalist>
           </div>
           <div className="flex-row team-list-sample">
@@ -345,6 +367,9 @@ function New() {
           </div>
         </div>
       </> : <></>}
+
+      {/* Forward and Backword inside the step-form */}
+
       <div className='steps'>
         {(currentStep === 0) ? <></> :
         <button className='next-step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}

@@ -16,6 +16,9 @@
 *:focus-visible {
   outline: none;
 }
+button {
+  cursor: pointer;
+}
 button, button span, .logo-a, .active, .card, .svg-symbol, input, textarea, .player-list > div p, .team-list-sample > .team-div {
   transition: .2s;
   -webkit-transition: .2s;
@@ -217,6 +220,8 @@ footer {
 .playername-columns-input {
   margin-left: auto !important;
   width: 2em;
+  padding-top: 0;
+  padding-bottom: 0;
 }
 .step-form {
   width: min(30em, 80vw);
@@ -265,7 +270,6 @@ textarea {
   color: #fff;
   border: 0;
   padding: 8px;
-  cursor: pointer;
   height: 1.75em;
   margin: .125em 0;
 }
@@ -294,7 +298,6 @@ textarea {
   color: #fff;
   border: 0;
   padding: 0;
-  cursor: pointer;
   height: 1.5em;
 }
 .player-list > div:hover p {
@@ -370,42 +373,16 @@ textarea {
   width: 100%;
   padding: 0 .25em;
 }
-.team-player-edit-button {
-  background: green;
-  border: 0;
-  padding: 0;
-  cursor: pointer;
-  position: absolute;
-  top: -.5em;
-  right: .625em;
-  border-radius: 50%;
-  height: 1em;
-  width: 1em;
-  display: none;
-}
-.team-player-edit-button svg {
-  background: transparent;
-  color: #fff;
-  font-size: 1.5em;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-.team-player-edit-button path {
-  fill: #fff;
-}
 .team-minus-button {
   background: red;
+  margin: 0 .25em 0 auto !important;
   border: 0;
   padding: 0;
-  cursor: pointer;
-  position: absolute;
-  top: -.5em;
-  left: -.5em;
-  border-radius: 50%;
-  height: 1em;
-  width: 1em;
+  position: relative;
+  top: 0;
+  right: 0;
+  height: 1.1875em;
+  width: 1.1875em;
 }
 .team-minus-button span {
   background: transparent;
@@ -420,33 +397,36 @@ textarea {
   background: red;
   border: 0;
   padding: 0;
-  cursor: pointer;
   position: absolute;
   top: -.5em;
   right: -.5em;
   border-radius: 50%;
   height: 1em;
   width: 1em;
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
 }
 .team-player-minus-button span {
   background: transparent;
   color: #fff;
-  font-size: 1.5em;
+  font-size: .9em;
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 1em;
   transform: translate(-50%, -50%);
+  /* pointer-events: none; */
 }
 .player-in-team-div {
   position: relative;
   width: min(100%, 10em);
 }
-.player-in-team-div > .playername-in-team:hover + .team-player-edit-button,
-.player-in-team-div > .playername-in-team:focus-visible + .team-player-edit-button,
-.player-in-team-div > .playername-in-team:hover + .team-player-minus-button,
+.player-in-team-div > .playername-in-team + .team-player-minus-button:hover,
+.player-in-team-div > .playername-in-team + .team-player-minus-button:focus,
 .player-in-team-div > .playername-in-team:focus-visible + .team-player-minus-button {
-  display: inherit;
+  opacity: 1;
+  pointer-events: inherit;
 }
 .steps {
   margin: 2em 0 1em;
@@ -456,7 +436,6 @@ textarea {
   color: #fff;
   border: 0;
   padding: 8px 12px;
-  cursor: pointer;
 }
 .next-step-button:hover, .next-step-button:focus-visible {
   background-color: skyblue;
