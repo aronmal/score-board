@@ -108,7 +108,8 @@ const groupSchema = new mongoose.Schema({
         required: true
     },
     description: {
-        type: String
+        type: String,
+        required: true
     },
     players: {
         type: Array,
@@ -119,7 +120,8 @@ const groupSchema = new mongoose.Schema({
         required: true
     },
     teams: {
-        type: Array
+        type: Array,
+        required: true
     },
     owner: {
         type: mongoose.Types.ObjectId,
@@ -129,11 +131,13 @@ const groupSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         immutable: true,
-        default: Date.now
+        default: Date.now,
+        required: true
     },
     updatedAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: true
     },
 })
 

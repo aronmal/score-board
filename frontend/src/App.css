@@ -16,7 +16,7 @@
 *:focus-visible {
   outline: none;
 }
-button, button span, .logo-a, .active, .card, .svg-symbol, input, textarea, .player-list > div p {
+button, button span, .logo-a, .active, .card, .svg-symbol, input, textarea, .player-list > div p, .team-list-sample > .team-div {
   transition: .2s;
   -webkit-transition: .2s;
 }
@@ -26,8 +26,8 @@ button:hover span, button:focus-visible span,
 .active:hover, .active:focus-visible,
 .card-a:hover .card, .card-a:focus-visible .card,
 input:focus-visible, textarea:focus-visible,
-.player-list > div:hover p,
-.player-list > div:focus-visible p {
+.player-list > div:hover p, .player-list > div:focus-visible p,
+.team-list-sample > .team-div:hover, .team-list-sample > .team-div:focus-visible {
   transition: .2s;
   -webkit-transition: .2s;
 }
@@ -70,7 +70,6 @@ a{
   justify-content: space-evenly;
   align-items: center;
   background: white;
-  /* padding: 1em 0; */
   box-shadow: 0 0 1em gray;
 }
 #top-header > div {
@@ -95,7 +94,6 @@ a{
   --svg-navlink-color: black;
   display: flex;
   flex-direction: row;
-  /* justify-content: space-evenly; */
   align-items: center;
   color: black;
   text-decoration: none;
@@ -131,7 +129,6 @@ a{
   border-radius: .25em;
   border: 2px solid red;
   padding: .25em .25em 0;
-  /* background: #000c; */
   transform: skewX(-15deg);
 }
 .font2 {
@@ -153,7 +150,6 @@ a{
   justify-content: space-between;
 }
 .content-div {
-  /* background: dodgerblue; */
   padding: 1em;
   margin: 0;
 }
@@ -207,7 +203,10 @@ footer {
 .grid-team-playernames {
   display: grid;
   grid-gap: .25em;
+  width: 100%;
+  align-items: center;
   justify-items: center;
+  grid-template-columns: repeat(var(--playername-columns), 1fr)
 }
 .grid-radios {
   display: grid;
@@ -220,13 +219,13 @@ footer {
   width: 2em;
 }
 .step-form {
-  width: clamp(25em, 50%, 40em);
+  width: min(30em, 80vw);
   font-size: 2em;
   margin: 0 auto;
 }
 .step-form .input-box {
   outline: none;
-  margin: .1em 0;
+  margin: .125em 0;
   border: 1px solid gray;
 }
 .step-form .input-box:focus-visible, .teamname-input:hover, .teamname-input:focus-visible {
@@ -268,7 +267,7 @@ textarea {
   padding: 8px;
   cursor: pointer;
   height: 1.75em;
-  margin: .1em 0;
+  margin: .125em 0;
 }
 .add-player-button:hover, .add-player-button:focus-visible {
   background-color: limegreen;
@@ -314,12 +313,22 @@ textarea {
 .player-list > div:hover p, .player-list > div:focus-visible p {
   padding: 0.125em .375em;
 }
+.team-content {
+  min-height: 8em;
+}
+.team-list-sample > .team-div {
+  opacity: .5
+}
+.team-list-sample > .team-div:hover {
+  opacity: 1
+}
 .team-div {
+  padding-bottom: .325em;
   position: relative;
   border-bottom: .125em solid var(--gbs-color);
 }
 .team-div-real {
-  width: clamp(100%, 100%, 80vw);
+  width: 100%;
   align-self: center;
 }
 .team-div > div > svg {
@@ -329,23 +338,28 @@ textarea {
 .team-div > div {
   align-items: center;
 }
-.team-div:nth-child(1) {
-  padding-bottom: .325em;
-}
-.add-team-button {
+.add-button-in-team {
   color: white;
   background-color: limegreen;
   border: 0;
-  width: 5em;
-  padding: 0;
   height: 1.25em;
-  justify-self: center;
 }
-.add-team-button:hover, .add-team-button:focus-visible {
+.add-team-button{
+  width: 8em;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.add-player-to-team-button {
+  height: 1.25em;
+  width: min(100%, 7em);
+  margin: .375em 0 !important;
+  padding: 0 .25em;
+}
+.add-button-in-team:hover, .add-button-in-team:focus-visible {
   background-color: green;
 }
-  .teamname-input {
-  width: 7em;
+.teamname-input {
+  width: 8em;
   padding-top: 0;
   padding-bottom: 0;
 }
@@ -354,7 +368,6 @@ textarea {
   background-color: transparent;
   height: 1.75em;
   width: 100%;
-  max-width: 10em;
   padding: 0 .25em;
 }
 .team-player-edit-button {
@@ -377,7 +390,7 @@ textarea {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translate(-50%, -50%);
 }
 .team-player-edit-button path {
   fill: #fff;
@@ -401,7 +414,7 @@ textarea {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translate(-50%, -50%);
 }
 .team-player-minus-button {
   background: red;
@@ -423,9 +436,16 @@ textarea {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translate(-50%, -50%);
 }
-.player-in-team-div > .playername-in-team:hover > .team-player-minus-button, .player-in-team-div > .playername-in-team:hover > .team-player-edit-button, .player-in-team-div > .playername-in-team:focus-visible > .team-player-minus-button, .player-in-team-div > .playername-in-team:focus-visible > .team-player-edit-button {
+.player-in-team-div {
+  position: relative;
+  width: min(100%, 10em);
+}
+.player-in-team-div > .playername-in-team:hover + .team-player-edit-button,
+.player-in-team-div > .playername-in-team:focus-visible + .team-player-edit-button,
+.player-in-team-div > .playername-in-team:hover + .team-player-minus-button,
+.player-in-team-div > .playername-in-team:focus-visible + .team-player-minus-button {
   display: inherit;
 }
 .steps {
