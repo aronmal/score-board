@@ -279,43 +279,6 @@ textarea {
 .player-input {
   margin: .5em 0 2em 0;
 }
-.player-list {
-  min-height: 8rem;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  justify-content: inherit;
-}
-.player-list > div {
-  margin: .25em .5em .25em 0;
-  border: 1px solid gray;
-}
-.player-list p {
-  align-self: center;
-  padding: 0.125em .625em;
-}
-.player-x-button {
-  background: red;
-  color: #fff;
-  border: 0;
-  padding: 0;
-  height: 1.5em;
-}
-.player-list > div:hover p {
-  cursor: default;
-}
-.player-list > div:hover .player-x-button, .player-x-button:focus-visible {
-  padding: 0 .5rem;
-}
-.player-x-button span {
-  opacity: 0;
-}
-.player-list > div:hover span, .player-x-button:focus-visible span {
-  opacity: 1;
-}
-
-.player-list > div:hover p, .player-list > div:focus-visible p {
-  padding: 0.125em .375em;
-}
 .team-content {
   min-height: 8em;
 }
@@ -384,6 +347,9 @@ textarea {
   height: 1.1875em;
   width: 1.1875em;
 }
+.team-minus-button:hover {
+  background-color: #c00;
+}
 .team-minus-button span {
   background: transparent;
   color: #fff;
@@ -406,6 +372,9 @@ textarea {
   opacity: 0;
   pointer-events: none;
   z-index: 1;
+}
+.team-player-minus-button:hover {
+  background-color: #c00;
 }
 .team-player-minus-button span {
   background: transparent;
