@@ -392,8 +392,7 @@ textarea {
   width: min(100%, 10em);
 }
 .player-in-team-div > .playername-in-team + .team-player-minus-button:hover,
-.player-in-team-div > .playername-in-team + .team-player-minus-button:focus,
-.player-in-team-div > .playername-in-team:focus-visible + .team-player-minus-button {
+.player-in-team-div > .playername-in-team:hover + .team-player-minus-button {
   opacity: 1;
   pointer-events: inherit;
 }
