@@ -167,7 +167,7 @@ function New() {
     setTeams((prev) => [...prev.filter((_, i) => i !== match)])
   };
 
-  // if (!isLoggedIn) return <Navigate to='/' />;
+  if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
     <div className='flex-col step-form' style={{'--playername-columns': playernameColumns} as CSSProperties}>
