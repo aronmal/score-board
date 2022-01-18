@@ -115,12 +115,14 @@ export async function logout(req: Request, res: Response) {
 export async function auth(req: Request, _res: Response) {
     let status = {} as statusRes;
     const refreshToken: string = req.cookies.token
+    const loginCheck = (req.body.type === 'loginCheck')
+    console.log(loginCheck)
 
     let refreshTokenData: string | jwt.JwtPayload = {};
     try {
         refreshTokenData = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET as string);            
     } catch (err: any) {
-        await jwtVerfiyCatch('refreshToken', refreshToken, err, status, req);
+        await jwtVerfiyCatch('refreshToken', refreshToken, err, loginCheck, status, req);
         return status;
     }
     if (typeof refreshTokenData === 'string') {
@@ -157,8 +159,13 @@ export async function auth(req: Request, _res: Response) {
         return status;
     }
     status.code = 200;
-    status.body = { token: accessToken };
-    await logging('Access-Token generated: ' + createdDBToken._id + ' with Refreshtoken-Token: ' + DBToken._id, ['debug','info.cyan'], req);
+    if (!loginCheck) {
+        status.body = { token: accessToken };
+        await logging('Access-Token generated: ' + createdDBToken._id + ' with Refreshtoken-Token: ' + DBToken._id, ['debug','info.cyan'], req);
+    } else {
+        status.body = { loggedIn: true };
+        await logging('loginCheck ' + loginCheck + ' of ' + DBToken._id, ['debug','info.cyan'], req)
+    }
     return status;
 }
 
@@ -183,7 +190,7 @@ export async function newgroup(req: Request, _res: Response) {
     try {
         accessTokenData = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET as string);            
     } catch (err: any) {
-        await jwtVerfiyCatch('accessToken', accessToken, err, status, req);
+        await jwtVerfiyCatch('accessToken', accessToken, err, false, status, req);
         return status;
     }
     if (typeof accessTokenData === 'string') {

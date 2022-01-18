@@ -36,8 +36,12 @@ export async function errorHandling(err: any, req: Request, res: Response, _next
     await logging('Request served with status 500', ['post', 'warn'], req);
 }
 
-export async function jwtVerfiyCatch(tokenType: string, token: string, err:any, status: statusRes, req: Request) {
-    if (err.message === 'jwt expired') {
+export async function jwtVerfiyCatch(tokenType: string, token: string, err:any, loginCheck: boolean, status: statusRes, req: Request) {
+    if (loginCheck) {
+        status.code = 200;
+        status.body = { loggedIn: false };
+        await logging('loginCheck: ' + loginCheck, ['debug','info.cyan'], req)
+    } else if (err.message === 'jwt expired') {
         await logging(`JWT (${tokenType}) expired!`, ['warn'], req);
         status.code = 403;
     } else if (err.message === 'invalid signature') {

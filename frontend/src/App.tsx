@@ -13,9 +13,9 @@ import './App.css';
 
 function App() {
 
-  const [login, setLogin] = useState<boolean>(false)
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
   const [elem, setElem] = useState(<></>)
-  const value = useMemo(() => ({ isLoggedIn: login, setIsLoggedIn: setLogin }), [login, setLogin])
+  const loginContextProviderValue = useMemo(() => ({ isLoggedIn, setIsLoggedIn }), [isLoggedIn, setIsLoggedIn])
 
   useEffect(() => {
     loginCheck()
@@ -25,11 +25,20 @@ function App() {
     const res: void | Response = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ type: 'loginCheck' }),
     }).catch((err: Error) => console.log(err))
     if (!res)
       return;
-    if (res.status === 200) {
-      setLogin(true)
+    let loginCheck = false;
+    try {
+      const body = await res.json()
+      loginCheck = body.loggedIn
+      console.log('loginCheck: ' + loginCheck)
+    } catch (err: any) {
+      console.log(err)
+    }
+    if (res.status === 200 && loginCheck) {
+      setIsLoggedIn(true)
     }
     setElem(
       <div className='content-div flex-col'>
@@ -47,7 +56,7 @@ function App() {
   
   return (
     <BrowserRouter>
-      <loginContext.Provider value={value}>
+      <loginContext.Provider value={loginContextProviderValue}>
         <div className='content flex-col'>
           <Header />
             { elem }
