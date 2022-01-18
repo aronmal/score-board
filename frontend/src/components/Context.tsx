@@ -1,9 +1,6 @@
 import { createContext } from "react";
+import { loginContextType } from './Interfaces';
 
-interface ContextStateType {
-    setIsLoggedIn: Function
-    isLoggedIn: boolean
-}
+const loginContext = createContext({} as loginContextType);
 
-const loginContext = createContext({} as ContextStateType)
 export default loginContext

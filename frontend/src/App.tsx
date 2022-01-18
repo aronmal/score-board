@@ -6,7 +6,7 @@ import Dashboard from './components/Dashboard';
 import Register from './components/Register';
 import Login from './components/Login';
 import Logout from './components/Logout';
-import Newgroup from './components/Newgroup';
+import Newgroup from './components/Newgroup/Newgroup';
 import loginContext from './components/Context';
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
