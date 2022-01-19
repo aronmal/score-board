@@ -26,6 +26,21 @@ export interface teamType {
   players: string[],
 }
 
+// export interface groupType {
+//   groupname: string,
+//   description: string,
+//   players: playerType[],
+//   isPublic: boolean,
+//   teams: teamType[],
+//   token: string,
+// }
+
+export interface groupInfoType {
+  groupname: string,
+  description: string,
+  isPublic: boolean,
+}
+
 export interface newgroupType {
   groupname: string,
   description: string,

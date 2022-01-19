@@ -1,13 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
-import { playerType, teamType } from "../Interfaces";
+import { groupInfoType, playerType, teamType } from "../Interfaces";
 import { addSinglePlayer, changePlayername, checkForPlayernameDuplicates, playernameOfUuid, removePlayerFromTeam, validate } from "./Helpers";
 import { playernameError } from "./Newgroup";
 
-function Step2({ groupname, playername, setPlayername, playernameAllowInput, setPlayernameAllowInput, players, setPlayers, teams, setTeams, doTeams, playernameColumns, setPlayernameColumns }: { groupname: string, playername: string, setPlayername: Dispatch<SetStateAction<string>>, playernameAllowInput: boolean, setPlayernameAllowInput: Dispatch<SetStateAction<boolean>>, players: playerType[], setPlayers: Dispatch<SetStateAction<playerType[]>>, teams: teamType[], setTeams: Dispatch<SetStateAction<teamType[]>>, doTeams: boolean, playernameColumns: number, setPlayernameColumns: Dispatch<SetStateAction<number>> }) {
+function Step2({ groupInfo: { groupname, ..._ }, playername, setPlayername, playernameAllowInput, setPlayernameAllowInput, players, setPlayers, teams, setTeams, doTeams, playernameColumns, setPlayernameColumns }: { groupInfo: groupInfoType, playername: string, setPlayername: Dispatch<SetStateAction<string>>, playernameAllowInput: boolean, setPlayernameAllowInput: Dispatch<SetStateAction<boolean>>, players: playerType[], setPlayers: Dispatch<SetStateAction<playerType[]>>, teams: teamType[], setTeams: Dispatch<SetStateAction<teamType[]>>, doTeams: boolean, playernameColumns: number, setPlayernameColumns: Dispatch<SetStateAction<number>> }) {
     return (<>
         <div className='flex-row'>
           {!doTeams ? <h2>Spieler hinzufügen zu <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2> : <></>}
-          {doTeams ? <h2>Spieler von <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2> : <></>}
+          {doTeams ? <h2>Spieler überprüfen von <span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2> : <></>}
           <input
             className='playername-columns-input input-box'
             type='number'
@@ -41,7 +41,7 @@ function Step2({ groupname, playername, setPlayername, playernameAllowInput, set
           <button className='add-player-button' onClick={() => addSinglePlayer(playernameAllowInput, setPlayernameAllowInput, playername, setPlayername, players, setPlayers)}>Hinzufügen</button>
         </div> : <></>}
         <div className="grid-team-playernames">
-          {[...players.filter((v) => !!v.name)].map(({ uuid: playerUuid, name: _name, team: teamUuid }) => {
+          {[...players.filter(e => !!e.name)].map(({ uuid: playerUuid, name: _name, team: teamUuid }) => {
             return (
               <div key={ playerUuid } className='player-in-team-div'>
                 <input
@@ -50,7 +50,7 @@ function Step2({ groupname, playername, setPlayername, playernameAllowInput, set
                   type="text"
                   value={playernameOfUuid(players, playerUuid)}
                   placeholder='Spielername'
-                  onChange={e => changePlayername(e, players, setPlayers, playerUuid)}
+                  onChange={e => changePlayername(players, setPlayers, validate(e.target.value), playerUuid)}
                   onKeyDown={e => {
                     if (e.code === 'Delete')
                       removePlayerFromTeam(players, setPlayers, teams, setTeams, teamUuid, playerUuid);
