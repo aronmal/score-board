@@ -5,15 +5,6 @@ export interface loginContextType {
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 }
 
-export interface newgroupContextType {
-  elem: JSX.Element,
-  setElem: Dispatch<SetStateAction<JSX.Element>>,
-  players: playerType[],
-  setPlayers: Dispatch<SetStateAction<playerType[]>>,
-  teams: teamType[],
-  setTeams: Dispatch<SetStateAction<teamType[]>>,
-}
-
 export interface playerType {
   uuid: string,
   name: string,
@@ -48,4 +39,34 @@ export interface newgroupType {
   isPublic: boolean,
   teams: teamType[],
   token: string,
+}
+
+export interface step1Type {
+  nextStep: () => Promise<void>,
+  groupInfo: groupInfoType,
+  setGroupInfo: Dispatch<SetStateAction<groupInfoType>>,
+  groupnameAllowInput: boolean,
+  doTeams: boolean,
+  setDoTeams: Dispatch<SetStateAction<boolean>>
+}
+
+export interface step2Type {
+  groupInfo: groupInfoType,
+  players: playerType[],
+  setPlayers: Dispatch<SetStateAction<playerType[]>>,
+  teams: teamType[],
+  setTeams: Dispatch<SetStateAction<teamType[]>>,
+  doTeams: boolean,
+  playernameColumns: number,
+  setPlayernameColumns: Dispatch<SetStateAction<number>>
+}
+
+export interface step3Type {
+  elem: JSX.Element,
+  players: playerType[],
+  setPlayers: Dispatch<SetStateAction<playerType[]>>,
+  teams: teamType[],
+  setTeams: Dispatch<SetStateAction<teamType[]>>,
+  playernameColumns: number,
+  setPlayernameColumns: Dispatch<SetStateAction<number>>
 }

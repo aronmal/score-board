@@ -329,6 +329,10 @@ textarea {
   padding-top: 0;
   padding-bottom: 0;
 }
+.error-input::placeholder {
+  color: red;
+  opacity: 1;
+}
 .playername-in-team {
   font-size: 1em;
   background-color: transparent;

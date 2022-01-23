@@ -1,16 +1,18 @@
-import { groupnameError } from "./Newgroup";
-import { setDescription, setGroupname, setIsPublic, validate } from "./Helpers";
-import { Dispatch, SetStateAction } from "react";
-import { groupInfoType } from "../Interfaces";
+import { groupnameError, setDescription, setGroupname, setIsPublic, validate } from "./Helpers";
+import { step1Type } from "../Interfaces";
 
-function Step1({ nextStep, groupInfo: { groupname, description, isPublic }, setGroupInfo, groupnameAllowInput, doTeams, setDoTeams }: { nextStep: () => Promise<void>, groupInfo: groupInfoType, setGroupInfo: Dispatch<SetStateAction<groupInfoType>>, groupnameAllowInput: boolean, doTeams: boolean, setDoTeams: Dispatch<SetStateAction<boolean>> }) {
+function Step1({ nextStep, groupInfo: { groupname, description, isPublic }, setGroupInfo, groupnameAllowInput, doTeams, setDoTeams }: step1Type) {
     return (<>
-        <h2 style={(!groupname || groupname === groupnameError) ? {borderBottom: '.25rem solid transparent'} : {borderBottom: '.25rem solid var(--gbs-color)'}}>{(!groupname || groupname === groupnameError) ? 'Neue Gruppe' : groupname}</h2>
+        {(!groupname || (groupname === groupnameError)) ?
+            <h2 style={{borderBottom: '.25rem solid transparent'}}>{ 'Neue Gruppe' }</h2>
+            :
+            <h2 style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</h2>
+        }
         <div className='flex-row'>
             <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
             <input
             className='input-box'
-            style={(groupname === groupnameError) ? {color: 'red'} : {}}
+            style={groupname === groupnameError ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
             value={groupname}
@@ -82,4 +84,3 @@ function Step1({ nextStep, groupInfo: { groupname, description, isPublic }, setG
 }
 
 export default Step1;
-
