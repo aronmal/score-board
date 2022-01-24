@@ -1,8 +1,8 @@
-import { addNewPlayerToTeam, addTeam, changePlayername, changeTeamname, playernameDuplicatesExists, teamnameDuplicatesExists, isLastPlayerInTeam, playernameOfUuid, removePlayer, removeTeam, replacePlayerWithUuidTo, validate, addPlayerWithUuidToTeam, emptyTeamError } from './Helpers';
+import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate, emptyTeamError } from './Helpers';
 import { step3Type } from '../Interfaces';
 import { v4 as uuidv4 } from 'uuid';
 
-function Step3({ elem, players, setPlayers, teams, setTeams, playernameColumns, setPlayernameColumns }: step3Type) {
+function Step3({ props: { group: { players, teams }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step3Type) {
 
   return (<>
     <div className='flex-row'>
@@ -31,11 +31,11 @@ function Step3({ elem, players, setPlayers, teams, setTeams, playernameColumns, 
                 type='text'
                 value={team.name}
                 placeholder='Teamname'
-                onChange={e => changeTeamname(setTeams, validate(e.target.value), team.uuid)}
+                onChange={e => groupDispatch({ type: 'changeTeamname', payload: { teamUuid: team.uuid, teamname: validate(e.target.value) } })}
               />
               <button
                 className='team-minus-button input-box'
-                onClick={() => removeTeam(setTeams, team.uuid)}
+                onClick={() => groupDispatch({ type: 'removeTeam', payload: { teamUuid: team.uuid } })}
               ><span>-</span></button>
             </div>
             <div className="grid-team-playernames">
@@ -50,23 +50,23 @@ function Step3({ elem, players, setPlayers, teams, setTeams, playernameColumns, 
                     placeholder='Spielername'
                     onChange={e => {
                       if (!!players.find(player => player.uuid === validate(e.target.value)))
-                        replacePlayerWithUuidTo(setPlayers, setTeams, playerUuid, team.uuid, validate(e.target.value));
+                        groupDispatch({ type: 'replacePlayerWithUuidTo', payload: { playerUuid, teamUuid: team.uuid, newPlayerUuid: validate(e.target.value) } })
                       else
-                        changePlayername(setPlayers, validate(e.target.value), playerUuid);
+                        groupDispatch({ type: 'changePlayername', payload: { playername: validate(e.target.value), playerUuid } })
                     }}
                     onKeyDown={e => {
                       if (e.code === 'Delete')
-                        removePlayer(setPlayers, setTeams, team.uuid, playerUuid);
+                        groupDispatch({ type: 'removePlayer', payload: { playerUuid } })
                     }}
                     onBlur={() => {
                       if (!playernameOfUuid(players, playerUuid))
-                        removePlayer(setPlayers, setTeams, team.uuid, playerUuid);
+                        groupDispatch({ type: 'removePlayer', payload: { playerUuid } })
                     }}
                   />
                   <button
                     tabIndex={-1}
                     className='team-player-minus-button'
-                    onClick={() => removePlayer(setPlayers, setTeams, team.uuid, playerUuid)}
+                    onClick={() => groupDispatch({ type: 'removePlayer', payload: { playerUuid } })}
                   ><span>{ '\u2A2F' }</span></button>
                 </div>
               ) : (
@@ -79,9 +79,9 @@ function Step3({ elem, players, setPlayers, teams, setTeams, playernameColumns, 
                     placeholder='Hinzufügen...'
                     onChange={e => {
                       if (!!players.find(player => player.uuid === validate(e.target.value)))
-                        addPlayerWithUuidToTeam(setTeams, playerUuid, team.uuid);
+                        groupDispatch({ type: 'addExistingPlayerToTeam', payload: { playerUuid, teamUuid: team.uuid } })
                       else if (validate(e.target.value))
-                        addNewPlayerToTeam(setPlayers, setTeams, validate(e.target.value), playerUuid, team.uuid);
+                        groupDispatch({ type: 'newPlayerInTeam', payload: { playername: validate(e.target.value), playerUuid, teamUuid: team.uuid } })
                     }}
                   />
                 </div>
@@ -101,7 +101,7 @@ function Step3({ elem, players, setPlayers, teams, setTeams, playernameColumns, 
             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path d="M.002 20h6.001c-.028-6.542 2.995-3.697 2.995-8.901 0-2.009-1.311-3.099-2.998-3.099-2.492 0-4.226 2.383-1.866 6.839.775 1.464-.825 1.812-2.545 2.209-1.49.344-1.589 1.072-1.589 2.333l.002.619zm20.498-7c-1.932 0-3.5 1.567-3.5 3.5s1.568 3.5 3.5 3.5 3.5-1.567 3.5-3.5-1.568-3.5-3.5-3.5zm1.5 4h-1v1h-1v-1h-1v-1h1v-1h1v1h1v1zm-4.814 3h-9.183l-.003-.829c0-1.679.133-2.649 2.118-3.107 2.243-.518 4.458-.981 3.394-2.945-3.156-5.82-.901-9.119 2.488-9.119 4.06 0 4.857 4.119 3.085 7.903-1.972.609-3.419 2.428-3.419 4.597 0 1.38.589 2.619 1.52 3.5z"/></svg>
             <button
               className='add-button-in-team add-team-button input-box'
-              onClick={() => {addTeam(setTeams)}}
+              onClick={() => {groupDispatch({ type: 'addTeam', payload: null })}}
             >{ '\u002B' }</button>
           </div>
         </div>

@@ -3,70 +3,80 @@ import { Dispatch, SetStateAction } from "react";
 export interface loginContextType {
   isLoggedIn: boolean,
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
-}
+};
 
 export interface playerType {
   uuid: string,
   name: string,
   team: string,
-}
+};
 
 export interface teamType {
   uuid: string,
   name: string,
   players: string[],
-}
+};
 
-// export interface groupType {
-//   groupname: string,
-//   description: string,
-//   players: playerType[],
-//   isPublic: boolean,
-//   teams: teamType[],
-//   token: string,
-// }
-
-export interface groupInfoType {
+export interface groupType {
   groupname: string,
   description: string,
   isPublic: boolean,
-}
-
-export interface newgroupType {
-  groupname: string,
-  description: string,
+  doTeams: boolean,
   players: playerType[],
-  isPublic: boolean,
   teams: teamType[],
-  token: string,
-}
+};
+
+export interface newgroupType extends groupType {
+  token: string
+};
+
+type setGroupnameType = { type: 'setGroupname', payload: { groupname: string } };
+type setDescriptionType = { type: 'setDescription', payload: { description: string } };
+type setIsPublicType = { type: 'setIsPublic', payload: { isPublic: boolean } };
+type setDoTeamsType = { type: 'setDoTeams', payload: { doTeams: boolean } };
+type newSinglePlayerType = { type: 'newSinglePlayer', payload: { playername: string } };
+type newPlayerInTeamType = { type: 'newPlayerInTeam', payload: { playername: string, playerUuid: string, teamUuid: string } };
+type addExistingPlayerToTeamType = { type: 'addExistingPlayerToTeam', payload: { playerUuid: string, teamUuid: string } };
+type changePlayernameType = { type: 'changePlayername', payload: { playername: string, playerUuid: string } };
+type removePlayerType = { type: 'removePlayer', payload: { playerUuid: string, teamUuid?: string } };
+type replacePlayerWithUuidToType = { type: 'replacePlayerWithUuidTo', payload: { playerUuid: string, teamUuid: string, newPlayerUuid: string } };
+type addTeamType = { type: 'addTeam', payload: null };
+type changeTeamnameType = { type: 'changeTeamname', payload: { teamUuid: string, teamname: string } };
+type removeTeamType = { type: 'removeTeam', payload: { teamUuid: string } };
+
+export type groupDispatchType = setGroupnameType | setDescriptionType | setIsPublicType | setDoTeamsType | newSinglePlayerType | newPlayerInTeamType | addExistingPlayerToTeamType | changePlayernameType | removePlayerType | replacePlayerWithUuidToType | addTeamType | changeTeamnameType | removeTeamType;
 
 export interface step1Type {
-  nextStep: () => Promise<void>,
-  groupInfo: groupInfoType,
-  setGroupInfo: Dispatch<SetStateAction<groupInfoType>>,
-  groupnameAllowInput: boolean,
-  doTeams: boolean,
-  setDoTeams: Dispatch<SetStateAction<boolean>>
-}
+  props: {
+    nextStep: () => Promise<void>,
+    group: groupType,
+    groupDispatch: Dispatch<groupDispatchType>,
+  }
+};
 
 export interface step2Type {
-  groupInfo: groupInfoType,
-  players: playerType[],
-  setPlayers: Dispatch<SetStateAction<playerType[]>>,
-  teams: teamType[],
-  setTeams: Dispatch<SetStateAction<teamType[]>>,
-  doTeams: boolean,
-  playernameColumns: number,
-  setPlayernameColumns: Dispatch<SetStateAction<number>>
-}
+  props: {
+    group: groupType,
+    groupDispatch: Dispatch<groupDispatchType>,
+    playernameColumns: number,
+    setPlayernameColumns: Dispatch<SetStateAction<number>>,
+  }
+};
 
 export interface step3Type {
-  elem: JSX.Element,
-  players: playerType[],
-  setPlayers: Dispatch<SetStateAction<playerType[]>>,
-  teams: teamType[],
-  setTeams: Dispatch<SetStateAction<teamType[]>>,
-  playernameColumns: number,
-  setPlayernameColumns: Dispatch<SetStateAction<number>>
+  props: {
+    group: groupType,
+    groupDispatch: Dispatch<groupDispatchType>,
+    playernameColumns: number,
+    setPlayernameColumns: Dispatch<SetStateAction<number>>,
+    elem: JSX.Element,
+  }
+};
+
+export interface nextStepType {
+  group: groupType,
+  groupDispatch: Dispatch<groupDispatchType>,
+  currentStep: number,
+  setCurrentStep: Dispatch<SetStateAction<number>>,
+  setElem: Dispatch<SetStateAction<JSX.Element>>,
 }
