@@ -81,22 +81,22 @@ function New() {
   };
 
   const stepFunction = () => {
-    switch ({currentStep, doTeams }) {
+    switch (true) {
       // General settings of group to be created
       default:
         return <Step1 props={{ group, groupDispatch }}/>
 
       // Create single players or overview created players by the 'teams' section
-      case { currentStep: 1, doTeams: false } || { currentStep: 2, doTeams: true }:
+      case (currentStep === 1 && doTeams === false) || (currentStep === 2 && doTeams === true):
         return <Step2 props={{ group, groupDispatch, playernameColumns, setPlayernameColumns }}/>
 
       // Create teams and assign players
-      case { currentStep: 1, doTeams: true }:
+      case (currentStep === 1 && doTeams === true):
         return <Step3 props={{ group, groupDispatch, playernameColumns, setPlayernameColumns, elem}}/>
     }
   }
 
-  if (!isLoggedIn) return <Navigate to='/' />;
+  // if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
     <div className='flex-col step-form' style={{'--playername-columns': playernameColumns} as CSSProperties}>
