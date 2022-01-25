@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginContext from './Context';
+import { showError } from './Helpers';
 
 function Login() {
 
@@ -21,26 +22,17 @@ function Login() {
             body: JSON.stringify({ 'username': username, 'password': password })
         }).catch((err: Error) => {
             console.log(err)
-            setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 5000)
+            showError(setElem, err.toString(), 5000)
         })
         if (!res)
             return;
         if (res.status === 200) {
             setIsLoggedIn(true)
         } else if (res.status === 401) {
-            setElem(<p style={{color: 'red'}}>Benutzername oder Passwort ungültig!</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 3000)
+            showError(setElem, 'Benutzername oder Passwort ungültig!', 3000)
         } else {
             console.log(res)
-            setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 5000)
+            showError(setElem, 'Error ' + res.status + ' ' + res.statusText, 5000)
         }
     }
 

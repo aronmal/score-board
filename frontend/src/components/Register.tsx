@@ -1,6 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginContext from './Context';
+import { showError } from './Helpers';
 
 function Register() {
     
@@ -25,10 +26,7 @@ function Register() {
 
     async function register() {
         if (!passwordChecked) {
-            setElem(<p style={{color: 'red'}}>Passwörter stimmen nicht über ein!</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 3000)
+            showError(setElem, 'Passwörter stimmen nicht über ein!', 3000)
             return
         }
 
@@ -38,26 +36,17 @@ function Register() {
             body: JSON.stringify({'username': username, 'email': email, 'password': password})
         }).catch((err: Error) => {
             console.log(err)
-            setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 5000)
+            showError(setElem, err.toString(), 5000)
         })
         if (!res)
             return;
         if (res.status === 201) {
             setElem(<Navigate to='/login' />)
         } else if (res.status === 409) {
-            setElem(<p style={{color: 'red'}}>Benutzername oder E-Mail bereits vergeben!</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 3000)
+            showError(setElem, 'Benutzername oder E-Mail bereits vergeben!', 3000)
         } else {
             console.log(res)
-            setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-            setTimeout(() => {
-                setElem(<></>)
-            }, 5000)
+            showError(setElem, 'Error ' + res.status + ' ' + res.statusText, 5000)
         }
     }
 

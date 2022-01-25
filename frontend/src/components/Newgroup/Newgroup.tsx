@@ -1,7 +1,7 @@
 import { useState, useContext, CSSProperties, useReducer } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginContext from '../Context';
-import { auth } from '../Helpers';
+import { auth, showError } from '../Helpers';
 import { newgroupType } from '../Interfaces';
 import { elemsCount, groupReducer, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from './Helpers';
 import Step1 from './Step1';
@@ -27,18 +27,11 @@ function New() {
   async function nextStep() {
     if (currentStep === (elemsCount(group.doTeams) - 1)) {
       if (playersDuplicatesExists(group.players)) {
-        setElem(<p style={{color: 'red'}}>{ duplicateError }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 3000)
+        showError(setElem, duplicateError, 3000)
         return;
       }
       const token = await auth(setElem)
       if (!token) {
-        setElem(<p style={{color: 'red'}}>{ 'Keine Internetverbindung!' }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 5000)
         return;
       }
       const newgroupReqBody: newgroupType = {
@@ -51,36 +44,24 @@ function New() {
         body: JSON.stringify(newgroupReqBody),
       }).catch((err: Error) => {
         console.log(err)
-        setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 5000)
+        showError(setElem, err.toString(), 5000)
       });
       if (!res)
         return;
       if (res.status === 201)
         setElem(<Navigate to='/dashboard' />)
       else {
-        setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 5000)
+        showError(setElem, 'Error ' + res.status + ' ' + res.statusText, 5000)
       }
     }
   
     if (currentStep === 1 && group.doTeams) {
       if (playersDuplicatesExists(group.players) || teamsDuplicatesExists(group.teams)) {
-        setElem(<p style={{color: 'red'}}>{ duplicateError }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 3000)
+        showError(setElem, duplicateError, 3000)
         return;
       }
       if (group.teams.filter(e => e.players.length === 0).length !== 0) {
-        setElem(<p style={{color: 'red'}}>{ emptyTeamError }</p>)
-        setTimeout(() => {
-          setElem(<></>)
-        }, 3000)
+        showError(setElem, emptyTeamError, 3000)
         return;
       }
       setCurrentStep(2)
@@ -115,7 +96,7 @@ function New() {
     }
   }
 
-  if (!isLoggedIn) return <Navigate to='/' />;
+  // if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
     <div className='flex-col step-form' style={{'--playername-columns': playernameColumns} as CSSProperties}>

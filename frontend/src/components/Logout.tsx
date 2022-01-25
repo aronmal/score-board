@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginContext from './Context';
+import { showError } from './Helpers';
 
 function Logout() {
 
@@ -18,10 +19,7 @@ function Logout() {
                 headers: { 'content-type': 'application/json' },
             }).catch((err: Error) => {
                 console.log(err)
-                setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-                setTimeout(() => {
-                    setElem(<></>)
-                }, 5000)
+                showError(setElem, err.toString(), 5000)
             })
             if (!res)
                 return;
@@ -30,10 +28,7 @@ function Logout() {
                 setElem(<Navigate to='/' />)
             } else {
                 console.log(res)
-                setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-                setTimeout(() => {
-                    setElem(<></>)
-                }, 5000)
+                showError(setElem, 'Error ' + res.status + ' ' + res.statusText, 5000)
             }
         }
     }, [isLoggedIn, setIsLoggedIn])

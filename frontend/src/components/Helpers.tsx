@@ -25,19 +25,13 @@ export const auth = async (setElem: Dispatch<SetStateAction<JSX.Element>>): Prom
         headers: { 'content-type': 'application/json' },
     }).catch((err: Error) => {
         console.log(err)
-        setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-        setTimeout(() => {
-            setElem(<></>)
-        }, 5000)
+        showError(setElem, err.toString(), 5000)
     })
     if (!res)
         return;
     if (res.status === 200)
         return (await res.json()).token;
-    setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-    setTimeout(() => {
-        setElem(<></>)
-    }, 5000)
+    showError(setElem, 'Error ' + res.status + ' ' + res.statusText, 5000)
 }
 
 export const Clock = () => {
@@ -48,4 +42,11 @@ export const Clock = () => {
   const mm = m < 10 ? "0" + m : m;
 
   return `${hh}:${mm}`;
+}
+
+export const showError = (setElem: Dispatch<SetStateAction<JSX.Element>>, message: string, timeout: number) => {
+    setElem(<p style={{color: 'red'}}>{ message }</p>)
+    setTimeout(() => {
+      setElem(<></>)
+    }, timeout)
 }
