@@ -5,19 +5,19 @@ export interface loginContextType {
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 };
 
-export interface playerType {
+export type playerType = {
   uuid: string,
   name: string,
   team: string,
 };
 
-export interface teamType {
+export type teamType = {
   uuid: string,
   name: string,
   players: string[],
 };
 
-export interface groupType {
+export type groupType = {
   groupname: string,
   description: string,
   isPublic: boolean,
@@ -26,9 +26,7 @@ export interface groupType {
   teams: teamType[],
 };
 
-export interface newgroupType extends groupType {
-  token: string
-};
+export type newgroupType = groupType & { token: string };
 
 type setGroupnameType = { type: 'setGroupname', payload: { groupname: string } };
 type setDescriptionType = { type: 'setDescription', payload: { description: string } };
@@ -46,15 +44,14 @@ type removeTeamType = { type: 'removeTeam', payload: { teamUuid: string } };
 
 export type groupDispatchType = setGroupnameType | setDescriptionType | setIsPublicType | setDoTeamsType | newSinglePlayerType | newPlayerInTeamType | addExistingPlayerToTeamType | changePlayernameType | removePlayerType | replacePlayerWithUuidToType | addTeamType | changeTeamnameType | removeTeamType;
 
-export interface step1Type {
+export type step1Type = {
   props: {
-    nextStep: () => Promise<void>,
     group: groupType,
     groupDispatch: Dispatch<groupDispatchType>,
   }
 };
 
-export interface step2Type {
+export type step2Type = {
   props: {
     group: groupType,
     groupDispatch: Dispatch<groupDispatchType>,
@@ -63,7 +60,7 @@ export interface step2Type {
   }
 };
 
-export interface step3Type {
+export type step3Type = {
   props: {
     group: groupType,
     groupDispatch: Dispatch<groupDispatchType>,
@@ -73,7 +70,7 @@ export interface step3Type {
   }
 };
 
-export interface nextStepType {
+export type nextStepType = {
   group: groupType,
   groupDispatch: Dispatch<groupDispatchType>,
   currentStep: number,

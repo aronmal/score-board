@@ -1,8 +1,9 @@
-import { groupnameError, validate } from "./Helpers";
+import { validate } from "./Helpers";
 import { step1Type } from "../Interfaces";
+import { groupnameError } from "./Newgroup";
 
-function Step1({ props: { nextStep, group: { groupname, description, isPublic, doTeams }, groupDispatch } }: step1Type) {
-    return (<>
+function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch } }: step1Type) {
+    return <>
         {(!groupname || (groupname === groupnameError)) ?
             <h2 style={{borderBottom: '.25rem solid transparent'}}>{ 'Neue Gruppe' }</h2>
             :
@@ -17,10 +18,6 @@ function Step1({ props: { nextStep, group: { groupname, description, isPublic, d
             placeholder='Neue Gruppe'
             value={groupname}
             onChange={e => groupDispatch({ type: 'setGroupname', payload: { groupname: validate(e.target.value) } })}
-            onKeyDown={e => {
-                if (e.code === 'Enter' || e.code === 'NumpadEnter')
-                    nextStep();
-            }}
             />
         </div>
         <div className='flex-col'>
@@ -80,7 +77,7 @@ function Step1({ props: { nextStep, group: { groupname, description, isPublic, d
             />
             <p>Teams</p>
         </div>
-    </>)
+    </>
 }
 
 export default Step1;

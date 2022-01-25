@@ -1,10 +1,11 @@
-import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate, emptyTeamError } from './Helpers';
+import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate } from './Helpers';
 import { step3Type } from '../Interfaces';
 import { v4 as uuidv4 } from 'uuid';
+import { emptyTeamError } from './Newgroup';
 
 function Step3({ props: { group: { players, teams }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step3Type) {
 
-  return (<>
+  return <>
     <div className='flex-row'>
       <h2>Teams erstellen:</h2>
       <input
@@ -21,25 +22,25 @@ function Step3({ props: { group: { players, teams }, groupDispatch, playernameCo
     </div>
     <div className='team-content'>
       <div className="flex-col team-list">
-        {teams.map(team => (
-          <div key={ team.uuid } className='flex-col team-div team-div-real'>
+        {teams.map(({ uuid: teamUuid, name, players: teamPlayers }) => (
+          <div key={ teamUuid } className='flex-col team-div team-div-real'>
             <div className='flex-row'>
               <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24"><path d="M17.997 18h-11.995l-.002-.623c0-1.259.1-1.986 1.588-2.33 1.684-.389 3.344-.736 2.545-2.209-2.366-4.363-.674-6.838 1.866-6.838 2.491 0 4.226 2.383 1.866 6.839-.775 1.464.826 1.812 2.545 2.209 1.49.344 1.589 1.072 1.589 2.333l-.002.619zm4.811-2.214c-1.29-.298-2.49-.559-1.909-1.657 1.769-3.342.469-5.129-1.4-5.129-1.265 0-2.248.817-2.248 2.324 0 3.903 2.268 1.77 2.246 6.676h4.501l.002-.463c0-.946-.074-1.493-1.192-1.751zm-22.806 2.214h4.501c-.021-4.906 2.246-2.772 2.246-6.676 0-1.507-.983-2.324-2.248-2.324-1.869 0-3.169 1.787-1.399 5.129.581 1.099-.619 1.359-1.909 1.657-1.119.258-1.193.805-1.193 1.751l.002.463z"/></svg>
               <input
                 className='teamname-input input-box'
-                style={teamnameDuplicatesExists(teams, team.name) ? {color: 'red'} : {}}
+                style={teamnameDuplicatesExists(teams, name) ? {color: 'red'} : {}}
                 type='text'
-                value={team.name}
+                value={name}
                 placeholder='Teamname'
-                onChange={e => groupDispatch({ type: 'changeTeamname', payload: { teamUuid: team.uuid, teamname: validate(e.target.value) } })}
+                onChange={e => groupDispatch({ type: 'changeTeamname', payload: { teamUuid, teamname: validate(e.target.value) } })}
               />
               <button
                 className='team-minus-button input-box'
-                onClick={() => groupDispatch({ type: 'removeTeam', payload: { teamUuid: team.uuid } })}
+                onClick={() => groupDispatch({ type: 'removeTeam', payload: { teamUuid } })}
               ><span>-</span></button>
             </div>
             <div className="grid-team-playernames">
-              {[...team.players, uuidv4()].map((playerUuid, index) => index !== team.players.length ? (
+              {[...teamPlayers, uuidv4()].map((playerUuid, index) => index !== teamPlayers.length ? (
                 <div key={ playerUuid } className='player-in-team-div'>
                   <input
                     className='playername-in-team input-box'
@@ -50,7 +51,7 @@ function Step3({ props: { group: { players, teams }, groupDispatch, playernameCo
                     placeholder='Spielername'
                     onChange={e => {
                       if (!!players.find(player => player.uuid === validate(e.target.value)))
-                        groupDispatch({ type: 'replacePlayerWithUuidTo', payload: { playerUuid, teamUuid: team.uuid, newPlayerUuid: validate(e.target.value) } })
+                        groupDispatch({ type: 'replacePlayerWithUuidTo', payload: { playerUuid, teamUuid, newPlayerUuid: validate(e.target.value) } })
                       else
                         groupDispatch({ type: 'changePlayername', payload: { playername: validate(e.target.value), playerUuid } })
                     }}
@@ -72,16 +73,16 @@ function Step3({ props: { group: { players, teams }, groupDispatch, playernameCo
               ) : (
                 <div key={ playerUuid } className='player-in-team-div'>
                   <input
-                    className={'playername-in-team input-box' + ((team.players.length === 0) && (elem.props.children === emptyTeamError) ? ' error-input' : '')}
+                    className={'playername-in-team input-box' + ((teamPlayers.length === 0) && (elem.props.children === emptyTeamError) ? ' error-input' : '')}
                     type="text"
                     value=''
                     list="namelist"
                     placeholder='Hinzufügen...'
                     onChange={e => {
                       if (!!players.find(player => player.uuid === validate(e.target.value)))
-                        groupDispatch({ type: 'addExistingPlayerToTeam', payload: { playerUuid, teamUuid: team.uuid } })
+                        groupDispatch({ type: 'addExistingPlayerToTeam', payload: { playerUuid, teamUuid } })
                       else if (validate(e.target.value))
-                        groupDispatch({ type: 'newPlayerInTeam', payload: { playername: validate(e.target.value), playerUuid, teamUuid: team.uuid } })
+                        groupDispatch({ type: 'newPlayerInTeam', payload: { playername: validate(e.target.value), playerUuid, teamUuid } })
                     }}
                   />
                 </div>
@@ -108,7 +109,7 @@ function Step3({ props: { group: { players, teams }, groupDispatch, playernameCo
       </div>
     </div>
     { elem }
-  </>)
+  </>
 }
 
 export default Step3

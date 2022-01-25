@@ -1,13 +1,12 @@
 import { playernameDuplicatesExists, validate } from "./Helpers";
 import { step2Type } from "../Interfaces";
 import { useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns } }: step2Type) {
 
   const [playername, setPlayername] = useState('');
 
-  return (<>
+  return <>
     <div className='flex-row'>
       <h2>{!doTeams ? 'Spieler hinzufügen zu ' : 'Spieler überprüfen von '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
       <input
@@ -47,7 +46,7 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
       >Hinzufügen</button>
     </div> : <></>}
     <div className="grid-team-playernames">
-      {players.map(({ uuid: playerUuid, name: name, ..._ }) => (
+      {players.map(({ uuid: playerUuid, name }) => (
           <div key={ playerUuid } className='player-in-team-div'>
             <input
               className='playername-in-team input-box'
@@ -99,7 +98,7 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
         </div>
       ) : <></>}
     </div>
-  </>)
+  </>
 }
 
 export default Step2

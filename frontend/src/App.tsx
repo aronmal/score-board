@@ -10,6 +10,7 @@ import Newgroup from './components/Newgroup/Newgroup';
 import loginContext from './components/Context';
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
+import { loginCheck } from './components/Helpers';
 
 function App() {
 
@@ -18,28 +19,14 @@ function App() {
   const loginContextProviderValue = useMemo(() => ({ isLoggedIn, setIsLoggedIn }), [isLoggedIn, setIsLoggedIn])
 
   useEffect(() => {
-    loginCheck()
+    login()
   }, [])
 
-  async function loginCheck() {
-    const res: void | Response = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ type: 'loginCheck' }),
-    }).catch((err: Error) => console.log(err))
-    if (!res)
-      return;
-    let loginCheck = false;
-    try {
-      const body = await res.json()
-      loginCheck = body.loggedIn
-      console.log('loginCheck: ' + loginCheck)
-    } catch (err: any) {
-      console.log(err)
-    }
-    if (res.status === 200 && loginCheck) {
+  async function login() {
+    const check = await loginCheck()
+    if (check)
       setIsLoggedIn(true)
-    }
+
     setElem(
       <div className='content-div flex-col'>
         <Routes>

@@ -1,12 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { Navigate } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-import auth from "../Helpers";
-import { groupDispatchType, groupType, newgroupType, nextStepType, playerType, teamType } from "../Interfaces";
-
-export const groupnameError = 'Bitte Name eingeben!'
-export const duplicateError = 'Bitte Eingabe überprüfen!'
-export const emptyTeamError = 'Teams müssen mindestens einen Spieler haben!'
+import { groupDispatchType, groupType, playerType, teamType } from "../Interfaces";
 
 // const teamByUuid = (teams: teamType[], teamUuid: string) => teams[teams.findIndex(i => i.uuid === teamUuid)];
 
@@ -16,17 +9,17 @@ export const teamnameDuplicatesExists = (teams: teamType[], teamname: string) =>
 
 export const playernameDuplicatesExists = (players: playerType[], playername: string) => (playername !== '') && (players.filter(e => e.name === playername).length !== 1)
 
+export const teamsDuplicatesExists = (teams: teamType[]) =>  teams.filter(team => teamnameDuplicatesExists(teams, team.name)).length !== 0
+
+export const playersDuplicatesExists = (players: playerType[]) => players.filter(player => playernameDuplicatesExists(players, player.name)).length !== 0
+
 export const playernameOfUuid = (players: playerType[], playerUuid: string) => players[players.findIndex(i => i.uuid === playerUuid)].name
 
-export const isLastPlayerInTeam = (team: teamType, playerUuid: string) => (team.players[team.players.length - 1] === playerUuid)
+// export const isLastPlayerInTeam = (team: teamType, playerUuid: string) => (team.players[team.players.length - 1] === playerUuid)
+
+export const teamIndexCount = (teams: teamType[]) => teams.map(team => (/^Team [0-9]+$/.test(team.name)) ? (parseInt(/[0-9]+$/.exec(team.name)![0])) : 0)
 
 export const elemsCount = (doTeams: boolean) => doTeams ? 3 : 2
-
-const teamIndexCount = (teams: teamType[]) => {let numbers: number[] = []; teams.forEach(team => {if (/^Team [0-9]+$/.test(team.name)) numbers.push(parseInt(/[0-9]+$/.exec(team.name)![0]))}); return numbers;}
-
-const teamsDuplicatesExists = (teams: teamType[]) =>  teams.filter(team => teamnameDuplicatesExists(teams, team.name)).length !== 0
-
-const playersDuplicatesExists = (players: playerType[]) => players.filter(player => playernameDuplicatesExists(players, player.name)).length !== 0
 
 export const initialGroup: groupType = {
   groupname: '',
@@ -38,7 +31,7 @@ export const initialGroup: groupType = {
 }
 
 export const groupReducer = (group: groupType, action: groupDispatchType) => {
-  const { players, teams, ..._} = group
+  const { players, teams } = group
   switch (action.type) {
 
     case 'setGroupname': {
@@ -231,79 +224,3 @@ export const groupReducer = (group: groupType, action: groupDispatchType) => {
       return group;
   }
 }
-
-export const nextStep = async ({ group, groupDispatch, currentStep, setCurrentStep, setElem }: nextStepType) => {
-  if (currentStep === (elemsCount(group.doTeams) - 1)) {
-    if (playersDuplicatesExists(group.players)) {
-      setElem(<p style={{color: 'red'}}>{ duplicateError }</p>)
-      setTimeout(() => {
-        setElem(<></>)
-      }, 3000)
-      return;
-    }
-    const token = await auth(setElem)
-    if (!token) {
-      setElem(<p style={{color: 'red'}}>{ 'Keine Internetverbindung!' }</p>)
-      setTimeout(() => {
-        setElem(<></>)
-      }, 5000)
-      return;
-    }
-    const newgroupReqBody: newgroupType = {
-      ...group,
-      description: group.description ? group.description : 'Keine Beschreibung',
-      token
-    };
-    const res = await fetch('/api/newgroup', {
-      method: 'POST',
-      headers: { 'content-type': 'application/json' },
-      body: JSON.stringify(newgroupReqBody),
-    }).catch((err: Error) => {
-      console.log(err)
-      setElem(<p style={{color: 'red'}}>{ err.toString() }</p>)
-      setTimeout(() => {
-        setElem(<></>)
-      }, 5000)
-    });
-    if (!res)
-      return;
-    if (res.status === 201)
-      setElem(<Navigate to='/dashboard' />)
-    else {
-      setElem(<p style={{color: 'red'}}>{ 'Error ' + res.status + ' ' + res.statusText }</p>)
-      setTimeout(() => {
-        setElem(<></>)
-      }, 5000)
-    }
-  }
-
-  if (currentStep === 1 && group.doTeams) {
-    if (playersDuplicatesExists(group.players) || teamsDuplicatesExists(group.teams)) {
-      setElem(<p style={{color: 'red'}}>{ duplicateError }</p>)
-      setTimeout(() => {
-        setElem(<></>)
-      }, 3000)
-      return;
-    }
-    if (group.teams.filter(e => e.players.length === 0).length !== 0) {
-      setElem(<p style={{color: 'red'}}>{ emptyTeamError }</p>)
-      setTimeout(() => {
-        setElem(<></>)
-      }, 3000)
-      return;
-    }
-    setCurrentStep(2)
-  }
-
-  if (currentStep === 0) {
-    if (!group.groupname) {
-      console.log('[WARN] groupname is empty!')
-      groupDispatch({ type: 'setGroupname', payload: { groupname: groupnameError }})
-      setTimeout(() => {
-        groupDispatch({ type: 'setGroupname', payload: { groupname: '' }})
-      }, 2000)
-      return;
-    }
-    setCurrentStep(1)
-  }
-};

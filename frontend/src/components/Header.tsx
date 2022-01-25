@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 import loginContext from './Context';
+import { Clock } from './Helpers';
 
 function Header() {
   
@@ -8,7 +9,7 @@ function Header() {
 
   useEffect(() => {
     setInterval(() => {
-      setTime(() => Clock('hh:mm'))
+      setTime(() => Clock())
     }, 1000);
   }, []);
 
@@ -25,39 +26,6 @@ function Header() {
       </div>
     </header>
   );
-}
-
-function Clock(type: string) {
-    
-  // clock function
-
-  const h = new Date().getHours();
-  const m = new Date().getMinutes();
-  const s = new Date().getSeconds();
-
-  const hh = h < 10 ? "0" + h : h;
-  const mm = m < 10 ? "0" + m : m;
-  const ss = s < 10 ? "0" + s : s;
-
-  switch(type) {
-    case'h':
-      return `${h}`
-    case'm':
-      return `${m}`
-    case's':
-      return `${s}`
-    case'hh':
-      return `${hh}`
-    case'mm':
-      return `${mm}`
-    case'ss':
-      return `${ss}`
-    case'hh:mm':
-      return `${hh}:${mm}`
-    default:
-      return `${hh}:${mm}:${ss}`
-  }
-
 }
 
 function Nav() {
