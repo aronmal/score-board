@@ -57,17 +57,17 @@ function Step3({ props: { group: { players, teams }, groupDispatch, playernameCo
                     }}
                     onKeyDown={e => {
                       if (e.code === 'Delete')
-                        groupDispatch({ type: 'removePlayer', payload: { playerUuid } })
+                        groupDispatch({ type: 'removePlayer', payload: { playerUuid, teamUuid } })
                     }}
                     onBlur={() => {
                       if (!playernameOfUuid(players, playerUuid))
-                        groupDispatch({ type: 'removePlayer', payload: { playerUuid } })
+                        groupDispatch({ type: 'removePlayer', payload: { playerUuid, teamUuid } })
                     }}
                   />
                   <button
                     tabIndex={-1}
                     className='team-player-minus-button'
-                    onClick={() => groupDispatch({ type: 'removePlayer', payload: { playerUuid } })}
+                    onClick={() => groupDispatch({ type: 'removePlayer', payload: { playerUuid, teamUuid } })}
                   ><span>{ '\u2A2F' }</span></button>
                 </div>
               ) : (

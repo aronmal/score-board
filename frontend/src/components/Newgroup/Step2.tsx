@@ -46,7 +46,7 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
       >Hinzufügen</button>
     </div> : <></>}
     <div className="grid-team-playernames">
-      {players.map(({ uuid: playerUuid, name }) => (
+      {players.map(({ uuid: playerUuid, name, team: teamUuid }) => (
           <div key={ playerUuid } className='player-in-team-div'>
             <input
               className='playername-in-team input-box'
@@ -60,18 +60,18 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
               }}
               onKeyDown={e => {
                 if (!doTeams && (e.code === 'Delete'))
-                  groupDispatch({ type: 'removePlayer', payload: { playerUuid } })
+                  groupDispatch({ type: 'removePlayer', payload: { playerUuid, teamUuid } })
               }}
               onBlur={() => {
                 if (!doTeams && !name)
-                  groupDispatch({ type: 'removePlayer', payload: { playerUuid } })
+                  groupDispatch({ type: 'removePlayer', payload: { playerUuid, teamUuid } })
               }}
             />
             {!doTeams ? 
               <button
                 tabIndex={-1}
                 className='team-player-minus-button'
-                onClick={() => groupDispatch({ type: 'removePlayer', payload: { playerUuid } })}
+                onClick={() => groupDispatch({ type: 'removePlayer', payload: { playerUuid, teamUuid } })}
               ><span>{ '\u2A2F' }</span></button>
             : <></>}
           </div>
