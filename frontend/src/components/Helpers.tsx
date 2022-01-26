@@ -45,7 +45,7 @@ export const Clock = () => {
 }
 
 export const showError = (setElem: Dispatch<SetStateAction<JSX.Element>>, message: string, timeout: number) => {
-    setElem(<p style={{color: 'red'}}>{ message }</p>)
+    setElem(<p className="error-p">{ message }</p>)
     setTimeout(() => {
       setElem(<></>)
     }, timeout)

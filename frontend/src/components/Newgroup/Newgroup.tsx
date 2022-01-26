@@ -1,4 +1,4 @@
-import { useState, useContext, CSSProperties, useReducer } from 'react';
+import { useState, useContext, CSSProperties, useReducer, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginContext from '../Context';
 import { auth, showError } from '../Helpers';
@@ -8,7 +8,8 @@ import Step1 from './Step1';
 import Step2 from './Step2';
 import Step3 from './Step3';
 
-export const groupnameError = 'Bitte Name eingeben!'
+export const groupnameError = 'Die Gruppe braucht einen Namen ; )'
+const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'
 export const duplicateError = 'Bitte Eingabe überprüfen!'
 export const emptyTeamError = 'Teams müssen mindestens einen Spieler haben!'
 
@@ -24,9 +25,18 @@ function New() {
 
   const doTeams = group.doTeams
 
+  useEffect(() => {
+    setElem(<></>)
+  }, [currentStep])
+
   async function nextStep() {
-    if (currentStep === (elemsCount(group.doTeams) - 1)) {
-      if (playersDuplicatesExists(group.players)) {
+    const { groupname, players, teams } = group
+    if (currentStep === (elemsCount(doTeams) - 1)) {
+      if (players.length === 0) {
+        showError(setElem, playersError, 3000)
+        return;
+      }
+      if (playersDuplicatesExists(players)) {
         showError(setElem, duplicateError, 3000)
         return;
       }
@@ -36,7 +46,8 @@ function New() {
       }
       const newgroupReqBody: newgroupType = {
         ...group,
-        token
+        description: group.description? group.description : 'Keine Beschreibung',
+        token,
       };
       const res = await fetch('/api/newgroup', {
         method: 'POST',
@@ -55,12 +66,12 @@ function New() {
       }
     }
   
-    if (currentStep === 1 && group.doTeams) {
-      if (playersDuplicatesExists(group.players) || teamsDuplicatesExists(group.teams)) {
+    if (currentStep === 1 && doTeams) {
+      if (playersDuplicatesExists(players) || teamsDuplicatesExists(teams)) {
         showError(setElem, duplicateError, 3000)
         return;
       }
-      if (group.teams.filter(e => e.players.length === 0).length !== 0) {
+      if (teams.filter(e => e.players.length === 0).length !== 0) {
         showError(setElem, emptyTeamError, 3000)
         return;
       }
@@ -68,12 +79,9 @@ function New() {
     }
 
     if (currentStep === 0) {
-      if (!group.groupname) {
+      if (!groupname) {
         console.log('[WARN] groupname is empty!')
-        groupDispatch({ type: 'setGroupname', payload: { groupname: groupnameError }})
-        setTimeout(() => {
-          groupDispatch({ type: 'setGroupname', payload: { groupname: '' }})
-        }, 2000)
+        showError(setElem, groupnameError, 3000)
         return;
       }
       setCurrentStep(1)
@@ -83,11 +91,11 @@ function New() {
   const stepFunction = () => {
     // General settings of group to be created
     if (currentStep === 0)
-      return <Step1 props={{ group, groupDispatch }}/>
+      return <Step1 props={{ group, groupDispatch, elem }}/>
 
     // Create single players or overview created players by the 'teams' section
     if ((currentStep === 1 && doTeams === false) || (currentStep === 2 && doTeams === true))
-      return <Step2 props={{ group, groupDispatch, playernameColumns, setPlayernameColumns }}/>
+      return <Step2 props={{ group, groupDispatch, playernameColumns, setPlayernameColumns, elem }}/>
 
     // Create teams and assign players
     if (currentStep === 1 && doTeams === true)
@@ -98,7 +106,9 @@ function New() {
 
   return (
     <div className='flex-col step-form' style={{'--playername-columns': playernameColumns} as CSSProperties}>
-      { stepFunction() }
+      <div className='flex-col' style={{position: 'relative'}}>
+        { stepFunction() }
+      </div>
       <div className='steps'>
         {currentStep === 0 ? <></> :
         <button className='next-step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}

@@ -400,6 +400,11 @@ textarea {
   opacity: 1;
   pointer-events: inherit;
 }
+.error-p {
+  color: red;
+  position: absolute;
+  bottom: -1.5em;
+}
 .steps {
   margin: 2em 0 1em;
 }

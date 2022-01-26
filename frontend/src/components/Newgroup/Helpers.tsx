@@ -23,7 +23,7 @@ export const elemsCount = (doTeams: boolean) => doTeams ? 3 : 2
 
 export const initialGroup: groupType = {
   groupname: '',
-  description: 'Keine Beschreibung',
+  description: '',
   isPublic: true,
   doTeams: false,
   players: [],

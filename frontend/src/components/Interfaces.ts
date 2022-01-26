@@ -48,6 +48,7 @@ export type step1Type = {
   props: {
     group: groupType,
     groupDispatch: Dispatch<groupDispatchType>,
+    elem: JSX.Element,
   }
 };
 
@@ -57,6 +58,7 @@ export type step2Type = {
     groupDispatch: Dispatch<groupDispatchType>,
     playernameColumns: number,
     setPlayernameColumns: Dispatch<SetStateAction<number>>,
+    elem: JSX.Element,
   }
 };
 

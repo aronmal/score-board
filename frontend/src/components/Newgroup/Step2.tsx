@@ -2,9 +2,16 @@ import { playernameDuplicatesExists, validate } from "./Helpers";
 import { step2Type } from "../Interfaces";
 import { useState } from "react";
 
-function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns } }: step2Type) {
+function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
 
   const [playername, setPlayername] = useState('');
+
+  function newPlayer() {
+    if (!validate(playername))
+      return;
+    groupDispatch({ type: 'newSinglePlayer', payload: { playername } });
+    setPlayername('');
+  }
 
   return <>
     <div className='flex-row'>
@@ -31,18 +38,14 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
             setPlayername(validate(e.target.value));
         }}
         onKeyDown={e => {
-          if (e.code === 'Enter' || e.code === 'NumpadEnter') {
-            groupDispatch({ type: 'newSinglePlayer', payload: { playername } })
-            setPlayername('')
-          }
+          if ((e.code === 'Enter' || e.code === 'NumpadEnter'))
+            newPlayer()
         }}
+        onBlur={() => newPlayer()}
         />
       <button
         className='add-player-button'
-        onClick={() => {
-            groupDispatch({ type: 'newSinglePlayer', payload: { playername } })
-            setPlayername('')
-        }}
+        onClick={() => newPlayer()}
       >Hinzufügen</button>
     </div> : <></>}
     <div className="grid-team-playernames">
@@ -89,15 +92,15 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
                 setPlayername(validate(e.target.value))
             }}
             onKeyDown={e => {
-              if (!doTeams && (e.code === 'Enter' || e.code === 'NumpadEnter')) {
-                groupDispatch({ type: 'newSinglePlayer', payload: { playername: playername } })
-                setPlayername('')
-              }
+              if (!doTeams && (e.code === 'Enter' || e.code === 'NumpadEnter')) 
+                newPlayer()
             }}
+            onBlur={() => newPlayer()}
           />
         </div>
       ) : <></>}
     </div>
+    { elem }
   </>
 }
 

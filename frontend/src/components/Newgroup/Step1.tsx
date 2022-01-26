@@ -1,10 +1,10 @@
 import { validate } from "./Helpers";
 import { step1Type } from "../Interfaces";
-import { groupnameError } from "./Newgroup";
+import { duplicateError, groupnameError } from "./Newgroup";
 
-function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch } }: step1Type) {
+function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
     return <>
-        {(!groupname || (groupname === groupnameError)) ?
+        {(!groupname) ?
             <h2 style={{borderBottom: '.25rem solid transparent'}}>{ 'Neue Gruppe' }</h2>
             :
             <h2 style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</h2>
@@ -12,8 +12,8 @@ function Step1({ props: { group: { groupname, description, isPublic, doTeams }, 
         <div className='flex-row'>
             <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
             <input
-            className='input-box'
-            style={groupname === groupnameError ? {color: 'red'} : {}}
+            className={'input-box' + ((elem.props.children === groupnameError) ? ' error-input' : '')}
+            style={groupname === duplicateError ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
             value={groupname}
@@ -77,6 +77,7 @@ function Step1({ props: { group: { groupname, description, isPublic, doTeams }, 
             />
             <p>Teams</p>
         </div>
+        { elem }
     </>
 }
 
