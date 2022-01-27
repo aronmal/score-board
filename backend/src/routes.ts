@@ -113,7 +113,7 @@ export async function logout(req: Request, res: Response) {
     return status;
 }
 
-export async function auth(req: Request, _res: Response) {
+export async function auth(req: Request, res: Response) {
     let status = {} as statusRes;
     const refreshToken: string = req.cookies.token
     const loginCheck = (req.body.type === 'loginCheck')
@@ -139,6 +139,7 @@ export async function auth(req: Request, _res: Response) {
         return status;
     }
     if (DBToken.used) {
+        res.clearCookie;
         await logging('DBToken was already used!', ['debug'], req);
         status.code = 401;
         return status;
