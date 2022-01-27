@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { logging, logStartup } from './logging';
-import { register, login, logout, auth, newgroup } from './routes';
+import { register, login, logout, auth, newgroup, data } from './routes';
 import { errorHandling, routeCatch } from './helpers';
 const app = express();
 
@@ -77,19 +77,22 @@ async function startup() {
       }));
     
     // Register post route
-    app.post('/api/register', (req, res, next) => {next(register)});
+    app.post('/api/register', (_req, _res, next) => {next(register)});
     
     // Login post route
-    app.post('/api/login', (req, res, next) => {next(login)});
+    app.post('/api/login', (_req, _res, next) => {next(login)});
     
     // Logout delete route
-    app.delete('/api/logout', (req, res, next) => {next(logout)});
+    app.delete('/api/logout', (_req, _res, next) => {next(logout)});
     
     // Auth post route
-    app.post('/api/auth', (req, res, next) => {next(auth)});
+    app.post('/api/auth', (_req, _res, next) => {next(auth)});
     
     // New group post route
-    app.post('/api/newgroup', (req, res, next) => {next(newgroup)});
+    app.post('/api/newgroup', (_req, _res, next) => {next(newgroup)});
+    
+    // Data post route
+    app.post('/api/data', (_req, _res, next) => {next(data)});
     
     
     // Middlewares

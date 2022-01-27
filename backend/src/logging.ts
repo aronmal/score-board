@@ -13,26 +13,40 @@ export async function logStartup() {
 export async function logging(message: string, types: string[], req?: Request) {
     let messages = { console: message, file: message }
     types.slice().reverse().forEach(async (type) => {
-        if (type === 'info.green') {
-            messages.console = '[INFO] '.green + messages.console;
-            messages.file = '[INFO] ' + messages.file;
-        } else if (type === 'info.cyan') {
-            messages.console = '[INFO] '.cyan + messages.console;
-            messages.file = '[INFO] ' + messages.file;
-        } else if (type === 'debug') {
-            messages.console = '[Debug] '.grey + messages.console;
-            messages.file = '[Debug] ' + messages.file;
-        } else if (type === 'post') {
-            messages.console = '[POST] ' + messages.console;
-            messages.file = '[POST] ' + messages.file;
-        } else if (type === 'warn') {
-            messages.console = '[WARN] '.yellow + messages.console;
-            messages.file = '[WARN] ' + messages.file;
-        } else if (type === 'error') {
-            messages.console = '[ERROR] '.red + messages.console;
-            messages.file = '[ERROR] ' + messages.file;
-        } else {
-            await logging('Invalid logging argument! The Argument was: ' + type, ['error']);
+        switch (type) {
+            case 'info.green':
+                messages.console = '[INFO] '.green + messages.console;
+                messages.file = '[INFO] ' + messages.file;
+                break;
+            
+            case 'info.cyan':
+                messages.console = '[INFO] '.cyan + messages.console;
+                messages.file = '[INFO] ' + messages.file;
+                break;
+            
+            case 'debug':
+                messages.console = '[Debug] '.grey + messages.console;
+                messages.file = '[Debug] ' + messages.file;
+                break;
+            
+            case 'post':
+                messages.console = '[POST] ' + messages.console;
+                messages.file = '[POST] ' + messages.file;
+                break;
+            
+            case 'warn':
+                messages.console = '[WARN] '.yellow + messages.console;
+                messages.file = '[WARN] ' + messages.file;
+                break;
+            
+            case 'error':
+                messages.console = '[ERROR] '.red + messages.console;
+                messages.file = '[ERROR] ' + messages.file;
+                break;
+
+            default:
+                await logging('Invalid logging argument! The Argument was: ' + type, ['error']);
+                break;
         }
     })
     messages.console = `[${new Date().toString().slice(0, 33)}] ` + messages.console;

@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { logging } from "./logging";
-import { statusRes } from "./schemas";
+import { statusRes } from "./interfaces";
 
 export async function routeCatch(route: any, req: Request, res: Response, next: NextFunction) {
     if (typeof route !== 'function')
         await logging('Unexpected Error: Non-function argument', ['error'], req);
     if (route.status !== undefined) {
-        await logging(route.message, ['error'], req);
+        await logging(route.stack, ['error'], req);
         res.sendStatus(route.status);
         return;
     }
@@ -32,7 +32,7 @@ export async function routeCatch(route: any, req: Request, res: Response, next: 
 
 export async function errorHandling(err: any, req: Request, res: Response, _next: NextFunction) {
     res.sendStatus(500)
-    await logging(err.message, ['error'], req);
+    await logging(err.stack, ['error'], req);
     await logging('Request served with status 500', ['post', 'warn'], req);
 }
 
