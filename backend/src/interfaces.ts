@@ -2,12 +2,14 @@ import mongoose from "mongoose";
 
 export interface userType {
     _id: mongoose.Types.ObjectId,
-    uuid: string,
-    username: string,
-    email: string,
+    data: {
+        uuid: string,
+        username: string,
+        email: string,
+        groups: any[],
+        templates: any[],
+    },
     password: string,
-    groups: any[],
-    templates: any[],
     createdAt: Date,
     updatedAt: Date,
     save: Function,

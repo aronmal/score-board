@@ -9,7 +9,7 @@ import Logout from './components/logout';
 import Newgroup from './components/newgroup/newgroup';
 import loginContext from './components/context';
 import { useState, useEffect, useMemo } from 'react';
-import './App.css';
+import './app.css';
 import loginCheck from './helpers/loginCheck';
 
 function App() {
@@ -24,6 +24,7 @@ function App() {
 
   async function login() {
     const check = await loginCheck()
+    
     if (check)
       setIsLoggedIn(true)
 
@@ -38,7 +39,7 @@ function App() {
           <Route path='/newgroup' element={<Newgroup />} />
         </Routes>
       </div>
-      )
+    )
   }
   
   return (

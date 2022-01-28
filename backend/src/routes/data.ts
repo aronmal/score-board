@@ -49,7 +49,7 @@ async function data(req: Request, _res: Response) {
         await logging('Early exit: ' + JSON.stringify(status), ['error'], req);
         return status;
     }
-    status.code = 201;
+    status.code = 200;
     status.body = { data: user.data };
     await logging('Requested data of user: ' + user._id + ' with Access-Token: ' + DBToken._id, ['debug','info.cyan'], req);
     return status;

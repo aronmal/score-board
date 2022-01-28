@@ -43,9 +43,8 @@ function New() {
         return;
       }
       const token = await auth(setElem)
-      if (!token) {
+      if (!token)
         return;
-      }
       const newgroupReqBody: newgroupType = {
         ...group,
         description: group.description? group.description : 'Keine Beschreibung',

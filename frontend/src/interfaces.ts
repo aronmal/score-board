@@ -5,6 +5,14 @@ export interface loginContextType {
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 };
 
+export interface userType {
+  uuid: string,
+  username: string,
+  email: string,
+  groups: any[],
+  templates: any[],
+}
+
 export type playerType = {
   uuid: string,
   name: string,
