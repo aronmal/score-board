@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom'
-import loginContext from './Context';
+import loginContext from './context';
 
 function Home() {
 

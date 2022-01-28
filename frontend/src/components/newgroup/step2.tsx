@@ -1,5 +1,5 @@
-import { playernameDuplicatesExists, validate } from "./Helpers";
-import { step2Type } from "../Interfaces";
+import { playernameDuplicatesExists, validate } from "./helpers";
+import { step2Type } from "../interfaces";
 import { useState } from "react";
 
 function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {

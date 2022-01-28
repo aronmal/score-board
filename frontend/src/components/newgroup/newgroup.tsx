@@ -1,12 +1,12 @@
 import { useState, useContext, CSSProperties, useReducer, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import loginContext from '../Context';
-import { auth, showError } from '../Helpers';
-import { newgroupType } from '../Interfaces';
-import { elemsCount, groupReducer, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from './Helpers';
-import Step1 from './Step1';
-import Step2 from './Step2';
-import Step3 from './Step3';
+import loginContext from '../context';
+import { auth, showError } from '../helpers';
+import { newgroupType } from '../interfaces';
+import { elemsCount, groupReducer, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from './helpers';
+import Step1 from './step1';
+import Step2 from './step2';
+import Step3 from './step3';
 
 export const groupnameError = 'Die Gruppe braucht einen Namen ; )'
 const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'

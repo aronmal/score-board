@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { groupDispatchType, groupType, playerType, teamType } from "../Interfaces";
+import { groupDispatchType, groupType, playerType, teamType } from "../interfaces";
 
 // const teamByUuid = (teams: teamType[], teamUuid: string) => teams[teams.findIndex(i => i.uuid === teamUuid)];
 

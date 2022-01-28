@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import loginContext from './Context';
-import { showError } from './Helpers';
+import loginContext from './context';
+import { showError } from './helpers';
 
 function Login() {
 

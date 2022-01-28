@@ -1,16 +1,16 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './components/Home';
-import Dashboard from './components/Dashboard';
-import Register from './components/Register';
-import Login from './components/Login';
-import Logout from './components/Logout';
-import Newgroup from './components/Newgroup/Newgroup';
-import loginContext from './components/Context';
+import Header from './components/header';
+import Footer from './components/footer';
+import Home from './components/home';
+import Dashboard from './components/dashboard';
+import Register from './components/register';
+import Login from './components/login';
+import Logout from './components/logout';
+import Newgroup from './components/newgroup/newgroup';
+import loginContext from './components/context';
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
-import { loginCheck } from './components/Helpers';
+import { loginCheck } from './components/helpers';
 
 function App() {
 

@@ -1,7 +1,7 @@
-import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate } from './Helpers';
-import { step3Type } from '../Interfaces';
+import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate } from './helpers';
+import { step3Type } from '../interfaces';
 import { v4 as uuidv4 } from 'uuid';
-import { emptyTeamError } from './Newgroup';
+import { emptyTeamError } from './newgroup';
 
 function Step3({ props: { group: { players, teams }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step3Type) {
 

@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom'
-import loginContext from './Context';
-import { Clock } from './Helpers';
+import loginContext from './context';
+import { Clock } from './helpers';
 
 function Header() {
   

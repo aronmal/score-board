@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { loginContextType } from './Interfaces';
+import { loginContextType } from './interfaces';
 
 const loginContext = createContext({} as loginContextType);
 

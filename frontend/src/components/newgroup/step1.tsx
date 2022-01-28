@@ -1,6 +1,6 @@
-import { validate } from "./Helpers";
-import { step1Type } from "../Interfaces";
-import { duplicateError, groupnameError } from "./Newgroup";
+import { validate } from "./helpers";
+import { step1Type } from "../interfaces";
+import { duplicateError, groupnameError } from "./newgroup";
 
 function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
     return <>
