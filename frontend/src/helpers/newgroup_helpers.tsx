@@ -1,4 +1,4 @@
-import { playerType, teamType } from "../interfaces";
+import { groupType, playerType, teamType } from "../interfaces";
 
 // const teamByUuid = (teams: teamType[], teamUuid: string) => teams[teams.findIndex(i => i.uuid === teamUuid)];
 
@@ -19,3 +19,12 @@ export const playernameOfUuid = (players: playerType[], playerUuid: string) => p
 export const teamIndexCount = (teams: teamType[]) => teams.map(team => (/^Team [0-9]+$/.test(team.name)) ? (parseInt(/[0-9]+$/.exec(team.name)![0])) : 0)
 
 export const elemsCount = (doTeams: boolean) => doTeams ? 3 : 2
+
+export const initialGroup: groupType = {
+  groupname: '',
+  description: '',
+  isPublic: true,
+  doTeams: false,
+  players: [],
+  teams: [],
+}

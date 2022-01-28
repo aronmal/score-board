@@ -3,12 +3,12 @@ import { logging } from "../logging";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
 import { statusRes } from "../interfaces";
-import Users from "../schemas/userSchema";
-import Tokens from "../schemas/tokenSchema";
-import Groups from "../schemas/groupSchema";
+import { Users } from "../schemas/userSchema";
+import { Tokens } from "../schemas/tokenSchema";
+import { Groups } from "../schemas/groupSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
 
-async function newgroup(req: Request, _res: Response) {
+export default async function newgroup(req: Request, _res: Response) {
     let status = {} as statusRes;
     const { groupname, description, isPublic , players } = req.body;
     const accessToken = req.body.token;
@@ -62,5 +62,3 @@ async function newgroup(req: Request, _res: Response) {
     await logging('Group created: ' + group._id + ' with Access-Token: ' + DBToken._id, ['debug','info.cyan'], req);
     return status;
 }
-
-export default newgroup

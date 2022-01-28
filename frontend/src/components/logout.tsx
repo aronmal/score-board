@@ -1,9 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
-import loginContext from './context';
+import { loginContext }  from './context';
 
-function Logout() {
+export default function Logout() {
 
     const { isLoggedIn, setIsLoggedIn } = useContext(loginContext);
     const [elem, setElem] = useState(<></>);
@@ -36,5 +36,3 @@ function Logout() {
         
     return elem
 }
-
-export default Logout

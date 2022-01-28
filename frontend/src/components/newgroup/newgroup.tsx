@@ -1,9 +1,9 @@
 import { useState, useContext, CSSProperties, useReducer, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import loginContext from '../context';
+import { loginContext }  from '../context';
 import { newgroupType } from '../../interfaces';
-import groupReducer, { initialGroup } from '../../helpers/groupReducer';
-import { elemsCount, playersDuplicatesExists, teamsDuplicatesExists } from '../../helpers/newgroup_helpers';
+import groupReducer from '../../helpers/groupReducer';
+import { elemsCount, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from '../../helpers/newgroup_helpers';
 import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
@@ -15,7 +15,7 @@ const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'
 export const duplicateError = 'Bitte Eingabe überprüfen!'
 export const emptyTeamError = 'Teams müssen mindestens einen Spieler haben!'
 
-function New() {
+export default function New() {
 
   const { isLoggedIn } = useContext(loginContext);
   
@@ -121,5 +121,3 @@ function New() {
     </div>
   );
 }
-
-export default New;

@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { logging } from "../logging";
 import { statusRes } from "../interfaces";
 
-async function routeCatch(route: any, req: Request, res: Response, next: NextFunction) {
+export default async function routeCatch(route: any, req: Request, res: Response, next: NextFunction) {
     if (typeof route !== 'function')
         await logging('Unexpected Error: Non-function argument', ['error'], req);
     if (route.status !== undefined) {
@@ -29,5 +29,3 @@ async function routeCatch(route: any, req: Request, res: Response, next: NextFun
     }
     res.status(status.code).json(status.body);
 }
-
-export default routeCatch

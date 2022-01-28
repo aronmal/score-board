@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Users from "./userSchema";
+import { Users } from "./userSchema";
 
 const groupSchema = new mongoose.Schema({
     data: {
@@ -48,6 +48,4 @@ const groupSchema = new mongoose.Schema({
     },
 })
 
-const Groups = mongoose.model('groups', groupSchema);
-
-export default Groups
+export const Groups = mongoose.model('groups', groupSchema);

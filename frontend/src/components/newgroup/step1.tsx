@@ -2,7 +2,7 @@ import { validate } from "../../helpers/newgroup_helpers";
 import { step1Type } from "../../interfaces";
 import { duplicateError, groupnameError } from "./newgroup";
 
-function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
+export default function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
     return <>
         {(!groupname) ?
             <h2 style={{borderBottom: '.25rem solid transparent'}}>{ 'Neue Gruppe' }</h2>
@@ -80,5 +80,3 @@ function Step1({ props: { group: { groupname, description, isPublic, doTeams }, 
         { elem }
     </>
 }
-
-export default Step1;

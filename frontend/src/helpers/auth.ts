@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction } from "react";
 import showError from "./showError";
 
-async function auth(setElem: Dispatch<SetStateAction<JSX.Element>>): Promise<string | undefined> { 
+export default async function auth(setElem: Dispatch<SetStateAction<JSX.Element>>): Promise<string | undefined> { 
     const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -15,5 +15,3 @@ async function auth(setElem: Dispatch<SetStateAction<JSX.Element>>): Promise<str
         return (await res.json()).token;
     showError(setElem, 'Error ' + res.status + ' ' + res.statusText, 5000)
 }
-
-export default auth

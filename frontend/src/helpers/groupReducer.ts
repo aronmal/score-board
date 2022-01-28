@@ -2,16 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { groupDispatchType, groupType } from "../interfaces";
 import { teamIndexCount } from './newgroup_helpers';
 
-export const initialGroup: groupType = {
-  groupname: '',
-  description: '',
-  isPublic: true,
-  doTeams: false,
-  players: [],
-  teams: [],
-}
-
-const groupReducer = (group: groupType, action: groupDispatchType) => {
+export default function groupReducer(group: groupType, action: groupDispatchType) {
     const { players, teams } = group
     switch (action.type) {
   
@@ -205,5 +196,3 @@ const groupReducer = (group: groupType, action: groupDispatchType) => {
         return group;
     }
 }
-
-export default groupReducer

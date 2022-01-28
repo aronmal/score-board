@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
 import { statusRes } from "../interfaces";
-import Tokens from "../schemas/tokenSchema";
+import { Tokens } from "../schemas/tokenSchema";
 
-async function logout(req: Request, res: Response) {
+export default async function logout(req: Request, res: Response) {
     let status = {} as statusRes;
     const oldRefreshToken: string = req.cookies.token
     if (!oldRefreshToken) {
@@ -33,5 +33,3 @@ async function logout(req: Request, res: Response) {
     await logging('User of Token ' + oldDBToken._id + ' logged out.', ['debug','info.cyan'], req)
     return status;
 }
-
-export default logout

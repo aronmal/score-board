@@ -7,12 +7,12 @@ import Register from './components/register';
 import Login from './components/login';
 import Logout from './components/logout';
 import Newgroup from './components/newgroup/newgroup';
-import loginContext from './components/context';
 import { useState, useEffect, useMemo } from 'react';
 import './app.css';
 import loginCheck from './helpers/loginCheck';
+import { loginContext } from './components/context';
 
-function App() {
+export default function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false)
   const [elem, setElem] = useState(<></>)
@@ -54,5 +54,3 @@ function App() {
     </BrowserRouter>
   );
 }
-
-export default App;

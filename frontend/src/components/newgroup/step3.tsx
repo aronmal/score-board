@@ -3,7 +3,7 @@ import { step3Type } from '../../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { emptyTeamError } from './newgroup';
 
-function Step3({ props: { group: { players, teams }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step3Type) {
+export default function Step3({ props: { group: { players, teams }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step3Type) {
 
   return <>
     <div className='flex-row'>
@@ -111,5 +111,3 @@ function Step3({ props: { group: { players, teams }, groupDispatch, playernameCo
     { elem }
   </>
 }
-
-export default Step3

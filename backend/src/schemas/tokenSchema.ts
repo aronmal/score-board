@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import Users from "./userSchema";
+import { Users } from "./userSchema";
 
 const tokenSchema = new mongoose.Schema({
     token: {
@@ -29,6 +29,4 @@ const tokenSchema = new mongoose.Schema({
     },
 })
 
-const Tokens = mongoose.model('tokens', tokenSchema);
-
-export default Tokens
+export const Tokens = mongoose.model('tokens', tokenSchema);

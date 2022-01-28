@@ -1,9 +1,9 @@
 import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
-import loginContext from './context';
+import { loginContext }  from './context';
 
-function Login() {
+export default function Login() {
 
     const { isLoggedIn, setIsLoggedIn } = useContext(loginContext);
     const [elem, setElem] = useState(<></>);
@@ -70,5 +70,3 @@ function Login() {
         </div>
     )
 }
-
-export default Login

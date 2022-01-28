@@ -3,7 +3,7 @@ import auth from "../helpers/auth";
 import reqData from "../helpers/reqData";
 import { userType } from "../interfaces";
 
-function Dashboard() {
+export default function Dashboard() {
 
     const [data, setData] = useState<userType>({} as userType);
     const [elem, setElem] = useState(<></>);
@@ -35,5 +35,3 @@ function Dashboard() {
         </div>
     )
 }
-
-export default Dashboard

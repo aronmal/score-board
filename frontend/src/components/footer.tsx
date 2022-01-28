@@ -1,4 +1,4 @@
-function Footer() {
+export default function Footer() {
     return (
         <footer>
             <a href="https://mal-noh.de/impressum" className="link" target="_blank" rel="noreferrer">Impressum</a>
@@ -6,5 +6,3 @@ function Footer() {
         </footer>
     );
 }
-  
-export default Footer;

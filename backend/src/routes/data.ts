@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
 import { statusRes } from "../interfaces";
-import Users from "../schemas/userSchema";
-import Tokens from "../schemas/tokenSchema";
+import { Users } from "../schemas/userSchema";
+import { Tokens } from "../schemas/tokenSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
 
-async function data(req: Request, _res: Response) {
+export default async function data(req: Request, _res: Response) {
     let status = {} as statusRes;
     const accessToken = req.body.token;
 
@@ -54,5 +54,3 @@ async function data(req: Request, _res: Response) {
     await logging('Requested data of user: ' + user._id + ' with Access-Token: ' + DBToken._id, ['debug','info.cyan'], req);
     return status;
 }
-
-export default data

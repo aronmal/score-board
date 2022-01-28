@@ -3,9 +3,9 @@ import bcrypt from "bcrypt";
 import { logging } from "../logging";
 import { v4 as uuidv4 } from 'uuid';
 import { statusRes } from "../interfaces";
-import Users from "../schemas/userSchema";
+import { Users } from "../schemas/userSchema";
 
-async function register(req: Request, _res: Response) {
+export default async function register(req: Request, _res: Response) {
     let status = {} as statusRes;
     const { username, email, password } = req.body;
     let user
@@ -30,5 +30,3 @@ async function register(req: Request, _res: Response) {
     await logging('User created : ' + user._id, ['debug','info.cyan'], req);
     return status;
 }
-
-export default register

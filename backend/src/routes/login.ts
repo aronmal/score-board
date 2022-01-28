@@ -3,10 +3,10 @@ import bcrypt from "bcrypt";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
 import { statusRes } from "../interfaces";
-import Users from "../schemas/userSchema";
-import Tokens from "../schemas/tokenSchema";
+import { Users } from "../schemas/userSchema";
+import { Tokens } from "../schemas/tokenSchema";
 
-async function login(req: Request, res: Response) {
+export default async function login(req: Request, res: Response) {
     let status = {} as statusRes;
     const oldRefreshToken: string = req.cookies.token
     const { username, password } = req.body;
@@ -54,5 +54,3 @@ async function login(req: Request, res: Response) {
     await logging('User ' + user._id + ' logged in and generated Refresh-Token: ' + createdDBToken._id, ['debug','info.cyan'], req)
     return status;
 }
-
-export default login

@@ -1,4 +1,4 @@
-function clock() {
+export default function clock() {
     const h = new Date().getHours();
     const m = new Date().getMinutes();
 
@@ -7,5 +7,3 @@ function clock() {
 
     return `${hh}:${mm}`;
 }
-
-export default clock

@@ -2,7 +2,7 @@ import { playernameDuplicatesExists, validate } from "../../helpers/newgroup_hel
 import { step2Type } from "../../interfaces";
 import { useState } from "react";
 
-function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
+export default function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
 
   const [playername, setPlayername] = useState('');
 
@@ -103,5 +103,3 @@ function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch,
     { elem }
   </>
 }
-
-export default Step2

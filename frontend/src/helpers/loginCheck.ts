@@ -1,4 +1,4 @@
-async function loginCheck(): Promise<boolean | undefined> {
+export default async function loginCheck(): Promise<boolean | undefined> {
     const res = await fetch('/api/auth', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
@@ -16,5 +16,3 @@ async function loginCheck(): Promise<boolean | undefined> {
     }
     return loginCheck;
 }
-
-export default loginCheck

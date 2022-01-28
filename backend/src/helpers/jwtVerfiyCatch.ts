@@ -2,7 +2,7 @@ import { Request } from "express";
 import { logging } from "../logging";
 import { statusRes } from "../interfaces";
 
-async function jwtVerfiyCatch(tokenType: string, token: string, err:any, loginCheck: boolean, status: statusRes, req: Request) {
+export default async function jwtVerfiyCatch(tokenType: string, token: string, err:any, loginCheck: boolean, status: statusRes, req: Request) {
     if (loginCheck) {
         status.code = 200;
         status.body = { loggedIn: false };
@@ -21,5 +21,3 @@ async function jwtVerfiyCatch(tokenType: string, token: string, err:any, loginCh
         status.code = 500;
     }
 }
-
-export default jwtVerfiyCatch

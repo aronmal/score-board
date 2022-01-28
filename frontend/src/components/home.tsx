@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { Link } from 'react-router-dom'
-import loginContext from './context';
+import { loginContext }  from './context';
 
-function Home() {
+export default function Home() {
 
   const { isLoggedIn } = useContext(loginContext);
 
@@ -23,5 +23,3 @@ function Home() {
     </div> 
   );
 }
-
-export default Home;

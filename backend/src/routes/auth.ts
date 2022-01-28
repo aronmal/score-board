@@ -2,11 +2,11 @@ import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
 import { statusRes } from "../interfaces";
-import Users from "../schemas/userSchema";
-import Tokens from "../schemas/tokenSchema";
+import { Users } from "../schemas/userSchema";
+import { Tokens } from "../schemas/tokenSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
 
-async function auth(req: Request, res: Response) {
+export default async function auth(req: Request, res: Response) {
     let status = {} as statusRes;
     const refreshToken: string = req.cookies.token
     const loginCheck = (req.body.type === 'loginCheck')
@@ -63,5 +63,3 @@ async function auth(req: Request, res: Response) {
     }
     return status;
 }
-
-export default auth

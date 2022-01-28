@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 import clock from '../helpers/clock';
-import loginContext from './context';
+import { loginContext }  from './context';
 
-function Header() {
+export default function Header() {
   
   const [time, setTime] = useState('00:00');
 
@@ -46,5 +46,3 @@ function Nav() {
     </nav>
   );
 }
-
-export default Header;
