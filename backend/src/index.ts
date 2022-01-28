@@ -5,8 +5,14 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import { logging, logStartup } from './logging';
-import { register, login, logout, auth, newgroup, data } from './routes';
-import { errorHandling, routeCatch } from './helpers';
+import register from './routes/register';
+import login from './routes/login';
+import logout from './routes/logout';
+import auth from './routes/auth';
+import newgroup from './routes/newgroup';
+import data from './routes/data';
+import routeCatch from './helpers/routeCatch';
+import errorHandling from './helpers/errorHandling';
 const app = express();
 
 startup();
