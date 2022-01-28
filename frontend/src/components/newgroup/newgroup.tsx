@@ -1,12 +1,14 @@
 import { useState, useContext, CSSProperties, useReducer, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import loginContext from '../context';
-import { auth, showError } from '../helpers';
-import { newgroupType } from '../interfaces';
-import { elemsCount, groupReducer, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from './helpers';
+import { newgroupType } from '../../interfaces';
+import groupReducer, { initialGroup } from '../../helpers/groupReducer';
+import { elemsCount, playersDuplicatesExists, teamsDuplicatesExists } from '../../helpers/newgroup_helpers';
 import Step1 from './step1';
 import Step2 from './step2';
 import Step3 from './step3';
+import auth from '../../helpers/auth';
+import showError from '../../helpers/showError';
 
 export const groupnameError = 'Die Gruppe braucht einen Namen ; )'
 const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'
@@ -88,7 +90,7 @@ function New() {
     }
   };
 
-  const stepFunction = () => {
+  function stepFunction() {
     // General settings of group to be created
     if (currentStep === 0)
       return <Step1 props={{ group, groupDispatch, elem }}/>

@@ -10,7 +10,7 @@ import Newgroup from './components/newgroup/newgroup';
 import loginContext from './components/context';
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
-import { loginCheck } from './components/helpers';
+import loginCheck from './helpers/loginCheck';
 
 function App() {
 

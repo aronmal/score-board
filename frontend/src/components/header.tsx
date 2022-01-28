@@ -1,7 +1,7 @@
 import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom'
+import clock from '../helpers/clock';
 import loginContext from './context';
-import { Clock } from './helpers';
 
 function Header() {
   
@@ -9,7 +9,7 @@ function Header() {
 
   useEffect(() => {
     setInterval(() => {
-      setTime(() => Clock())
+      setTime(() => clock())
     }, 1000);
   }, []);
 

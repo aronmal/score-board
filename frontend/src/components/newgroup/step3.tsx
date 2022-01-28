@@ -1,5 +1,5 @@
-import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate } from './helpers';
-import { step3Type } from '../interfaces';
+import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate } from '../../helpers/newgroup_helpers';
+import { step3Type } from '../../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { emptyTeamError } from './newgroup';
 
