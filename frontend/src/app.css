@@ -19,25 +19,25 @@
 button {
   cursor: pointer;
 }
-button, button span, .logo-a, .active, .card, .svg-symbol, input, textarea, .player-list > div p, .team-list-sample > .team-div {
+button, button span, input, textarea, .logoA, .active, .card, .teamListSample > .teamDiv {
   transition: .2s;
   -webkit-transition: .2s;
 }
 button:hover, button:focus-visible,
 button:hover span, button:focus-visible span,
-.logo-a:hover, .logo-a:focus-visible,
-.active:hover, .active:focus-visible,
-.card-a:hover .card, .card-a:focus-visible .card,
 input:focus-visible, textarea:focus-visible,
-.player-list > div:hover p, .player-list > div:focus-visible p,
-.team-list-sample > .team-div:hover, .team-list-sample > .team-div:focus-visible {
+.logoA:hover, .logoA:focus-visible,
+.active:hover, .active:focus-visible,
+.cardA:hover .card, .cardA:focus-visible .card,
+.teamListSample > .teamDiv:hover, .teamListSample > .teamDiv:focus-visible {
   transition: .2s;
   -webkit-transition: .2s;
 }
 .flex-row{
   display: flex;
   flex-direction: row;
-}.flex-row-justify{
+}
+.flex-row-justify{
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -56,7 +56,7 @@ a{
   text-decoration: none;
 }
 
-#top-banner, footer {
+.banner {
   width: 100%;
   padding: .5em;
   text-align: center;
@@ -66,7 +66,7 @@ a{
   padding: .5em 0;
 }
 
-#top-header {
+.topHeader {
   height: 9rem;
   width: 100%;
   display: flex;
@@ -75,22 +75,13 @@ a{
   background: white;
   box-shadow: 0 0 1em gray;
 }
-#top-header > div {
+.topHeader > div {
   align-items: center;
 }
-#logo-icon {
+.logoIcon {
   height: 64px;
   width: 64px;
   margin: 0 1em;
-}
-.logo-a:hover, .logo-a:focus-visible {
-  transform: scale(1.05);
-}
-
-#fonts {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
 }
 
 .navlink {
@@ -106,10 +97,10 @@ a{
   padding: .5em 1em;
   margin: auto 0;
 }
-.navlink > svg {
+.navlink svg {
   margin-right: .5em;
 }
-.svg-navlink {
+.navlink svg path {
   fill: var(--svg-navlink-color);
 }
 .navlink:not(.active):hover > p, .navlink:not(.active):focus-visible > p {
@@ -125,7 +116,7 @@ a{
   transform: scale(1.05);
 }
 
-#logo {
+.logoP {
   font-family: logo;
   font-size: 3em;
   color: red;
@@ -134,13 +125,7 @@ a{
   padding: .25em .25em 0;
   transform: skewX(-15deg);
 }
-.font2 {
-  font-family: font2;
-}
-.font3 {
-  font-family: font3;
-}
-#time {
+.time {
   font-family: time;
   font-size: 4em;
   padding: .25em .25em .125em;
@@ -152,7 +137,7 @@ a{
   min-height: 100vh;
   justify-content: space-between;
 }
-.content-div {
+.contentDiv {
   padding: 1em;
   margin: 0;
 }
@@ -166,7 +151,7 @@ a{
   border-radius: .5em;
   box-shadow: 0 0 .5em gray;
 }
-.card-a:hover .card, .card-a:focus-visible .card {
+.cardA:hover .card, .cardA:focus-visible .card {
   color: var(--svg-symbol-color);
   --svg-symbol-color: black;
   box-shadow: 0 0 .75em var(--gbs-color);
@@ -180,11 +165,11 @@ a{
   height: 1em;
   width: 1em;
 }
-.svg-symbol {
+.card svg path {
   fill: var(--svg-symbol-color);
 }
 
-footer {
+.theFooter {
   display: flex;
   justify-content: space-evenly;
   font-size: 1.25em;
@@ -194,16 +179,15 @@ footer {
   color: lightgray;
 }
 
-#secret {
+.secret {
   cursor: wait;
 }
 
-
-.grid-2-col-auto-50 {
+.gridSplit {
   display: grid;
   grid-template-columns: auto 50%;
 }
-.grid-team-playernames {
+.gridTeamPlayernames {
   display: grid;
   grid-gap: .25em;
   width: 100%;
@@ -211,40 +195,38 @@ footer {
   justify-items: center;
   grid-template-columns: repeat(var(--playername-columns), 1fr)
 }
-.grid-radios {
+.gridRadios {
   display: grid;
   grid-template-columns: 2fr repeat(2,.1fr 1fr);
   grid-gap: .5em;
   justify-items: left;
 }
-.playername-columns-input {
+.playernameColumnsInput {
   margin-left: auto !important;
   width: 2em;
   padding-top: 0;
   padding-bottom: 0;
 }
-.step-form {
+.stepForm {
   width: min(30em, 80vw);
   font-size: 2em;
   margin: 0 auto;
 }
-.step-form .input-box {
+.inputBox {
   outline: none;
   margin: .125em 0;
   border: 1px solid gray;
 }
-.step-form .input-box:focus-visible, .teamname-input:hover, .teamname-input:focus-visible {
+.inputBox:focus-visible, .teamnameInput:hover {
   border-color: var(--gbs-color);
   border-style: solid;
 }
-.step-form input[type='radio']:focus-visible {
+.radio:focus-visible {
   outline-offset: .1em;
   outline-style: solid;
   outline-color: var(--gbs-color);
 }
-.step-form > *, textarea {
-  margin: .125em 0;
-}
+
 h2 {
   font-size: 1.5em;
   color: var(--gbs-color);
@@ -258,6 +240,7 @@ input, textarea, button {
 textarea {
   min-height: 4em;
   resize: none;
+  margin: .125em 0;
 }
 .radio {
   height: .75em;
@@ -265,7 +248,7 @@ textarea {
   align-self: center;
   justify-self: right;
 }
-.add-player-button {
+.addPlayerButton {
   background: green;
   color: #fff;
   border: 0;
@@ -273,74 +256,69 @@ textarea {
   height: 1.75em;
   margin: .125em 0;
 }
-.add-player-button:hover, .add-player-button:focus-visible {
+.addPlayerButton:hover, .addPlayerButton:focus-visible {
   background-color: limegreen;
 }
-.player-input {
+.playerInput {
   margin: .5em 0 2em 0;
 }
-.team-content {
+.teamContent {
   min-height: 8em;
 }
-.team-list-sample > .team-div {
+.teamListSample > .teamDiv {
   opacity: .5
 }
-.team-list-sample > .team-div:hover {
+.teamListSample > .teamDiv:hover {
   opacity: 1
 }
-.team-div {
+.teamDiv {
   padding-bottom: .325em;
   position: relative;
   border-bottom: .125em solid var(--gbs-color);
 }
-.team-div-real {
+.teamDivReal {
   width: 100%;
   align-self: center;
 }
-.team-div > div > svg {
+.teamDiv > div > svg {
   box-sizing: content-box;
   padding: 0 .5em;
 }
-.team-div > div {
+.teamDiv > div {
   align-items: center;
 }
-.add-button-in-team {
+.addButtonInTeam {
   color: white;
   background-color: limegreen;
   border: 0;
   height: 1.25em;
 }
-.add-team-button{
+.addTeamButton{
   width: 8em;
   padding-top: 0;
   padding-bottom: 0;
 }
-.add-player-to-team-button {
-  height: 1.25em;
-  width: min(100%, 7em);
-  margin: .375em 0 !important;
-  padding: 0 .25em;
-}
-.add-button-in-team:hover, .add-button-in-team:focus-visible {
+
+.addButtonInTeam:hover, .addButtonInTeam:focus-visible {
   background-color: green;
 }
-.teamname-input {
+.teamnameInput {
   width: 8em;
   padding-top: 0;
   padding-bottom: 0;
 }
-.error-input::placeholder {
+.errorInput::placeholder {
   color: red;
   opacity: 1;
 }
-.playername-in-team {
+.playernameInTeam {
   font-size: 1em;
   background-color: transparent;
   height: 1.75em;
   width: 100%;
   padding: 0 .25em;
 }
-.team-minus-button {
+.teamMinusButton {
   background: red;
   margin: 0 .25em 0 auto !important;
   border: 0;
@@ -351,10 +329,10 @@ textarea {
   height: 1.1875em;
   width: 1.1875em;
 }
-.team-minus-button:hover {
+.teamMinusButton:hover {
   background-color: #c00;
 }
-.team-minus-button span {
+.teamMinusButton span {
   background: transparent;
   color: #fff;
   font-size: 1.5em;
@@ -363,7 +341,7 @@ textarea {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-.team-player-minus-button {
+.teamPlayerMinusButton {
   background: red;
   border: 0;
   padding: 0;
@@ -377,10 +355,10 @@ textarea {
   pointer-events: none;
   z-index: 1;
 }
-.team-player-minus-button:hover {
+.teamPlayerMinusButton:hover {
   background-color: #c00;
 }
-.team-player-minus-button span {
+.teamPlayerMinusButton span {
   background: transparent;
   color: #fff;
   font-size: .9em;
@@ -391,16 +369,16 @@ textarea {
   transform: translate(-50%, -50%);
   /* pointer-events: none; */
 }
-.player-in-team-div {
+.playerInTeamDiv {
   position: relative;
   width: min(100%, 10em);
 }
-.player-in-team-div > .playername-in-team + .team-player-minus-button:hover,
-.player-in-team-div > .playername-in-team:hover + .team-player-minus-button {
+.playerInTeamDiv > .playernameInTeam + .teamPlayerMinusButton:hover,
+.playerInTeamDiv > .playernameInTeam:hover + .teamPlayerMinusButton {
   opacity: 1;
   pointer-events: inherit;
 }
-.error-p {
+.errorP {
   color: red;
   position: absolute;
   bottom: -1.5em;
@@ -408,16 +386,16 @@ textarea {
 .steps {
   margin: 2em 0 1em;
 }
-.next-step-button {
+.nextStepButton {
   background: var(--gbs-color);
   color: #fff;
   border: 0;
   padding: 8px 12px;
 }
-.next-step-button:hover, .next-step-button:focus-visible {
+.nextStepButton:hover, .nextStepButton:focus-visible {
   background-color: skyblue;
 }
-.step-info {
+.stepInfo {
   padding: 0 2em;
   align-self: center;
 }
