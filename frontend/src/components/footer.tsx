@@ -1,6 +1,4 @@
-import { appStyleType } from '../interfaces';
-import appStyle from '../styles/app.module.css';
-const as = appStyle as appStyleType;
+import { as } from '../helpers/styles';
 
 export default function Footer() {
     return (

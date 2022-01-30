@@ -1,9 +1,8 @@
 import { playernameDuplicatesExists, teamnameDuplicatesExists, playernameOfUuid, validate } from '../../helpers/newgroup_helpers';
-import { step3Type, stepFormStyleType } from '../../interfaces';
+import { step3Type } from '../../interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import { emptyTeamError } from './newgroup';
-import stepStyle from '../../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
+import { ss } from '../../helpers/styles';
 
 export default function Step3({ props: { group: { players, teams }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step3Type) {
 

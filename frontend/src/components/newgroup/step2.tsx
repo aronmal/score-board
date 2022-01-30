@@ -1,8 +1,7 @@
 import { playernameDuplicatesExists, validate } from "../../helpers/newgroup_helpers";
-import { step2Type, stepFormStyleType } from "../../interfaces";
+import { step2Type } from "../../interfaces";
 import { useState } from "react";
-import stepStyle from '../../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
+import { ss } from "../../helpers/styles";
 
 export default function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
 

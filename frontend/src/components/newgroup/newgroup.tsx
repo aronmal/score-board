@@ -1,7 +1,7 @@
 import { useState, useContext, CSSProperties, useReducer, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { loginContext }  from '../../context';
-import { newgroupType, stepFormStyleType } from '../../interfaces';
+import { newgroupType } from '../../interfaces';
 import groupReducer from '../../helpers/groupReducer';
 import { elemsCount, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from '../../helpers/newgroup_helpers';
 import Step1 from './step1';
@@ -9,8 +9,7 @@ import Step2 from './step2';
 import Step3 from './step3';
 import auth from '../../helpers/auth';
 import showError from '../../helpers/showError';
-import stepStyle from '../../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
+import { ss } from '../../helpers/styles';
 
 export const groupnameError = 'Die Gruppe braucht einen Namen ; )'
 const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'

@@ -2,9 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom'
 import clock from '../helpers/clock';
 import { loginContext }  from '../context';
-import { appStyleType } from '../interfaces';
-import appStyle from '../styles/app.module.css';
-const as = appStyle as appStyleType;
+import { as } from '../helpers/styles';
 
 export default function Header() {
   

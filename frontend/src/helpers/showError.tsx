@@ -1,7 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { stepFormStyleType } from "../interfaces";
-import stepStyle from '../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
+import { ss } from "./styles";
 
 export default function showError(setElem: Dispatch<SetStateAction<JSX.Element>>, message: string, timeout: number) {
     setElem(<p className={ss.errorP}>{ message }</p>)

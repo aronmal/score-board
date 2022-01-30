@@ -3,9 +3,8 @@ import { Navigate } from "react-router-dom";
 import { loginContext } from "../context";
 import auth from "../helpers/auth";
 import reqData from "../helpers/reqData";
-import { stepFormStyleType, userType } from "../interfaces";
-import stepStyle from '../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
+import { ss } from "../helpers/styles";
+import { userType } from "../interfaces";
 
 export default function Dashboard() {
 

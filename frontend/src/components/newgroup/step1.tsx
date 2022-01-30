@@ -1,8 +1,7 @@
 import { validate } from "../../helpers/newgroup_helpers";
-import { step1Type, stepFormStyleType } from "../../interfaces";
+import { ss } from "../../helpers/styles";
+import { step1Type } from "../../interfaces";
 import { duplicateError, groupnameError } from "./newgroup";
-import stepStyle from '../../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
 
 export default function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
     return <>

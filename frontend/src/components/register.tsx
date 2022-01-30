@@ -2,9 +2,7 @@ import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
 import { loginContext }  from '../context';
-import { stepFormStyleType } from '../interfaces';
-import stepStyle from '../styles/stepForm.module.css';
-const ss = stepStyle as stepFormStyleType;
+import { ss } from '../helpers/styles';
 
 export default function Register() {
     
