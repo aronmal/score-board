@@ -109,7 +109,7 @@ export default function New() {
 
   return (
     <div className={`flex-col ${ss.stepForm}`} style={{'--playername-columns': playernameColumns} as CSSProperties}>
-      <div className='flex-col' style={{position: 'relative'}}>
+      <div className='relative'>
         { stepFunction() }
       </div>
       <div className={ss.steps}>

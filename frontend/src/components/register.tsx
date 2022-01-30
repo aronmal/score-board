@@ -28,6 +28,10 @@ export default function Register() {
     }, [password,passwordCheck]);
 
     async function register() {
+        if (!username || !email || !password || !passwordCheck) {
+            showError(setElem, 'Bitte alle Felder ausfüllen!', 3000)
+            return
+        }
         if (!passwordChecked) {
             showError(setElem, 'Passwörter stimmen nicht über ein!', 3000)
             return
@@ -55,53 +59,55 @@ export default function Register() {
 
     return (
         <div className={`flex-col ${ss.stepForm}`}>
-            <h2>Registrieren</h2>
-            <div className={ss.gridSplit}>
-                <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
-                <input
-                    className={ss.inputBox}
-                    type='text'
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    onKeyDown={e => {
-                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
-                    }}
-                />
-                <p style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</p>
-                <input
-                    className={ss.inputBox}
-                    type='email'
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    onKeyDown={e => {
-                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
-                    }}
-                />
-                <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
-                <input
-                    className={ss.inputBox}
-                    type='password'
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    onKeyDown={e => {
-                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
-                    }}
-                />
-                <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort Wiederholen:</p>
-                <input
-                    className={ss.inputBox}
-                    type='password'
-                    value={passwordCheck}
-                    onChange={e => setPasswordCheck(e.target.value)}
-                    onKeyDown={e => {
-                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
-                    }}
-                />
+            <div className="relative">
+                <h2>Registrieren</h2>
+                <div className={ss.gridSplit}>
+                    <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
+                    <input
+                        className={ss.inputBox}
+                        type='text'
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        onKeyDown={e => {
+                            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        }}
+                    />
+                    <p style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</p>
+                    <input
+                        className={ss.inputBox}
+                        type='email'
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        onKeyDown={e => {
+                            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        }}
+                    />
+                    <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
+                    <input
+                        className={ss.inputBox}
+                        type='password'
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        onKeyDown={e => {
+                            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        }}
+                    />
+                    <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort Wiederholen:</p>
+                    <input
+                        className={ss.inputBox}
+                        type='password'
+                        value={passwordCheck}
+                        onChange={e => setPasswordCheck(e.target.value)}
+                        onKeyDown={e => {
+                            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) register()
+                        }}
+                    />
+                </div>
+                { elem }
             </div>
             <div className={ss.steps}>
                 <button className={ss.nextStepButton} style={{float: 'right'}} onClick={() => register()}>{'Registrieren \u279C'}</button>
             </div>
-            { elem }
         </div>
     )
 }

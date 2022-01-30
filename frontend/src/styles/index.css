@@ -52,6 +52,9 @@ a{
   display: flex;
   flex-direction: column;
 }
+.relative {
+  position: relative;
+}
 
 
 h2 {

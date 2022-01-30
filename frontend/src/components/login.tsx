@@ -41,35 +41,37 @@ export default function Login() {
 
     return (
         <div className={`flex-col ${ss.stepForm}`}>
-            <h2>Login</h2>
-            <div className={ss.gridSplit}>
-                <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>
-                <input
-                    className={ss.inputBox}
-                    type='text'
-                    value={username}
-                    onChange={e => setUsername(e.target.value)}
-                    onKeyDown={e => {
-                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
-                    }}
-                />
-                <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
-                <input
-                    className={ss.inputBox}
-                    type='password'
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    onKeyDown={e => {
-                        if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
-                    }}
-                />
+            <div className="relative">
+                <h2>Login</h2>
+                <div className={ss.gridSplit}>
+                    <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>
+                    <input
+                        className={ss.inputBox}
+                        type='text'
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        onKeyDown={e => {
+                            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
+                        }}
+                    />
+                    <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
+                    <input
+                        className={ss.inputBox}
+                        type='password'
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                        onKeyDown={e => {
+                            if ((e.code === 'Enter' || e.code === 'NumpadEnter') && (username !== '' && password !== '')) login()
+                        }}
+                    />
+                </div>
+                { elem }
             </div>
             <div className={ss.steps}>
                 <div className='flex-row' style={{float: 'right'}}>
                 <button className={ss.nextStepButton} onClick={() => login()}>{'Login \u279C'}</button>
                 </div>
             </div>
-            { elem }
         </div>
     )
 }
