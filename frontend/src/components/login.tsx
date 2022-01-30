@@ -1,7 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
-import { loginContext }  from './context';
+import { loginContext }  from '../context';
+import { stepFormStyleType } from '../interfaces';
+import stepStyle from '../styles/stepForm.module.css';
+const ss = stepStyle as stepFormStyleType;
 
 export default function Login() {
 
@@ -37,12 +40,12 @@ export default function Login() {
     }
 
     return (
-        <div className='flex-col step-form'>
+        <div className={`flex-col ${ss.stepForm}`}>
             <h2>Login</h2>
-            <div className="grid-2-col-auto-50">
+            <div className={ss.gridSplit}>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>
                 <input
-                    className='input-box'
+                    className={ss.inputBox}
                     type='text'
                     value={username}
                     onChange={e => setUsername(e.target.value)}
@@ -52,7 +55,7 @@ export default function Login() {
                 />
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
                 <input
-                    className='input-box'
+                    className={ss.inputBox}
                     type='password'
                     value={password}
                     onChange={e => setPassword(e.target.value)}
@@ -61,9 +64,9 @@ export default function Login() {
                     }}
                 />
             </div>
-            <div className='steps'>
+            <div className={ss.steps}>
                 <div className='flex-row' style={{float: 'right'}}>
-                <button className='next-step-button' onClick={() => login()}>{'Login \u279C'}</button>
+                <button className={ss.nextStepButton} onClick={() => login()}>{'Login \u279C'}</button>
                 </div>
             </div>
             { elem }

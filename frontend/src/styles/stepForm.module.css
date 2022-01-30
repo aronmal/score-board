@@ -1,0 +1,205 @@
+.gridSplit {
+  display: grid;
+  grid-template-columns: auto 50%;
+}
+.gridTeamPlayernames {
+  display: grid;
+  grid-gap: .25em;
+  width: 100%;
+  align-items: center;
+  justify-items: center;
+  grid-template-columns: repeat(var(--playername-columns), 1fr)
+}
+.gridRadios {
+  display: grid;
+  grid-template-columns: 2fr repeat(2,.1fr 1fr);
+  grid-gap: .5em;
+  justify-items: left;
+}
+.playernameColumnsInput {
+  margin-left: auto !important;
+  width: 2em;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.stepForm {
+  width: min(30em, 80vw);
+  font-size: 2em;
+  margin: 0 auto;
+}
+.inputBox {
+  outline: none;
+  margin: .125em 0;
+  border: 1px solid gray;
+}
+.inputBox:focus-visible, .teamnameInput:hover {
+  border-color: var(--gbs-color);
+  border-style: solid;
+}
+.radio {
+  height: .75em;
+  width: .75em;
+  align-self: center;
+  justify-self: right;
+}
+.radio:focus-visible {
+  outline-offset: .1em;
+  outline-style: solid;
+  outline-color: var(--gbs-color);
+}
+.addPlayerButton {
+  background: green;
+  color: #fff;
+  border: 0;
+  padding: 8px;
+  height: 1.75em;
+  margin: .125em 0;
+}
+.addPlayerButton:hover, .addPlayerButton:focus-visible {
+  background-color: limegreen;
+}
+.playerInput {
+  margin: .5em 0 2em 0;
+}
+.teamContent {
+  min-height: 8em;
+}
+.teamListSample > .teamDiv {
+  opacity: .5
+}
+.teamListSample > .teamDiv:hover {
+  opacity: 1
+}
+.teamDiv {
+  padding-bottom: .325em;
+  position: relative;
+  border-bottom: .125em solid var(--gbs-color);
+}
+.teamDivReal {
+  width: 100%;
+  align-self: center;
+}
+.teamDiv > div > svg {
+  box-sizing: content-box;
+  padding: 0 .5em;
+}
+.teamDiv > div {
+  align-items: center;
+}
+.addTeamButton{
+  width: 8em;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+/* .add-player-to-team-button {
+  height: 1.25em;
+  width: min(100%, 7em);
+  margin: .375em 0 !important;
+  padding: 0 .25em;
+} */
+.addButtonInTeam {
+  color: white;
+  background-color: limegreen;
+  border: 0;
+  height: 1.25em;
+}
+.addButtonInTeam:hover, .addButtonInTeam:focus-visible {
+  background-color: green;
+}
+.teamnameInput {
+  width: 8em;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.errorInput::placeholder {
+  color: red;
+  opacity: 1;
+}
+.playernameInTeam {
+  font-size: 1em;
+  background-color: transparent;
+  height: 1.75em;
+  width: 100%;
+  padding: 0 .25em;
+}
+.teamMinusButton {
+  background: red;
+  margin: 0 .25em 0 auto !important;
+  border: 0;
+  padding: 0;
+  position: relative;
+  top: 0;
+  right: 0;
+  height: 1.1875em;
+  width: 1.1875em;
+}
+.teamMinusButton:hover {
+  background-color: #c00;
+}
+.teamMinusButton span {
+  background: transparent;
+  color: #fff;
+  font-size: 1.5em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+.teamPlayerMinusButton {
+  background: red;
+  border: 0;
+  padding: 0;
+  position: absolute;
+  top: -.5em;
+  right: -.5em;
+  border-radius: 50%;
+  height: 1em;
+  width: 1em;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+.teamPlayerMinusButton:hover {
+  background-color: #c00;
+}
+.teamPlayerMinusButton span {
+  background: transparent;
+  color: #fff;
+  font-size: .9em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1em;
+  transform: translate(-50%, -50%);
+  /* pointer-events: none; */
+}
+.playerInTeamDiv {
+  position: relative;
+  width: min(100%, 10em);
+}
+.playerInTeamDiv > .playernameInTeam + .teamPlayerMinusButton:hover,
+.playerInTeamDiv > .playernameInTeam:hover + .teamPlayerMinusButton {
+  opacity: 1;
+  pointer-events: inherit;
+}
+.errorP {
+  color: red;
+  position: absolute;
+  bottom: -1.5em;
+}
+.steps {
+  margin: 2em 0 1em;
+}
+.nextStepButton {
+  background: var(--gbs-color);
+  color: #fff;
+  border: 0;
+  padding: 8px 12px;
+}
+.nextStepButton:hover, .nextStepButton:focus-visible {
+  background-color: skyblue;
+}
+.stepInfo {
+  padding: 0 2em;
+  align-self: center;
+}

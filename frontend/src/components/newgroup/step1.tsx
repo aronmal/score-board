@@ -1,6 +1,8 @@
 import { validate } from "../../helpers/newgroup_helpers";
-import { step1Type } from "../../interfaces";
+import { step1Type, stepFormStyleType } from "../../interfaces";
 import { duplicateError, groupnameError } from "./newgroup";
+import stepStyle from '../../styles/stepForm.module.css';
+const ss = stepStyle as stepFormStyleType;
 
 export default function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
     return <>
@@ -12,7 +14,7 @@ export default function Step1({ props: { group: { groupname, description, isPubl
         <div className='flex-row'>
             <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
             <input
-            className={'input-box' + ((elem.props.children === groupnameError) ? ' error-input' : '')}
+            className={`${ss.inputBox} ${((elem.props.children === groupnameError) ? ss.errorInput : '')}`}
             style={groupname === duplicateError ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
@@ -23,16 +25,16 @@ export default function Step1({ props: { group: { groupname, description, isPubl
         <div className='flex-col'>
             <p style={{marginBottom: '.5em'}}>Beschreibung:</p>
             <textarea
-            className='input-box'
+            className={ss.inputBox}
             placeholder='(optional)'
             value={description}
             onChange={e => groupDispatch({ type: 'setDescription', payload: { description: validate(e.target.value) } })}
             />
         </div>
-        <div className='grid-radios'>
+        <div className={ss.gridRadios}>
             <p>Sichtbarkeit:</p>
             <input
-            className='radio'
+            className={ss.radio}
             type='radio'
             checked={isPublic}
             onChange={() => groupDispatch({ type: 'setIsPublic', payload: { isPublic: true } })}
@@ -43,7 +45,7 @@ export default function Step1({ props: { group: { groupname, description, isPubl
             />
             <p>Öffentlich</p>
             <input
-            className='radio'
+            className={ss.radio}
             type='radio'
             checked={!isPublic}
             onChange={() => groupDispatch({ type: 'setIsPublic', payload: { isPublic: false } })}
@@ -55,7 +57,7 @@ export default function Step1({ props: { group: { groupname, description, isPubl
             <p>Privat</p>
             <p>Einteilung:</p>
             <input
-            className='radio'
+            className={ss.radio}
             type='radio'
             checked={!doTeams}
             onChange={() => groupDispatch({ type: 'setDoTeams', payload: { doTeams: false } })}
@@ -66,7 +68,7 @@ export default function Step1({ props: { group: { groupname, description, isPubl
             />
             <p>Einzelspieler</p>
             <input
-            className='radio'
+            className={ss.radio}
             type='radio'
             checked={doTeams}
             onChange={() => groupDispatch({ type: 'setDoTeams', payload: { doTeams: true } })}

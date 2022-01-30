@@ -1,7 +1,7 @@
 import { useState, useContext, CSSProperties, useReducer, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { loginContext }  from '../context';
-import { newgroupType } from '../../interfaces';
+import { loginContext }  from '../../context';
+import { newgroupType, stepFormStyleType } from '../../interfaces';
 import groupReducer from '../../helpers/groupReducer';
 import { elemsCount, initialGroup, playersDuplicatesExists, teamsDuplicatesExists } from '../../helpers/newgroup_helpers';
 import Step1 from './step1';
@@ -9,6 +9,8 @@ import Step2 from './step2';
 import Step3 from './step3';
 import auth from '../../helpers/auth';
 import showError from '../../helpers/showError';
+import stepStyle from '../../styles/stepForm.module.css';
+const ss = stepStyle as stepFormStyleType;
 
 export const groupnameError = 'Die Gruppe braucht einen Namen ; )'
 const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'
@@ -106,16 +108,16 @@ export default function New() {
   if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
-    <div className='flex-col step-form' style={{'--playername-columns': playernameColumns} as CSSProperties}>
+    <div className={`flex-col ${ss.stepForm}`} style={{'--playername-columns': playernameColumns} as CSSProperties}>
       <div className='flex-col' style={{position: 'relative'}}>
         { stepFunction() }
       </div>
-      <div className='steps'>
+      <div className={ss.steps}>
         {currentStep === 0 ? <></> :
-        <button className='next-step-button' style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
+        <button className={ss.nextStepButton} style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
         <div className='flex-row' style={{float: 'right'}}>
-          <p className='step-info'>Schritt {currentStep + 1} von {elemsCount(doTeams)}</p>
-          <button className='next-step-button' onClick={() => nextStep()}>{currentStep === (elemsCount(doTeams) - 1) ? 'Gruppe erstellen' : 'Weiter \u279C'}</button>
+          <p className={ss.stepInfo}>Schritt {currentStep + 1} von {elemsCount(doTeams)}</p>
+          <button className={ss.nextStepButton} onClick={() => nextStep()}>{currentStep === (elemsCount(doTeams) - 1) ? 'Gruppe erstellen' : 'Weiter \u279C'}</button>
         </div>
       </div>
     </div>

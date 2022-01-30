@@ -1,7 +1,10 @@
 import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
-import { loginContext }  from './context';
+import { loginContext }  from '../context';
+import { stepFormStyleType } from '../interfaces';
+import stepStyle from '../styles/stepForm.module.css';
+const ss = stepStyle as stepFormStyleType;
 
 export default function Register() {
     
@@ -51,12 +54,12 @@ export default function Register() {
     }
 
     return (
-        <div className='flex-col step-form'>
+        <div className={`flex-col ${ss.stepForm}`}>
             <h2>Registrieren</h2>
-            <div className='grid-2-col-auto-50'>
+            <div className={ss.gridSplit}>
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
                 <input
-                    className='input-box'
+                    className={ss.inputBox}
                     type='text'
                     value={username}
                     onChange={e => setUsername(e.target.value)}
@@ -66,7 +69,7 @@ export default function Register() {
                 />
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>E-Mail:</p>
                 <input
-                    className='input-box'
+                    className={ss.inputBox}
                     type='email'
                     value={email}
                     onChange={e => setEmail(e.target.value)}
@@ -76,7 +79,7 @@ export default function Register() {
                 />
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort:</p>
                 <input
-                    className='input-box'
+                    className={ss.inputBox}
                     type='password'
                     value={password}
                     onChange={e => setPassword(e.target.value)}
@@ -86,7 +89,7 @@ export default function Register() {
                 />
                 <p style={{alignSelf: 'center', marginRight: '1em'}}>Passwort Wiederholen:</p>
                 <input
-                    className='input-box'
+                    className={ss.inputBox}
                     type='password'
                     value={passwordCheck}
                     onChange={e => setPasswordCheck(e.target.value)}
@@ -95,8 +98,8 @@ export default function Register() {
                     }}
                 />
             </div>
-            <div className='steps'>
-                <button className='next-step-button' style={{float: 'right'}} onClick={() => register()}>{'Registrieren \u279C'}</button>
+            <div className={ss.steps}>
+                <button className={ss.nextStepButton} style={{float: 'right'}} onClick={() => register()}>{'Registrieren \u279C'}</button>
             </div>
             { elem }
         </div>

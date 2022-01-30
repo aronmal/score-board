@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Header from './components/header';
 import Footer from './components/footer';
@@ -7,10 +8,12 @@ import Register from './components/register';
 import Login from './components/login';
 import Logout from './components/logout';
 import Newgroup from './components/newgroup/newgroup';
-import { useState, useEffect, useMemo } from 'react';
-import './app.css';
 import loginCheck from './helpers/loginCheck';
-import { loginContext } from './components/context';
+import { loginContext } from './context';
+import './styles/index.css';
+import { appStyleType } from './interfaces';
+import appStyle from './styles/app.module.css';
+const as = appStyle as appStyleType;
 
 export default function App() {
 
@@ -29,7 +32,7 @@ export default function App() {
       setIsLoggedIn(true)
 
     setElem(
-      <div className='content-div flex-col'>
+      <div className={`flex-col ${as.contentDiv}`}>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/dashboard' element={<Dashboard />} />
@@ -45,7 +48,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <loginContext.Provider value={loginContextProviderValue}>
-        <div className='content flex-col'>
+        <div className={`flex-col ${as.content}`}>
           <Header />
             { elem }
           <Footer /> 

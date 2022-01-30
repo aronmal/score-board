@@ -1,0 +1,144 @@
+.logoA, .active, .card, .teamListSample > .teamDiv {
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+.logoA:hover, .logoA:focus-visible,
+.active:hover, .active:focus-visible,
+.cardA:hover .card, .cardA:focus-visible .card,
+.teamListSample > .teamDiv:hover, .teamListSample > .teamDiv:focus-visible {
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+
+
+.logoA:hover, .logoA:focus-visible {
+  transform: scale(1.05);
+}
+
+.navlink {
+  --svg-navlink-color: black;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  color: black;
+  text-decoration: none;
+  font-size: 2em;
+  padding: .5em 1em;
+  border-radius: 8px;
+  padding: .5em 1em;
+  margin: auto 0;
+}
+.navlink svg {
+  margin-right: .5em;
+}
+.navlink svg path {
+  fill: var(--svg-navlink-color);
+}
+.navlink:not(.active):hover > p, .navlink:not(.active):focus-visible > p {
+  border-top: .25rem solid transparent;
+  border-bottom: .25rem solid var(--gbs-color);
+}
+.active {
+  color: white;
+  --svg-navlink-color: white ;
+  background: var(--gbs-color);
+}
+.active:hover, .active:focus-visible {
+  transform: scale(1.05);
+}
+
+.content {
+  min-height: 100vh;
+  justify-content: space-between;
+}
+.contentDiv {
+  padding: 1em;
+  margin: 0;
+}
+.card {
+  color: var(--svg-symbol-color);
+  --svg-symbol-color: gray;
+  height: 6em;
+  width: 10em;
+  font-size: 3em;
+  align-items: center;
+  border-radius: .5em;
+  box-shadow: 0 0 .5em gray;
+}
+.cardA:hover .card, .cardA:focus-visible .card {
+  color: var(--svg-symbol-color);
+  --svg-symbol-color: black;
+  box-shadow: 0 0 .75em var(--gbs-color);
+  transform: scale(1.05);
+}
+.card > * {
+  box-sizing: content-box;
+  padding: .5em;
+}
+.card svg {
+  height: 1em;
+  width: 1em;
+}
+.card svg path {
+  fill: var(--svg-symbol-color);
+}
+
+.link:hover, .link:focus-visible {
+  color: lightgray;
+}
+
+.banner {
+  width: 100%;
+  padding: .5em;
+  text-align: center;
+  color: white;
+  background: var(--gbs-color);
+  font-size: 1.25em;
+  padding: .5em 0;
+}
+
+.topHeader {
+  height: 9rem;
+  width: 100%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  background: white;
+  box-shadow: 0 0 1em gray;
+}
+.topHeader > div {
+  align-items: center;
+}
+.logoIcon {
+  height: 64px;
+  width: 64px;
+  margin: 0 1em;
+}
+.time {
+  font-family: time;
+  font-size: 4em;
+  padding: .25em .25em .125em;
+  border-radius: .25em;
+  border: 2px solid black;
+}
+
+.logoP {
+  font-family: logo;
+  font-size: 3em;
+  color: red;
+  border-radius: .25em;
+  border: 2px solid red;
+  padding: .25em .25em 0;
+  transform: skewX(-15deg);
+}
+
+.theFooter {
+  display: flex;
+  justify-content: space-evenly;
+  font-size: 1.25em;
+  padding: 1em 0;
+}
+
+.secret {
+  cursor: wait;
+}

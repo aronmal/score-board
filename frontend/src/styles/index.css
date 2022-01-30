@@ -1,0 +1,71 @@
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+:root {
+  --gbs-color: #009dcc;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+*:focus-visible {
+  outline: none;
+}
+button {
+  cursor: pointer;
+}
+button, button span, input, textarea {
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+button:hover, button:focus-visible,
+button:hover span, button:focus-visible span,
+input:focus-visible, textarea:focus-visible {
+  transition: .2s;
+  -webkit-transition: .2s;
+}
+
+body {
+  font-family: 'Roboto';
+}
+
+a{
+  color: inherit;
+  text-decoration: none;
+}
+
+.flex-row{
+  display: flex;
+  flex-direction: row;
+}
+.flex-row-justify{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.flex-col{
+  display: flex;
+  flex-direction: column;
+}
+
+
+h2 {
+  font-size: 1.5em;
+  color: var(--gbs-color);
+  align-self: flex-start;
+  line-break: anywhere;
+}
+input, textarea, button {
+  font-size: 1em;
+  padding: .25em;
+}
+textarea {
+  min-height: 4em;
+  resize: none;
+  margin: .125em 0;
+}
