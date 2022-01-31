@@ -18,19 +18,35 @@ Inside of the project's `/frontend/` folder, you'll see the following folders an
 │   └── robots.txt
 ├── src/
 │   ├── compunents/
-│   │   ├── Context.tsx
-│   │   ├── Dashboard.tsx
-│   │   ├── Footer.tsx
-│   │   ├── Header.tsx
-│   │   ├── Healpers.tsx
-│   │   ├── Home.tsx
-│   │   ├── Login.tsx
-│   │   ├── Logout.tsx
-│   │   ├── Newgroup.tsx
-│   │   └── Register.tsx
-│   ├── app.css
+│   │   ├── newgroup/
+│   │   │   ├── newgroup.tsx
+│   │   │   ├── step1.tsx
+│   │   │   ├── step2.tsx
+│   │   │   └── step3.tsx
+│   │   ├── dashboard.tsx
+│   │   ├── footer.tsx
+│   │   ├── header.tsx
+│   │   ├── home.tsx
+│   │   ├── login.tsx
+│   │   ├── logout.tsx
+│   │   └── register.tsx
+│   ├── helpers/
+│   │   ├── auth.ts
+│   │   ├── clock.ts
+│   │   ├── groupReducer.ts
+│   │   ├── loginCheck.ts
+│   │   ├── newgroup_helpers.tsx
+│   │   ├── reqData.ts
+│   │   ├── showError.tsx
+│   │   └── styles.ts
+│   ├── styles/
+│   │   ├── app.module.css
+│   │   ├── index.css
+│   │   └── stepForm.module.css
 │   ├── app.tsx
+│   ├── context.ts
 │   ├── index.tsx
+│   ├── interfaces.ts
 │   └── react-app-env.d.ts
 ├── .gitignore
 ├── package-lock.json

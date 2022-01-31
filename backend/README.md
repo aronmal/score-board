@@ -11,15 +11,29 @@ Inside of the project's `/backend/` folder, you'll see the following folders and
 │   # └── log.txt     # Will be created on first startup.
 ├── # node_moudules/  # Will be created when running `npm i`.
 ├── src/
-│   ├── helpers.ts
+│   ├── helpers
+│   │   ├── errorHandling.ts
+│   │   ├── jwtVerfiyCatch.ts
+│   │   └── routeCatch.ts
+│   ├── routes
+│   │   ├── auth.ts
+│   │   ├── data.ts
+│   │   ├── login.ts
+│   │   ├── logout.ts
+│   │   ├── newgroup.ts
+│   │   └── register.ts
+│   ├── schemas
+│   │   ├── groupSchema.ts
+│   │   ├── tokenSchema.ts
+│   │   └── userSchema.ts
 │   ├── index.ts
-│   ├── logging.ts
-│   ├── routes.ts
-│   └── schemas.ts
+│   ├── interfaces.ts
+│   └── logging.ts
 ├── # .env            # Will be created on first startup, but need to be customized.
 ├── .gitignore
 ├── package-lock.json
 ├── package.json
+├── README.md
 └── tsconfig.json
 ```
 
