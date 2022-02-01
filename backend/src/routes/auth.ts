@@ -10,7 +10,6 @@ export default async function auth(req: Request, res: Response) {
     let status = {} as statusRes;
     const refreshToken: string = req.cookies.token
     const loginCheck = (req.body.type === 'loginCheck')
-    console.log(loginCheck)
 
     let refreshTokenData: string | jwt.JwtPayload = {};
     try {
@@ -32,7 +31,7 @@ export default async function auth(req: Request, res: Response) {
         return status;
     }
     if (DBToken.used) {
-        res.clearCookie;
+        res.clearCookie('token');
         await logging('DBToken was already used!', ['debug'], req);
         status.code = 401;
         return status;

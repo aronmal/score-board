@@ -46,7 +46,6 @@ export default async function login(req: Request, res: Response) {
         {
             maxAge: 172800000,
             httpOnly: true,
-            path: '/api',
             sameSite: true,
             secure: true,
         }

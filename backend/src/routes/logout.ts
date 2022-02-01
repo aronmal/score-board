@@ -29,7 +29,7 @@ export default async function logout(req: Request, res: Response) {
         return status;
     }
     status.code = 200;
-    res.clearCookie;
+    res.clearCookie('token');
     await logging('User of Token ' + oldDBToken._id + ' logged out.', ['debug','info.cyan'], req)
     return status;
 }
