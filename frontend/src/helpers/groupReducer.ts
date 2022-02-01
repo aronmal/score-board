@@ -72,10 +72,18 @@ export default function groupReducer(group: groupType, action: groupDispatchType
       
       case 'addExistingPlayerToTeam': {
         const { playerUuid, teamUuid } = action.payload
+        const playerMatch = players.findIndex(i => i.uuid === playerUuid)
+        const player = players[playerMatch]
         const teamMatch = teams.findIndex(i => i.uuid === teamUuid)
         const team = teams[teamMatch]
         const result: groupType = {
           ...group,
+          players: Object.assign([...players], {
+            [playerMatch]: {
+              ...player,
+              team: teamUuid
+            }
+          }),
           teams: Object.assign([...teams], {
             [teamMatch]: {
               ...team,
@@ -89,7 +97,7 @@ export default function groupReducer(group: groupType, action: groupDispatchType
       case 'changePlayername': {
         const { playername, playerUuid } = action.payload
         if (playername.length > 30)
-            return group;
+          return group;
         const playerMatch = players.findIndex(i => i.uuid === playerUuid)
         const player = players[playerMatch]
         const result: groupType = {
