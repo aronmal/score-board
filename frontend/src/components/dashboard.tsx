@@ -1,9 +1,10 @@
+import classNames from "classnames";
 import { useContext, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { loginContext } from "../context";
 import auth from "../helpers/auth";
 import reqData from "../helpers/reqData";
-import { ss } from "../helpers/styles";
+import { as, ss } from "../helpers/styles";
 import { userType } from "../interfaces";
 
 export default function Dashboard() {
@@ -30,8 +31,8 @@ export default function Dashboard() {
     if (!isLoggedIn) return <Navigate to='/' />;
 
     return (
-        <div className={`flex-col ${ss.stepForm}`}>
-            <div className="flex-col relative">
+        <div className={classNames(as.flexCol, ss.stepForm)}>
+            <div className={classNames(as.flexCol, as.relative)}>
                 <h2>{'Hallo '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ data.username || 'Nutzer' }</span> :</h2>
                 <br />
                 <p>Das ist dein Dashboard</p>

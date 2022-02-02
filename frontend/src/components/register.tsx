@@ -2,7 +2,8 @@ import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
 import { loginContext }  from '../context';
-import { ss } from '../helpers/styles';
+import { as, ss } from '../helpers/styles';
+import classNames from 'classnames';
 
 export default function Register() {
     
@@ -56,8 +57,8 @@ export default function Register() {
     }
 
     return (
-        <div className={`flex-col ${ss.stepForm}`}>
-            <div className="flex-col relative">
+        <div className={classNames(as.flexCol, ss.stepForm)}>
+            <div className={classNames(as.flexCol, as.relative)}>
                 <h2>Registrieren</h2>
                 <div className={ss.gridSplit}>
                     <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>

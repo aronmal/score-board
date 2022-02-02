@@ -9,7 +9,8 @@ import Step2 from './step2';
 import Step3 from './step3';
 import auth from '../../helpers/auth';
 import showError from '../../helpers/showError';
-import { ss } from '../../helpers/styles';
+import { as, ss } from '../../helpers/styles';
+import classNames from 'classnames';
 
 export const groupnameError = 'Die Gruppe braucht einen Namen ; )'
 const playersError = 'Die Gruppe braucht mindestens einen Spieler ; )'
@@ -107,14 +108,14 @@ export default function New() {
   if (!isLoggedIn) return <Navigate to='/' />;
 
   return (
-    <div className={`flex-col ${ss.stepForm}`} style={{'--playername-columns': playernameColumns} as CSSProperties}>
-      <div className='flex-col relative'>
+    <div className={classNames(as.flexCol, ss.stepForm)} style={{'--playername-columns': playernameColumns} as CSSProperties}>
+      <div className={classNames(as.flexCol, as.relative)}>
         { stepFunction() }
       </div>
       <div className={ss.steps}>
         {currentStep === 0 ? <></> :
         <button className={ss.nextStepButton} style={{float: 'left'}} onClick={() => setCurrentStep(e => (e - 1))}>Zurück</button>}
-        <div className='flex-row' style={{float: 'right'}}>
+        <div className={as.flexRow} style={{float: 'right'}}>
           <p className={ss.stepInfo}>Schritt {currentStep + 1} von {elemsCount(doTeams)}</p>
           <button className={ss.nextStepButton} onClick={() => nextStep()}>{currentStep === (elemsCount(doTeams) - 1) ? 'Gruppe erstellen' : 'Weiter \u279C'}</button>
         </div>

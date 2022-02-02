@@ -1,7 +1,8 @@
 import { playernameDuplicatesExists, validate } from "../../helpers/newgroup_helpers";
 import { step2Type } from "../../interfaces";
 import { useState } from "react";
-import { ss } from "../../helpers/styles";
+import { as, ss } from "../../helpers/styles";
+import classNames from "classnames";
 
 export default function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
 
@@ -15,10 +16,10 @@ export default function Step2({ props: { group: { groupname, doTeams, players },
   }
 
   return <>
-    <div className='flex-row'>
+    <div className={as.flexRow}>
       <h2>{!doTeams ? 'Spieler hinzufügen zu ' : 'Spieler überprüfen von '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
       <input
-        className={`${ss.playernameColumnsInput} ${ss.inputBox}`}
+        className={classNames(ss.playernameColumnsInput, ss.inputBox)}
         type='number'
         min='2'
         max='6'
@@ -26,7 +27,7 @@ export default function Step2({ props: { group: { groupname, doTeams, players },
         onChange={e => {if (+e.target.value !== 0) setPlayernameColumns(+e.target.value)}}
       />
     </div>
-    {!doTeams ? <div className={`flex-row ${ss.playerInput}`} style={{justifyContent: 'flex-start'}}>
+    {!doTeams ? <div className={classNames(as.flexRow, ss.playerInput)} style={{justifyContent: 'flex-start'}}>
       <input
         autoFocus
         className={ss.inputBox}
@@ -53,7 +54,7 @@ export default function Step2({ props: { group: { groupname, doTeams, players },
       {players.map(({ uuid: playerUuid, name, team: teamUuid }) => (
           <div key={ playerUuid } className={ss.playerInTeamDiv}>
             <input
-              className={`${ss.playernameInTeam} ${ss.inputBox}`}
+              className={classNames(ss.playernameInTeam, ss.inputBox)}
               style={playernameDuplicatesExists([...players, { uuid: '', name: playername, team: '' }], name) ? {color: 'red'} : {}}
               type="text"
               value={name}
@@ -83,7 +84,7 @@ export default function Step2({ props: { group: { groupname, doTeams, players },
       {!doTeams ? (
         <div className={ss.playerInTeamDiv}>
           <input
-            className={`${ss.playernameInTeam} ${ss.inputBox}`}
+            className={classNames(ss.playernameInTeam, ss.inputBox)}
             style={playernameDuplicatesExists([...players, { uuid: '', name: playername, team: '' }], playername) ? {color: 'red'} : {}}
             type="text"
             value={playername}

@@ -1,5 +1,6 @@
+import classNames from "classnames";
 import { validate } from "../../helpers/newgroup_helpers";
-import { ss } from "../../helpers/styles";
+import { as, ss } from "../../helpers/styles";
 import { step1Type } from "../../interfaces";
 import { duplicateError, groupnameError } from "./newgroup";
 
@@ -10,10 +11,10 @@ export default function Step1({ props: { group: { groupname, description, isPubl
             :
             <h2 style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</h2>
         }
-        <div className='flex-row'>
+        <div className={as.flexRow}>
             <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
             <input
-            className={`${ss.inputBox} ${((elem.props.children === groupnameError) ? ss.errorInput : '')}`}
+            className={classNames(ss.inputBox, (elem.props.children === groupnameError) ? ss.errorInput : '')}
             style={groupname === duplicateError ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
@@ -21,7 +22,7 @@ export default function Step1({ props: { group: { groupname, description, isPubl
             onChange={e => groupDispatch({ type: 'setGroupname', payload: { groupname: validate(e.target.value) } })}
             />
         </div>
-        <div className='flex-col'>
+        <div className={as.flexCol}>
             <p style={{marginBottom: '.5em'}}>Beschreibung:</p>
             <textarea
             className={ss.inputBox}

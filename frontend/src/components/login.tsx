@@ -2,7 +2,8 @@ import { useState, useContext, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import showError from '../helpers/showError';
 import { loginContext }  from '../context';
-import { ss } from '../helpers/styles';
+import { as, ss } from '../helpers/styles';
+import classNames from 'classnames';
 
 export default function Login() {
 
@@ -38,8 +39,8 @@ export default function Login() {
     }
 
     return (
-        <div className={`flex-col ${ss.stepForm}`}>
-            <div className="flex-col relative">
+        <div className={classNames(as.flexCol, ss.stepForm)}>
+            <div className={classNames(as.flexCol, as.relative)}>
                 <h2>Login</h2>
                 <div className={ss.gridSplit}>
                     <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>
@@ -66,7 +67,7 @@ export default function Login() {
                 { elem }
             </div>
             <div className={ss.steps}>
-                <div className='flex-row' style={{float: 'right'}}>
+                <div className={classNames(as.flexRow)} style={{float: 'right'}}>
                 <button className={ss.nextStepButton} onClick={() => login()}>{'Login \u279C'}</button>
                 </div>
             </div>

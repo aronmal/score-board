@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import clock from '../helpers/clock';
 import { loginContext }  from '../context';
 import { as } from '../helpers/styles';
+import classNames from 'classnames';
 
 export default function Header() {
   
@@ -18,7 +19,7 @@ export default function Header() {
     <header>
       <p className={as.banner}>This webpage is under construction and is not finished yet!</p>
       <div className={as.topHeader}>
-        <Link className={`flex-row ${as.logoA}`}  to='/'>
+        <Link className={classNames(as.flexRow, as.logoA)}  to='/'>
           <img className={as.logoIcon} src="/images/logo192.png" alt="logo" />
           <p className={as.logoP}>Score:Board</p>
         </Link>
@@ -40,10 +41,10 @@ function Nav() {
   const logoutElem = <><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M13 2v-2l10 3v18l-10 3v-2h-9v-7h1v6h8v-18h-8v7h-1v-8h9zm-2.947 10l-3.293-3.293.707-.707 4.5 4.5-4.5 4.5-.707-.707 3.293-3.293h-9.053v-1h9.053z"/></svg><p>Logout</p></>
 
   return (
-    <nav className='flex-row'>
-      <Link className={`${as.navlink} ${(location.pathname === '/') ? as.active : ''}`} to='/'><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M20 7.093v-5.093h-3v2.093l3 3zm4 5.907l-12-12-12 12h3v10h7v-5h4v5h7v-10h3zm-5 8h-3v-5h-8v5h-3v-10.26l7-6.912 7 6.99v10.182z"/></svg><p>Home</p></Link>
-      <Link className={`${as.navlink} ${(location.pathname === '/register' && !isLoggedIn) ? as.active : ''} ${(location.pathname === '/dashboard' && isLoggedIn) ? as.active : ''}`} to={ !isLoggedIn ? '/register' : '/dashboard' }>{ !isLoggedIn ? registerElem : dashboardElem }</Link>
-      <Link className={`${as.navlink} ${(location.pathname === '/login') ? as.active : ''}`} to={ !isLoggedIn ? '/login' : '/logout' }>{ !isLoggedIn ? loginElem : logoutElem }</Link>
+    <nav className={as.flexRow}>
+      <Link className={classNames(as.navlink, (location.pathname === '/') ? as.active : '')} to='/'><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path d="M20 7.093v-5.093h-3v2.093l3 3zm4 5.907l-12-12-12 12h3v10h7v-5h4v5h7v-10h3zm-5 8h-3v-5h-8v5h-3v-10.26l7-6.912 7 6.99v10.182z"/></svg><p>Home</p></Link>
+      <Link className={classNames(as.navlink, (location.pathname === '/register' && !isLoggedIn) ? as.active : '', (location.pathname === '/dashboard' && isLoggedIn) ? as.active : '')} to={ !isLoggedIn ? '/register' : '/dashboard' }>{ !isLoggedIn ? registerElem : dashboardElem }</Link>
+      <Link className={classNames(as.navlink, (location.pathname === '/login') ? as.active : '')} to={ !isLoggedIn ? '/login' : '/logout' }>{ !isLoggedIn ? loginElem : logoutElem }</Link>
     </nav>
   );
 }

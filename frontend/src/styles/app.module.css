@@ -10,6 +10,23 @@
   -webkit-transition: .2s;
 }
 
+.flexRow{
+  display: flex;
+  flex-direction: row;
+}
+.flexRowJustify{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+.flexCol{
+  display: flex;
+  flex-direction: column;
+}
+.relative {
+  position: relative;
+}
+
 
 .logoA:hover, .logoA:focus-visible {
   transform: scale(1.05);

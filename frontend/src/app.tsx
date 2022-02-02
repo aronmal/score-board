@@ -12,6 +12,7 @@ import loginCheck from './helpers/loginCheck';
 import { loginContext } from './context';
 import './styles/index.css';
 import { as } from './helpers/styles';
+import classNames from 'classnames';
 
 export default function App() {
 
@@ -30,7 +31,7 @@ export default function App() {
       setIsLoggedIn(true)
 
     setElem(
-      <div className={`flex-col ${as.contentDiv}`}>
+      <div className={classNames(as.flexCol, as.contentDiv)}>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/dashboard' element={<Dashboard />} />
@@ -46,7 +47,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <loginContext.Provider value={loginContextProviderValue}>
-        <div className={`flex-col ${as.content}`}>
+        <div className={classNames(as.flexCol, as.content)}>
           <Header />
             { elem }
           <Footer /> 

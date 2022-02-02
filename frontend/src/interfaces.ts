@@ -117,6 +117,10 @@ export type stepFormStyleType = {
 }
 
 export type appStyleType = {
+  flexRow: string,
+  flexRowJustify: string,
+  flexCol: string,
+  relative: string,
   logoA: string,
   active: string,
   card: string,
