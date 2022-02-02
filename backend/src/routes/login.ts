@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
-import { statusRes } from "../interfaces";
+import { statusRes, userType } from "../interfaces";
 import { Users } from "../schemas/userSchema";
 import { Tokens } from "../schemas/tokenSchema";
 
@@ -18,21 +18,21 @@ export default async function login(req: Request, res: Response) {
         await logging('Old token has been invalidated.', ['debug'], req)
     }
 
-    const userByName = await Users.findOne({ username: username });
-    const userByEmail = await Users.findOne({ email: username });
+    const userByName: userType = await Users.findOne({ username });
+    const userByEmail: userType = await Users.findOne({ email: username });
     if (!userByName && !userByEmail) {
         await logging('User not found in DB!', ['debug'], req);
         status.code = 401;
         return status;
     }
-    const user = userByName || userByEmail;
+    const user: userType = userByName || userByEmail;
 
     if (!await bcrypt.compare(password, user.password)) {
         status.code = 401;
         return status;
     }
 
-    const refreshToken = jwt.sign( { user: user.data.uuid } , process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: 172800 });
+    const refreshToken = jwt.sign( { user: user.uuid } , process.env.REFRESH_TOKEN_SECRET as string, { expiresIn: 172800 });
 
     const createdDBToken = await Tokens.create({ token: refreshToken, type: 'refresh', owner: user._id, expiresIn: Date.now() + 172800000 });
 

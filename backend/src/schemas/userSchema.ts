@@ -1,33 +1,31 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
-    data: {
-        uuid: {
-            type: String,
-            unique: true,
-            immutable: true,
-            required: true
-        },
-        username: {
-            type: String,
-            unique: true,
-            required: true
-        },
-        email: {
-            type: String,
-            unique: true,
-            required: true
-        },
-        groups: {
-            type: Array
-        },
-        templates: {
-            type: Array
-        },
+    uuid: {
+        type: String,
+        unique: true,
+        immutable: true,
+        required: true
+    },
+    username: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    email: {
+        type: String,
+        unique: true,
+        required: true
     },
     password: {
         type: String,
         required: true
+    },
+    groups: {
+        type: Array
+    },
+    templates: {
+        type: Array
     },
     createdAt: {
         type: Date,

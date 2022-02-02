@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
-import { statusRes } from "../interfaces";
+import { statusRes, userType } from "../interfaces";
 import { Users } from "../schemas/userSchema";
 import { Tokens } from "../schemas/tokenSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
@@ -37,14 +37,14 @@ export default async function auth(req: Request, res: Response) {
         return status;
     }
     
-    const user = await Users.findOne({ uuid: refreshTokenData.user });
+    const user: userType = await Users.findOne({ uuid: refreshTokenData.user });
     if (!user) {
         await logging('User of Refresh-Token not found in DB!', ['error'], req);
         status.code = 401;
         return status;
     }
 
-    const accessToken = jwt.sign( { user: user.data.uuid } , process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: 15 });
+    const accessToken = jwt.sign( { user: user.uuid } , process.env.ACCESS_TOKEN_SECRET as string, { expiresIn: 15 });
 
     const createdDBToken = await Tokens.create({ token: accessToken, type: 'access', owner: user._id, expiresIn: Date.now() + 15000 });
 
