@@ -31,7 +31,7 @@ export default function Dashboard() {
 
     return (
         <div className={`flex-col ${ss.stepForm}`}>
-            <div className="relative">
+            <div className="flex-col relative">
                 <h2>{'Hallo '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ data.username || 'Nutzer' }</span> :</h2>
                 <br />
                 <p>Das ist dein Dashboard</p>

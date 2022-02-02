@@ -39,7 +39,7 @@ export default function Login() {
 
     return (
         <div className={`flex-col ${ss.stepForm}`}>
-            <div className="relative">
+            <div className="flex-col relative">
                 <h2>Login</h2>
                 <div className={ss.gridSplit}>
                     <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername oder E-Mail:</p>

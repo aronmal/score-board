@@ -57,7 +57,7 @@ export default function Register() {
 
     return (
         <div className={`flex-col ${ss.stepForm}`}>
-            <div className="relative">
+            <div className="flex-col relative">
                 <h2>Registrieren</h2>
                 <div className={ss.gridSplit}>
                     <p style={{alignSelf: 'center', marginRight: '1em'}}>Nutzername:</p>
