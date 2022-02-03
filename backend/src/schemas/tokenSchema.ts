@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { Users } from "./userSchema";
+import { tokensModelName, tokensModelType, usersModelName } from "../interfaces";
 
 const tokenSchema = new mongoose.Schema({
     token: {
@@ -12,7 +12,7 @@ const tokenSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Types.ObjectId,
-        ref: Users,
+        ref: usersModelName,
         required: true
     },
     createdAt: {
@@ -21,12 +21,15 @@ const tokenSchema = new mongoose.Schema({
         default: Date.now
     },
     expiresIn: {
-        type: Date
+        type: Date,
+        required: true
     },
     used: {
         type: Boolean,
-        default: false
+        default: false,
+        required: true
     },
 })
 
-export const Tokens = mongoose.model('tokens', tokenSchema);
+const Tokens = mongoose.model<tokensModelType>(tokensModelName, tokenSchema);
+export default Tokens;

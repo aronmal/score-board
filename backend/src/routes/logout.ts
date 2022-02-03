@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
 import { statusRes } from "../interfaces";
-import { Tokens } from "../schemas/tokenSchema";
+import Tokens from "../schemas/tokenSchema";
 
 export default async function logout(req: Request, res: Response) {
     let status = {} as statusRes;

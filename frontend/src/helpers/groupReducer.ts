@@ -7,10 +7,10 @@ export default function groupReducer(group: groupType, action: groupDispatchType
     switch (action.type) {
   
       case 'setGroupname': {
-        const { groupname } = action.payload
-        if (groupname.length > 30)
+        const { name } = action.payload
+        if (name.length > 30)
           return group;
-        const result: groupType = { ...group, groupname }
+        const result: groupType = { ...group, name }
         return result;
       }
   

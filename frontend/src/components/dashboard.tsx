@@ -19,7 +19,7 @@ export default function Dashboard() {
     }, [])
 
     async function dataReq() {
-        const token = (await auth(setElem))
+        const token = await auth(setElem)
         if (!token)
             return;
         const yourData = await reqData(token, setElem)
@@ -33,10 +33,12 @@ export default function Dashboard() {
     return (
         <div className={classNames(as.flexCol, ss.stepForm)}>
             <div className={classNames(as.flexCol, as.relative)}>
-                <h2>{'Hallo '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ data.username || 'Nutzer' }</span> :</h2>
-                <br />
-                <p>Das ist dein Dashboard</p>
-                { console.log('Your Data: ' + JSON.stringify(data)) }
+                {Object.keys(data).length === 0 ? <h2>Loading...</h2> : <>
+                    <h2>{'Hallo '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ data.username || 'Nutzer' }</span> :</h2>
+                    <br />
+                    <p>Das ist dein Dashboard</p>
+                    { console.log('Your Data: ' + JSON.stringify(data)) }
+                </>}
                 { elem }
             </div>
         </div>

@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
-import { statusRes, userDataType, userType } from "../interfaces";
-import { Users } from "../schemas/userSchema";
-import { Tokens } from "../schemas/tokenSchema";
+import { statusRes, groupType } from "../interfaces";
+import Users from "../schemas/userSchema";
+import Tokens from "../schemas/tokenSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
 
 export default async function data(req: Request, _res: Response) {
@@ -38,7 +38,7 @@ export default async function data(req: Request, _res: Response) {
     DBToken.used = true;
     DBToken.save();
 
-    const user: userType = await Users.findOne({ uuid: accessTokenData.user });
+    const user = await Users.findOne({ uuid: accessTokenData.user });
     if (!user) {
         await logging('User of Access-Token not found in DB!', ['error'], req);
         status.code = 401;
@@ -50,12 +50,12 @@ export default async function data(req: Request, _res: Response) {
         return status;
     }
     status.code = 200;
-    const userData: userDataType = {
+    const userData = {
         uuid: user.uuid,
         username: user.username,
         email: user.email,
-        // groups: user.groups,
-        // templates: user.templates
+        groups: (await user.populate('templates')).groups,
+        templates: (await user.populate('templates')).templates
     }
     status.body = { data: userData };
     await logging('Requested data of user: ' + user._id + ' with Access-Token: ' + DBToken._id, ['debug','info.cyan'], req);

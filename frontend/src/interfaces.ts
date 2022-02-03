@@ -5,14 +5,6 @@ export interface loginContextType {
   setIsLoggedIn: Dispatch<SetStateAction<boolean>>
 };
 
-export interface userType {
-  uuid: string,
-  username: string,
-  email: string,
-  groups: any[],
-  templates: any[],
-}
-
 export type playerType = {
   uuid: string,
   name: string,
@@ -26,7 +18,8 @@ export type teamType = {
 };
 
 export type groupType = {
-  groupname: string,
+  uuid: string,
+  name: string,
   description: string,
   isPublic: boolean,
   doTeams: boolean,
@@ -34,9 +27,17 @@ export type groupType = {
   teams: teamType[],
 };
 
+export type userType = {
+    uuid: string,
+    username: string,
+    email: string,
+    groups: groupType[],
+    templates: groupType[],
+}
+
 export type newgroupType = groupType & { token: string };
 
-type setGroupnameType = { type: 'setGroupname', payload: { groupname: string } };
+type setGroupnameType = { type: 'setGroupname', payload: { name: string } };
 type setDescriptionType = { type: 'setDescription', payload: { description: string } };
 type setIsPublicType = { type: 'setIsPublic', payload: { isPublic: boolean } };
 type setDoTeamsType = { type: 'setDoTeams', payload: { doTeams: boolean } };

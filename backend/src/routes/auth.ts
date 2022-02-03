@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
-import { statusRes, userType } from "../interfaces";
-import { Users } from "../schemas/userSchema";
-import { Tokens } from "../schemas/tokenSchema";
+import { statusRes } from "../interfaces";
+import Users from "../schemas/userSchema";
+import Tokens from "../schemas/tokenSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
 
 export default async function auth(req: Request, res: Response) {
@@ -37,7 +37,7 @@ export default async function auth(req: Request, res: Response) {
         return status;
     }
     
-    const user: userType = await Users.findOne({ uuid: refreshTokenData.user });
+    const user = await Users.findOne({ uuid: refreshTokenData.user });
     if (!user) {
         await logging('User of Refresh-Token not found in DB!', ['error'], req);
         status.code = 401;
