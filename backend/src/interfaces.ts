@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-export interface userType {
+export type userType = {
     _id: mongoose.Types.ObjectId,
     uuid: string,
     username: string,
@@ -13,7 +13,7 @@ export interface userType {
     save: Function,
 }
 
-export interface userDataType {
+export type userDataType = {
     uuid: string,
     username: string,
     email: string,
@@ -21,7 +21,7 @@ export interface userDataType {
     // templates: mongoose.Types.ObjectId[],
 }
 
-export interface groupType {
+export type groupType = {
     _id: mongoose.Types.ObjectId,
     uuid: string,
     name: string,
@@ -36,7 +36,7 @@ export interface groupType {
     save: Function,
 }
 
-export interface groupDataType {
+export type groupDataType = {
     uuid: string,
     name: string,
     description: string,
@@ -47,13 +47,13 @@ export interface groupDataType {
     owner: mongoose.Types.ObjectId,
 }
 
-export interface tokenType {
+export type tokenType = {
     user: string,
     iat: Date,
     exp: Date,
 }
 
-export interface DBTokenType {
+export type DBTokenType = {
     token: string,
     owner: mongoose.Types.ObjectId,
     createdAt: Date,
@@ -62,7 +62,7 @@ export interface DBTokenType {
     save: Function,
 }
 
-export interface statusRes {
+export type statusRes = {
     status: string,
     code: number,
     message: string,
