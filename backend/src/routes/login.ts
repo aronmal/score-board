@@ -27,7 +27,7 @@ export default async function login(req: Request, res: Response) {
         return status;
     }
 
-    if (!await bcrypt.compare(password, user.password)) {
+    if (!await bcrypt.compare(password, user.passwordHash)) {
         status.code = 401;
         return status;
     }

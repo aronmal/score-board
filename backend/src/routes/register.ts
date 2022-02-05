@@ -10,7 +10,7 @@ export default async function register(req: Request, _res: Response) {
     const { username, email, password } = req.body;
     let user
     try {
-        user = await Users.create({ uuid: uuidv4(), username, email, password: bcrypt.hashSync(password, 10) });
+        user = await Users.create({ uuid: uuidv4(), username, email, passwordHash: bcrypt.hashSync(password, 10) });
     } catch (err: any) {
         if (err.code === 11000) {
             await logging(`Duplicate key error while creating User in DB!`, ['warn'], req);

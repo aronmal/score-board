@@ -4,22 +4,22 @@ import { as, ss } from "../../helpers/styles";
 import { step1Type } from "../../interfaces";
 import { duplicateError, groupnameError } from "./newgroup";
 
-export default function Step1({ props: { group: { groupname, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
+export default function Step1({ props: { group: { name, description, isPublic, doTeams }, groupDispatch, elem } }: step1Type) {
     return <>
-        {(!groupname) ?
+        {(!name) ?
             <h2 style={{borderBottom: '.25rem solid transparent'}}>{ 'Neue Gruppe' }</h2>
             :
-            <h2 style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</h2>
+            <h2 style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ name }</h2>
         }
         <div className={as.flexRow}>
             <p style={{alignSelf: 'center', marginRight: '1em'}}>Name der Gruppe:</p>
             <input
             className={classNames(ss.inputBox, (elem.props.children === groupnameError) ? ss.errorInput : '')}
-            style={groupname === duplicateError ? {color: 'red'} : {}}
+            style={name === duplicateError ? {color: 'red'} : {}}
             type='text'
             placeholder='Neue Gruppe'
-            value={groupname}
-            onChange={e => groupDispatch({ type: 'setGroupname', payload: { groupname: validate(e.target.value) } })}
+            value={name}
+            onChange={e => groupDispatch({ type: 'setGroupname', payload: { name: validate(e.target.value) } })}
             />
         </div>
         <div className={as.flexCol}>

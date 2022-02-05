@@ -18,20 +18,20 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: {
+    passwordHash: {
         type: String,
         required: true
     },
-    groups: {
-        type: [mongoose.Types.ObjectId],
+    groups: [{
+        type: mongoose.Types.ObjectId,
         ref: groupsModelName,
         required: true
-    },
-    templates: {
-        type: [mongoose.Types.ObjectId],
+    }],
+    templates: [{
+        type: mongoose.Types.ObjectId,
         ref: groupsModelName,
         required: true
-    },
+    }],
     createdAt: {
         type: Date,
         immutable: true,

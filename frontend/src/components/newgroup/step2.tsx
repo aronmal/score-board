@@ -4,7 +4,7 @@ import { useState } from "react";
 import { as, ss } from "../../helpers/styles";
 import classNames from "classnames";
 
-export default function Step2({ props: { group: { groupname, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
+export default function Step2({ props: { group: { name, doTeams, players }, groupDispatch, playernameColumns, setPlayernameColumns, elem } }: step2Type) {
 
   const [playername, setPlayername] = useState('');
 
@@ -17,7 +17,7 @@ export default function Step2({ props: { group: { groupname, doTeams, players },
 
   return <>
     <div className={as.flexRow}>
-      <h2>{!doTeams ? 'Spieler hinzufügen zu ' : 'Spieler überprüfen von '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ groupname }</span> :</h2>
+      <h2>{!doTeams ? 'Spieler hinzufügen zu ' : 'Spieler überprüfen von '}<span style={{borderBottom: '.25rem solid var(--gbs-color)'}}>{ name }</span> :</h2>
       <input
         className={classNames(ss.playernameColumnsInput, ss.inputBox)}
         type='number'
