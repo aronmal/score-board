@@ -35,6 +35,19 @@ export type userType = {
     templates: groupType[],
 }
 
+export type userDataType = {
+  uuid: string;
+  username: string;
+  email: string;
+  groups: {
+      uuid: string;
+      name: string;
+      doTeams: boolean;
+      playerCount: number;
+      teamCount: number;
+  }[];
+}
+
 export type newgroupType = groupType & { token: string };
 
 type setGroupnameType = { type: 'setGroupname', payload: { name: string } };

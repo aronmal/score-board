@@ -1,34 +1,35 @@
 import mongoose from "mongoose";
 
 export type playerType = {
-  uuid: string,
-  name: string,
-  team: string,
+    uuid: string,
+    name: string,
+    team: string,
 };
 
 export type teamType = {
-  uuid: string,
-  name: string,
-  players: string[],
+    uuid: string,
+    name: string,
+    players: string[],
 };
 
 export type groupType = {
-  uuid: string,
-  name: string,
-  description: string,
-  isPublic: boolean,
-  doTeams: boolean,
-  players: playerType[],
-  teams: teamType[],
+    uuid: string,
+    name: string,
+    description: string,
+    isPublic: boolean,
+    doTeams: boolean,
+    players: playerType[],
+    teams: teamType[],
+    owner: mongoose.Types.ObjectId,
 };
 
 export type usersType = {
     uuid: string,
     username: string,
     email: string,
-    password: string,
-    groups: mongoose.Types.ObjectId[] | groupType[],
-    templates: mongoose.Types.ObjectId[] | groupType[],
+    passwordHash: string,
+    groups: (mongoose.Types.ObjectId | groupType)[],
+    templates: (mongoose.Types.ObjectId | groupType)[],
     createdAt: number,
     updatedAt: number,
 }

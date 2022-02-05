@@ -1,8 +1,8 @@
 import { Dispatch, SetStateAction } from "react";
-import { userType } from "../interfaces";
+import { userDataType } from "../interfaces";
 import showError from "./showError";
 
-export default async function reqData(token: string, setElem: Dispatch<SetStateAction<JSX.Element>>): Promise<userType | undefined> {
+export default async function reqData(token: string, setElem: Dispatch<SetStateAction<JSX.Element>>): Promise<userDataType | undefined> {
     const res = await fetch('/api/data', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
