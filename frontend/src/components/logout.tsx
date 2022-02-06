@@ -14,6 +14,10 @@ export default function Logout() {
         async function logout() {
             if (!isLoggedIn)
                 setElem(<Navigate to='/' />);
+            let contin = false
+            setIsLoggedIn(e => e ? (contin = true) : (contin = false))
+            if (!contin)
+                return;
             const res: void | Response = await fetch('/api/logout', {
                 method: 'DELETE',
                 headers: { 'content-type': 'application/json' },
