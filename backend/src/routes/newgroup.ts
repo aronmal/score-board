@@ -2,14 +2,13 @@ import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
 import { v4 as uuidv4 } from 'uuid';
-import { userType } from "../interfaces";
-import { Users } from "../schemas/userSchema";
-import { Tokens } from "../schemas/tokenSchema";
-import { Groups } from "../schemas/groupSchema";
+import Users from "../schemas/userSchema";
+import Tokens from "../schemas/tokenSchema";
+import Groups from "../schemas/groupSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
 
 export default async function newgroup(req: Request, res: Response) {
-    const { groupname, description, isPublic, doTeams, players, teams } = req.body;
+    const { name, description, isPublic, doTeams, players, teams } = req.body;
     const accessToken = req.body.token;
 
     const DBToken = await Tokens.findOne({ token: accessToken });
@@ -40,14 +39,14 @@ export default async function newgroup(req: Request, res: Response) {
     DBToken.used = true;
     DBToken.save();
 
-    const user: userType = await Users.findOne({ uuid: accessTokenData.user });
+    const user = await Users.findOne({ uuid: accessTokenData.user });
     if (!user) {
         await logging('User of Access-Token not found in DB!', ['error'], req);
         res.status(401);
         return;
     }
 
-    const group = await Groups.create({ uuid: uuidv4(), name: groupname, description, isPublic, doTeams, players, teams, owner: user._id });
+    const group = await Groups.create({ uuid: uuidv4(), name, description, isPublic, doTeams, players, teams, owner: user._id });
 
     user.groups.push(group._id);
     user.updatedAt = Date.now();

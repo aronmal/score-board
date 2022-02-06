@@ -2,9 +2,8 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
-import { userType } from "../interfaces";
-import { Users } from "../schemas/userSchema";
-import { Tokens } from "../schemas/tokenSchema";
+import Users from "../schemas/userSchema";
+import Tokens from "../schemas/tokenSchema";
 
 export default async function login(req: Request, res: Response) {
     const oldRefreshToken = req.cookies.token
@@ -17,16 +16,16 @@ export default async function login(req: Request, res: Response) {
         await logging('Old token has been invalidated.', ['debug'], req)
     }
 
-    const userByName: userType = await Users.findOne({ username });
-    const userByEmail: userType = await Users.findOne({ email: username });
-    if (!userByName && !userByEmail) {
+    const userByName = await Users.findOne({ username });
+    const userByEmail = await Users.findOne({ email: username });
+    const user = userByName || userByEmail;
+    if (!user) {
         await logging('User not found in DB!', ['debug'], req);
         res.status(401);
         return;
     }
-    const user: userType = userByName || userByEmail;
 
-    if (!await bcrypt.compare(password, user.password)) {
+    if (!await bcrypt.compare(password, user.passwordHash)) {
         res.status(401);
         await logging('Passwords do not match!', ['debug'], req);
         return;

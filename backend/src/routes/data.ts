@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
 import jwt from "jsonwebtoken";
-import { userDataType, userType } from "../interfaces";
-import { Users } from "../schemas/userSchema";
-import { Tokens } from "../schemas/tokenSchema";
+import Users from "../schemas/userSchema";
+import Tokens from "../schemas/tokenSchema";
 import jwtVerfiyCatch from "../helpers/jwtVerfiyCatch";
+import isGroup from "../helpers/isGroup";
 
 export default async function data(req: Request, res: Response) {
     const accessToken = req.body.token;
@@ -37,23 +37,34 @@ export default async function data(req: Request, res: Response) {
     DBToken.used = true;
     DBToken.save();
 
-    const user: userType = await Users.findOne({ uuid: accessTokenData.user });
+    const user = await Users.findOne({ uuid: accessTokenData.user }).select('-passwordHash -createdAt -updatedAt -__v').populate({ path: 'groups', select: '-_id -createdAt -updatedAt -__v' });
     if (!user) {
         await logging('User of Access-Token not found in DB!', ['error'], req);
         res.status(401);
         return;
     }
 
-    if (res.statusCode !== 200) {
-        await logging('Early exit: ' + res.statusCode, ['warn'], req);
-        return;
-    }
-    const userData: userDataType = {
+    const groups: {
+        uuid: string,
+        name: string,
+        doTeams: boolean,
+        playerCount: number,
+        teamCount: number
+    }[] = []
+    user.groups.forEach(async e => {
+        if (isGroup(e) && (user._id.toString() === e.owner.toString()))
+        groups.push({ uuid: e.uuid, name: e.name, doTeams: e.doTeams, playerCount: e.players.length, teamCount: e.teams.length })
+    })
+    const userData = {
         uuid: user.uuid,
         username: user.username,
         email: user.email,
-        // groups: user.groups,
-        // templates: user.templates
+        groups,
+    }
+
+    if (res.statusCode !== 200) {
+        await logging('Early exit: ' + res.statusCode, ['warn'], req);
+        return;
     }
     res.status(200).json({ data: userData });
     await logging('Requested data of user: ' + user._id + ' with Access-Token: ' + DBToken._id, ['debug','info.cyan'], req);

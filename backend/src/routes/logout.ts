@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { logging } from "../logging";
-import { Tokens } from "../schemas/tokenSchema";
+import Tokens from "../schemas/tokenSchema";
 
 export default async function logout(req: Request, res: Response) {
     const oldRefreshToken: string = req.cookies.token

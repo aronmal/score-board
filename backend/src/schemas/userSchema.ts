@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { groupsModelName, usersModelName, usersModelType } from "../interfaces";
 
 const userSchema = new mongoose.Schema({
     uuid: {
@@ -17,25 +18,32 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: {
+    passwordHash: {
         type: String,
         required: true
     },
-    groups: {
-        type: Array
-    },
-    templates: {
-        type: Array
-    },
+    groups: [{
+        type: mongoose.Types.ObjectId,
+        ref: groupsModelName,
+        required: true
+    }],
+    templates: [{
+        type: mongoose.Types.ObjectId,
+        ref: groupsModelName,
+        required: true
+    }],
     createdAt: {
         type: Date,
         immutable: true,
-        default: Date.now
+        default: Date.now,
+        required: true
     },
     updatedAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: true
     },
 })
 
-export const Users = mongoose.model('users', userSchema);
+const Users = mongoose.model<usersModelType>(usersModelName, userSchema);
+export default Users;

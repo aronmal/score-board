@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-import { Users } from "./userSchema";
+import { groupsModelName, groupsModelType, usersModelName } from "../interfaces";
 
 const groupSchema = new mongoose.Schema({
-    
     uuid: {
         type: String,
         unique: true,
@@ -35,7 +34,7 @@ const groupSchema = new mongoose.Schema({
     },
     owner: {
         type: mongoose.Types.ObjectId,
-        ref: Users,
+        ref: usersModelName,
         required: true
     },
     createdAt: {
@@ -51,4 +50,5 @@ const groupSchema = new mongoose.Schema({
     },
 })
 
-export const Groups = mongoose.model('groups', groupSchema);
+const Groups = mongoose.model<groupsModelType>(groupsModelName, groupSchema);
+export default Groups;

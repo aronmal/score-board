@@ -1,42 +1,42 @@
 import mongoose from "mongoose";
 
-export type userType = {
-    _id: mongoose.Types.ObjectId,
+export type playerType = {
     uuid: string,
-    username: string,
-    email: string,
-    password: string,
-    groups: mongoose.Types.ObjectId[],
-    templates: mongoose.Types.ObjectId[],
-    createdAt: number,
-    updatedAt: number,
-    save: Function,
-}
+    name: string,
+    team: string,
+};
 
-export type userDataType = {
+export type teamType = {
     uuid: string,
-    username: string,
-    email: string,
-    // groups: mongoose.Types.ObjectId[],
-    // templates: mongoose.Types.ObjectId[],
-}
+    name: string,
+    players: string[],
+};
 
 export type groupType = {
-    _id: mongoose.Types.ObjectId,
     uuid: string,
     name: string,
     description: string,
     isPublic: boolean,
     doTeams: boolean,
-    players: any[],
-    teams: any[],
+    players: playerType[],
+    teams: teamType[],
     owner: mongoose.Types.ObjectId,
+};
+
+export type usersType = {
+    uuid: string,
+    username: string,
+    email: string,
+    passwordHash: string,
+    groups: (mongoose.Types.ObjectId | groupType)[],
+    templates: (mongoose.Types.ObjectId | groupType)[],
     createdAt: number,
     updatedAt: number,
-    save: Function,
 }
+export const usersModelName = 'users'
+export type usersModelType = usersType & mongoose.Document;
 
-export type groupDataType = {
+export type groupsType = {
     uuid: string,
     name: string,
     description: string,
@@ -44,8 +44,12 @@ export type groupDataType = {
     doTeams: boolean,
     players: any[],
     teams: any[],
-    owner: mongoose.Types.ObjectId,
+    owner: mongoose.Types.ObjectId | usersType,
+    createdAt: number,
+    updatedAt: number,
 }
+export const groupsModelName = 'groups'
+export type groupsModelType = groupsType & mongoose.Document;
 
 export type tokenType = {
     user: string,
@@ -55,9 +59,11 @@ export type tokenType = {
 
 export type DBTokenType = {
     token: string,
-    owner: mongoose.Types.ObjectId,
+    type: string,
+    owner: mongoose.Types.ObjectId | usersType,
     createdAt: Date,
     expiresIn: Date,
     used: boolean,
-    save: Function,
 }
+export const tokensModelName = 'tokens'
+export type tokensModelType = DBTokenType & mongoose.Document;

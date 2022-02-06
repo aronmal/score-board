@@ -34,7 +34,7 @@ export default function New() {
   }, [currentStep])
 
   async function nextStep() {
-    const { groupname, players, teams } = group
+    const { name, players, teams } = group
     if (currentStep === (elemsCount(doTeams) - 1)) {
       if (players.length === 0) {
         showError(setElem, playersError, 3000)
@@ -82,7 +82,7 @@ export default function New() {
     }
 
     if (currentStep === 0) {
-      if (!groupname) {
+      if (!name) {
         console.log('[WARN] groupname is empty!')
         showError(setElem, groupnameError, 3000)
         return;

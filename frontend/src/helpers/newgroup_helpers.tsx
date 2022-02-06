@@ -21,7 +21,8 @@ export const teamIndexCount = (teams: teamType[]) => teams.map(team => (/^Team [
 export const elemsCount = (doTeams: boolean) => doTeams ? 3 : 2
 
 export const initialGroup: groupType = {
-  groupname: '',
+  uuid: '',
+  name: '',
   description: '',
   isPublic: true,
   doTeams: false,
