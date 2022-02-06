@@ -12,7 +12,6 @@ import auth from './routes/auth';
 import newgroup from './routes/newgroup';
 import data from './routes/data';
 import routeCatch from './helpers/routeCatch';
-import errorHandling from './helpers/errorHandling';
 const app = express();
 
 startup();
@@ -74,36 +73,28 @@ async function startup() {
 
     // Start listening on port 5000
     app.listen(+process.env.API_PORT, async () => await logging(`Server running on: ${process.env.CORS_HOST}:${process.env.API_PORT}`, ['info.cyan']))
-    
+
     // Middlewares
     app.use(express.json());
     app.use(cookieParser());
-    app.use(cors({
-        origin: process.env.CORS_HOST,
-      }));
-    
+    app.use(cors({ origin: process.env.CORS_HOST }));
+
     // Register post route
-    app.post('/api/register', (_req, _res, next) => {next(register)});
-    
+    app.post('/api/register', routeCatch(register));
+
     // Login post route
-    app.post('/api/login', (_req, _res, next) => {next(login)});
-    
+    app.post('/api/login', routeCatch(login));
+
     // Logout delete route
-    app.delete('/api/logout', (_req, _res, next) => {next(logout)});
-    
+    app.delete('/api/logout', routeCatch(logout));
+
     // Auth post route
-    app.post('/api/auth', (_req, _res, next) => {next(auth)});
-    
+    app.post('/api/auth', routeCatch(auth));
+
     // New group post route
-    app.post('/api/newgroup', (_req, _res, next) => {next(newgroup)});
-    
+    app.post('/api/newgroup', routeCatch(newgroup));
+
     // Data post route
-    app.post('/api/data', (_req, _res, next) => {next(data)});
-    
-    
-    // Middlewares
-    // Exexute the given route function and catch all error and respond propper
-    app.use(routeCatch);
-    // Error handling
-    app.use(errorHandling);
+    app.post('/api/data', routeCatch(data));
+
 }

@@ -2,11 +2,10 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import { logging } from "../logging";
 import { v4 as uuidv4 } from 'uuid';
-import { statusRes, userType } from "../interfaces";
+import { userType } from "../interfaces";
 import { Users } from "../schemas/userSchema";
 
-export default async function register(req: Request, _res: Response) {
-    let status = {} as statusRes;
+export default async function register(req: Request, res: Response) {
     const { username, email, password } = req.body;
     let user: userType
     try {
@@ -14,19 +13,19 @@ export default async function register(req: Request, _res: Response) {
     } catch (err: any) {
         if (err.code === 11000) {
             await logging(`Duplicate key error while creating User in DB!`, ['warn'], req);
-            status.code = 409;
+            res.status(409);
         } else {
             await logging(`Unknown error while creating User in DB.`, ['error'], req);
-            status.code = 500;
+            res.status(500);
         }
-        return status;
+        return;
     }
 
-    if (status.code !== undefined) {
-        await logging('Early exit: ' + JSON.stringify(status), ['error'], req);
-        return status;
+    if (res.statusCode !== 200) {
+        await logging('Early exit: ' + res.statusCode, ['warn'], req);
+        return;
     }
-    status.code = 201;
+    res.status(201);
     await logging('User created : ' + user._id, ['debug','info.cyan'], req);
-    return status;
+    return;
 }

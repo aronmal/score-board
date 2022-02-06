@@ -61,10 +61,3 @@ export type DBTokenType = {
     used: boolean,
     save: Function,
 }
-
-export type statusRes = {
-    status: string,
-    code: number,
-    message: string,
-    body: object,
-}

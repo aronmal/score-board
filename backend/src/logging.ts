@@ -10,7 +10,7 @@ export async function logStartup() {
     })
 }
 
-export async function logging(message: string, types: string[], req?: Request) {
+export async function logging(message: string, types: ('info.green' | 'info.cyan' | 'debug' | 'post' | 'warn' | 'error')[], req?: Request) {
     let messages = { console: message, file: message }
     types.slice().reverse().forEach(async (type) => {
         switch (type) {

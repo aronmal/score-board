@@ -1,31 +1,19 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response} from "express";
 import { logging } from "../logging";
-import { statusRes } from "../interfaces";
 
-export default async function routeCatch(route: any, req: Request, res: Response, next: NextFunction) {
-    if (typeof route !== 'function')
-        await logging('Unexpected Error: Non-function argument', ['error'], req);
-    if (route.status !== undefined) {
-        await logging(route.stack, ['error'], req);
-        res.sendStatus(route.status);
-        return;
+export default function routeCatch(route: Function) {
+    return async (req: Request, res: Response) => {
+        try {
+            await route(req, res);
+        } catch (err: any) {
+            res.status(500)
+            await logging(err?.stack, ['error'], req);
+        }
+        if (!res.statusCode) {
+            await logging('Uncaught error.', ['debug'], req);
+        }
+        if (!res.writableEnded)
+            res.end();
+        await logging('Request served ' + res.statusCode, res.statusCode === 500 ? ['post', 'warn'] : ['post'], req);
     }
-    let status = {} as statusRes;
-    try {
-        status = await route(req, res);
-    } catch (err: any) {
-        status.status = 'caughtError';
-        await logging('Catched error, giving it to the error-handling middleware.', ['debug'], req);
-        return next(err);
-    }
-    if (status.code === undefined || status.status === 'caughtError') {
-        await logging('Uncaught error, giving it to the error-handling middleware.', ['debug'], req);
-        return next(new Error('An unknown error occurred!'));
-    }
-    await logging('Request served ' + JSON.stringify(status), ['post'], req);
-    if (!status.body) {
-        res.sendStatus(status.code);
-        return;
-    }
-    res.status(status.code).json(status.body);
 }
