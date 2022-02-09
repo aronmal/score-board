@@ -82,7 +82,7 @@ export default function Step3({ props: { group: { players, teams }, groupDispatc
                     placeholder='Hinzufügen...'
                     onChange={e => {
                       if (!!players.find(player => player.uuid === validate(e.target.value)))
-                        groupDispatch({ type: 'addExistingPlayerToTeam', payload: { playerUuid, teamUuid } })
+                        groupDispatch({ type: 'addExistingPlayerToTeam', payload: { playerUuid: validate(e.target.value), teamUuid } })
                       else if (validate(e.target.value))
                         groupDispatch({ type: 'newPlayerInTeam', payload: { playername: validate(e.target.value), playerUuid, teamUuid } })
                     }}
